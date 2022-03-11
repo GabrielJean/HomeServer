@@ -1,0 +1,92 @@
+version: "2.1"
+services:
+  plex:
+    image: lscr.io/linuxserver/plex
+    container_name: plex
+    network_mode: host
+    environment:
+      - PUID=950
+      - PGID=950
+      - VERSION=docker
+    volumes:
+      - /mnt/Vault/Apps/Plex:/config
+      - /mnt/Vault/Medias:/Plex
+    restart: unless-stopped
+
+  jackett:
+    image: lscr.io/linuxserver/jackett
+    container_name: jackett
+    environment:
+      - PUID=950
+      - PGID=950
+      - TZ=America/Toronto
+      - AUTO_UPDATE=true #optional
+      # - RUN_OPTS=<run options here> #optional
+    volumes:
+      - /mnt/Vault/Apps/Jackett:/config
+      - /mnt/Vault/Medias/Torrent:/downloads
+    ports:
+      - 9117:9117
+    restart: unless-stopped
+
+  radarr:
+    image: lscr.io/linuxserver/radarr
+    container_name: radarr
+    environment:
+      - PUID=950
+      - PGID=950
+      - TZ=America/Toronto
+    volumes:
+      - /mnt/Vault/Apps/Radarr:/config
+      - /mnt/Vault/Medias/Movies:/medias/Movies
+      - /mnt/Vault/Medias/Torrent:/downloads 
+    ports:
+      - 7878:7878
+    restart: unless-stopped
+
+  sonarr:
+    image: lscr.io/linuxserver/sonarr
+    container_name: sonarr
+    environment:
+      - PUID=950
+      - PGID=950
+      - TZ=America/Toronto
+    volumes:
+      - /mnt/Vault/Apps/Sonarr:/config
+      - /mnt/Vault/Medias/Animes:/medias/Animes
+      - /mnt/Vault/Medias/TV:/medias/TV
+      - /mnt/Vault/Medias/Torrent:/downloads 
+    ports:
+      - 8989:8989
+    restart: unless-stopped
+
+  transmission-openvpn:
+    container_name: transmission-ovpn
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - /mnt/Vault/Medias/Torrent:/downloads
+    environment:
+      - OPENVPN_PROVIDER=PIA
+      - OPENVPN_CONFIG=ca_montreal
+      - LOCAL_NETWORK=10.10.0.0/24
+      - TRANSMISSION_RATIO_LIMIT=0
+      - TRANSMISSION_RATIO_LIMIT_ENABLED=true
+      - TRANSMISSION_DOWNLOAD_QUEUE_ENABLED=true
+      - TRANSMISSION_DOWNLOAD_QUEUE_SIZE=5
+      - TRANSMISSION_MAX_PEER_GLOBAL=99999
+      - TRANSMISSION_PEER_LIMIT_GLOBAL=9999
+      - TRANSMISSION_PEER_LIMIT_PER_TORRENT=9999
+      - TRANSMISSION_DOWNLOAD_DIR=/downloads
+      - TRANSMISSION_INCOMPLETE_DIR_ENABLED=false
+      - TRANSMISSION_WEB_UI=transmission-web-control
+      - OPENVPN_USERNAME=
+      - OPENVPN_PASSWORD=
+    logging:
+        driver: json-file
+        options:
+            max-size: 10m
+    ports:
+        - '9091:9091'
+    image: haugene/transmission-openvpn
+    restart: unless-stopped 

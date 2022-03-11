@@ -1,0 +1,13 @@
+version: "2.1"
+services:
+  tailscale:
+    container_name: tailscale
+    build: .
+    environment:
+      - AUTH-KEY=tskey-kGzQnr2CNTRL-FeGnxeYLNabBbwWHaH6ZAR
+    volumes:
+      - /var/lib:/var/lib
+      - /dev/net/tun:/dev/net/tun
+    network_mode: "host"
+    privileged: true
+    restart: unless-stopped
