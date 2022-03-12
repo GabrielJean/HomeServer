@@ -69,8 +69,6 @@ services:
     env_file:
       - .env
     environment:
-      - OPENVPN_PROVIDER=PIA
-      - OPENVPN_CONFIG=ca_montreal
       - LOCAL_NETWORK=10.10.0.0/24
       - TRANSMISSION_RATIO_LIMIT=0
       - TRANSMISSION_RATIO_LIMIT_ENABLED=true
