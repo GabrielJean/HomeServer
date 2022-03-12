@@ -1,0 +1,9 @@
+# ZFS SCRUB
+#0 2 * * 0 sudo /sbin/zpool scrub Vault
+
+# OneDrive Sync
+0 */1 * * * rclone sync OneDrive: /mnt/Vault/OneDrive --log-file /mnt/Vault/Logs/OneDrive-Sync --log-level INFO
+
+# OneDrive Snapshot
+0 0 */1 * * sudo zfs snapshot Vault/OneDrive@$(date +"auto-%Y-%m-%d")
+
