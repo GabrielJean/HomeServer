@@ -3,9 +3,8 @@ services:
   tailscale:
     container_name: tailscale
     build: .
-    environment:
-      - AUTH-KEY=
-      - ADVERTISE-ROUTES=
+    env_file:
+      - .env
     volumes:
       - /var/lib:/var/lib
       - /dev/net/tun:/dev/net/tun

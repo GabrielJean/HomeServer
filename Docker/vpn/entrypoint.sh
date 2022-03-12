@@ -1,5 +1,4 @@
-tailscale up \
---auth-key ${AUTH-KEY} \
---advertise-routes ${ADVERTISE-ROUTES}
+tailscaled &
+sleep 2 && tailscale up --reset --auth-key ${AUTH_KEY} --advertise-routes ${ADVERTISE_ROUTES}
 
-tailscaled
+wait
