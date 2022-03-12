@@ -1,4 +1,20 @@
-tailscaled &
-sleep 2 && tailscale up --reset --auth-key ${AUTH_KEY} --advertise-routes ${ADVERTISE_ROUTES}
+#!/bin/sh
 
-wait
+command='tailscale up'
+
+#advertise-routes
+if [[ -z "${ADVERTISE_ROUTES}" ]]; then
+  echo "No Route set..."
+else
+  command="${command} --advertise-routes ${ADVERTISE_ROUTES}"
+fi
+
+if [[ -z "${AUTH_KEY}" ]]; then
+  echo "No Auth Key Specified"
+else
+  command="${command} --authkey ${AUTH_KEY}"
+fi
+
+
+sleep 5 && eval $command 2>&1 &
+tailscaled
