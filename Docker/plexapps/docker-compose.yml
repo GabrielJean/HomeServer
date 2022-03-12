@@ -39,7 +39,7 @@ services:
     volumes:
       - /mnt/Vault/Apps/Radarr:/config
       - /mnt/Vault/Medias/Movies:/medias/Movies
-      - /mnt/Vault/Medias/Torrent:/downloads 
+      - /mnt/Vault/Medias/Torrent:/downloads
     ports:
       - 7878:7878
     restart: unless-stopped
@@ -55,7 +55,7 @@ services:
       - /mnt/Vault/Apps/Sonarr:/config
       - /mnt/Vault/Medias/Animes:/medias/Animes
       - /mnt/Vault/Medias/TV:/medias/TV
-      - /mnt/Vault/Medias/Torrent:/downloads 
+      - /mnt/Vault/Medias/Torrent:/downloads
     ports:
       - 8989:8989
     restart: unless-stopped
@@ -66,6 +66,8 @@ services:
       - NET_ADMIN
     volumes:
       - /mnt/Vault/Medias/Torrent:/downloads
+    env_file:
+      - .env
     environment:
       - OPENVPN_PROVIDER=PIA
       - OPENVPN_CONFIG=ca_montreal
@@ -80,8 +82,6 @@ services:
       - TRANSMISSION_DOWNLOAD_DIR=/downloads
       - TRANSMISSION_INCOMPLETE_DIR_ENABLED=false
       - TRANSMISSION_WEB_UI=transmission-web-control
-      - OPENVPN_USERNAME=
-      - OPENVPN_PASSWORD=
     logging:
         driver: json-file
         options:
@@ -89,4 +89,4 @@ services:
     ports:
         - '9091:9091'
     image: haugene/transmission-openvpn
-    restart: unless-stopped 
+    restart: unless-stopped
