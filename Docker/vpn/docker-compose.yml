@@ -5,9 +5,11 @@ services:
     build: .
     environment:
       - AUTH-KEY=tskey-kGzQnr2CNTRL-FeGnxeYLNabBbwWHaH6ZAR
+      - ADVERTISE-ROUTES=10.10.0.0/24
     volumes:
       - /var/lib:/var/lib
       - /dev/net/tun:/dev/net/tun
-    network_mode: "host"
-    privileged: true
+    cap_add:
+      - NET_ADMIN
+    # privileged: true
     restart: unless-stopped
