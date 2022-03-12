@@ -11,5 +11,4 @@ services:
       - /dev/net/tun:/dev/net/tun
     cap_add:
       - NET_ADMIN
-    # privileged: true
     restart: unless-stopped
