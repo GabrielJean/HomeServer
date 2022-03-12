@@ -1,6 +1,6 @@
 #!/bin/sh
 
-command='tailscale up'
+command='tailscale up --reset'
 
 #advertise-routes
 if [[ -z "${ADVERTISE_ROUTES}" ]]; then
