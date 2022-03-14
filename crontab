@@ -5,4 +5,4 @@
 0 */1 * * * rclone sync OneDrive: /mnt/Vault/OneDrive --log-file /mnt/Vault/Logs/OneDrive-Sync --log-level INFO
 
 # OneDrive Snapshot
-0 0 * * * sudo zfs-auto-snapshot Vault/OneDrive -k 7
+0 0 * * * sudo zfs snapshot Vault/OneDrive@$(date +"auto-%Y-%m-%d")
