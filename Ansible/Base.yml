@@ -1,0 +1,63 @@
+- hosts: localhost
+  connection: localhost
+  order: sorted
+  ignore_unreachable: true
+  become: true
+  tasks:
+
+    - name: Install a list of packages
+      apt:
+        pkg:
+        - htop
+        - vim
+        - curl
+        - wget
+        - nmon
+        - git
+        - cockpit
+        - cockpit-machines
+        - cockpit-pcp
+        - samba
+        - rclone
+        - zsh
+        - zfsutils-linux
+
+    - name: Ensure group "docker" exists
+      group:
+        name: docker
+        state: present
+
+    - name: Set authorized key taken from file
+      authorized_key:
+        user: gabriel
+        state: present
+        key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDLRyveQ+Y6F+ZvLHmBpUwNLJ7wGYaMAZJdCljCnZ+2raKfI3dwijG5vbDBOem/DJMLOQwuyJ/uyfBe3efKuX6pG6GeJHJpBHG+MNJ2EaPpbedldnLTCv/7L7wjwII/8oIqT/td2x0PSZcjjRyzs1WWf1F7K1vdDHAeEpl3dpcciGMdLGqY1eMpfDns24c5mfxFtI96FwgJRQGQd+VUCq9aS8hldlXbpWO2zI5K7Qji1vvyrYKC3rR1SmMpqVbY8iD3hYvAasSJ7eccEkdUzozWRw5qIFaHz5kkv7YZQ1FSl4pkHneJed4JvXSf0EFohoyS37DTClGruYog2rp/GktkGQfvyS/4EIomiWmR6tmBermaxtKgGTkyd61a/7BSH5wJZgSlCGSwpwCUxhct/eIKOJ1MFM4Fqb4IXKKJLZs/ll9MrKe7zJOByVwjb9uXbbL1UJbRrJSUgStSGk0uvNljn1GxC20jveXa1u3wPj5zjbd/B7uGDYab0ASWvFwXzDM="
+
+    - name: Allow 'sudo' group to have passwordless sudo
+      lineinfile:
+        dest: /etc/sudoers
+        state: present
+        regexp: '^%sudo'
+        line: '%sudo ALL=(ALL) NOPASSWD: ALL'
+        validate: 'visudo -cf %s'
+
+    - name: Purge Snap
+      apt:
+        name: snapd
+        state: absent
+        purge: yes
+
+    # - name: Add apt key for github cli
+    #   ansible.builtin.apt_key:
+    #     keyserver: keyserver.ubuntu.com
+    #     id: C99B11DEB97541F0
+
+    # - name: Add Github cli repo into sources list
+    #   apt_repository:
+    #     repo: deb https://cli.github.com/packages focal main
+    #     state: present
+
+    # - name: Install Github Cli
+    #   apt:
+    #     pkg:
+    #     - gh
