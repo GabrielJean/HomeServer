@@ -1,2 +1,3 @@
 Docker/vpn/env_file
 Docker/plexapps/env_file
+Docker/healthchecks/env_file
