@@ -4,7 +4,7 @@ services:
     container_name: tailscale
     build: .
     env_file:
-      - .env
+      - env_file
     volumes:
       - /var/lib:/var/lib
       - /dev/net/tun:/dev/net/tun

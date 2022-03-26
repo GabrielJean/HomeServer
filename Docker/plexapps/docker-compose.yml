@@ -67,7 +67,7 @@ services:
     volumes:
       - /mnt/Vault/Medias/Torrent:/downloads
     env_file:
-      - .env
+      - env_file
     environment:
       - LOCAL_NETWORK=10.10.0.0/24
       - TRANSMISSION_RATIO_LIMIT=0

@@ -1,2 +1,2 @@
-Docker/vpn/.env
-Docker/plexapps/.env
+Docker/vpn/env_file
+Docker/plexapps/env_file
