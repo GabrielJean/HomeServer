@@ -14,6 +14,10 @@
         - wget
         - nmon
         - git
+        - sanoid
+        - lm-sensors
+        - hddtemp
+        - acl
         - cockpit
         - cockpit-machines
         - cockpit-pcp
