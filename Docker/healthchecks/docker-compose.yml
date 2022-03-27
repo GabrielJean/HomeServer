@@ -9,7 +9,7 @@ services:
       - PUID=1000
       - PGID=1000
       - SITE_ROOT=http://10.10.0.8:9500
-      - SITE_NAME=HealthChecks
+      - SITE_NAME=Healthchecks.local
       # - DEFAULT_FROM_EMAIL=<DEFAULT_FROM_EMAIL>
       # - EMAIL_HOST=<EMAIL_HOST>
       # - EMAIL_PORT=<EMAIL_PORT>
@@ -19,7 +19,7 @@ services:
       # - SUPERUSER_EMAIL=
       # - SUPERUSER_PASSWORD=
       - REGENERATE_SETTINGS=False #optional
-      # - SITE_LOGO_URL=<SITE_LOGO_URL> #optional
+      - SITE_LOGO_URL=https://pbs.twimg.com/profile_images/1055543716201615365/geMDWaHV_400x400.jpg
       # - ALLOWED_HOSTS=<ALLOWED_HOSTS> #optional
       # - SECRET_KEY=<SECRET_KEY> #optional
       # - APPRISE_ENABLED=True/False #optional
