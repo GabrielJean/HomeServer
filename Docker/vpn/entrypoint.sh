@@ -15,6 +15,12 @@ else
   command="${command} --authkey ${AUTH_KEY}"
 fi
 
+if [[ -z "${HOSTNAME}" ]]; then
+  echo "No Hostname Specified"
+else
+  command="${command} --hostname ${HOSTNAME}"
+fi
+
 
 sleep 5 && eval $command 2>&1 &
 tailscaled
