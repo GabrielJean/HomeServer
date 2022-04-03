@@ -1,2 +1,5 @@
 # OneDrive Sync
 0 */1 * * * rclone sync OneDrive: /mnt/Vault/OneDrive --log-file /mnt/Vault/Logs/OneDrive-Sync --log-level INFO
+
+# UPS
+*/5 * * * * /home/$(whoami)/HomeServer/Scripts/ups.sh
