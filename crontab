@@ -8,4 +8,4 @@
 */5 * * * * /home/$(whoami)/HomeServer/Scripts/ups.sh
 
 # Apps
-0 */1 * * * sudo rclone sync /mnt/Vault/Apps/ gjbackupst:/apps --exclude=/Plex/Library/Application\ Support/Plex\ Media\ Server/{Media,Metadata,Cache}/ -P -L && curl -fsS -m 10 --retry 5 -o /dev/null http://10.10.0.8:9500/ping/a8f2ac14-3008-4dac-b7ee-238a0dc3d5a9
+0 */1 * * * sudo rclone sync /mnt/Vault/Apps/ gjbackupst:/apps --log-file /mnt/Vault/Logs/Apps-Sync --log-level INFO --exclude=/Plex/Library/Application\ Support/Plex\ Media\ Server/{Media,Metadata,Cache}/ -P -L && curl -fsS -m 10 --retry 5 -o /dev/null http://10.10.0.8:9500/ping/a8f2ac14-3008-4dac-b7ee-238a0dc3d5a9
