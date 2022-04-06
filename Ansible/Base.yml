@@ -17,6 +17,7 @@
         - sanoid
         - lm-sensors
         - hddtemp
+        - smartmontools
         - acl
         - cockpit
         - cockpit-machines
