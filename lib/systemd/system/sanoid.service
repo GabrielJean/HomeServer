@@ -1,0 +1,15 @@
+[Unit]
+Description=Snapshot ZFS filesystems
+Documentation=man:sanoid(8)
+Requires=local-fs.target
+After=local-fs.target
+Before=sanoid-prune.service
+Wants=sanoid-prune.service
+ConditionFileNotEmpty=/etc/sanoid/sanoid.conf
+
+[Service]
+Type=oneshot
+Environment=TZ=UTC
+ExecStart=/usr/sbin/sanoid --take-snapshots --verbose 
+ExecStop=curl -fsS -m 10 --retry 5 -o /dev/null http://10.10.0.8:9500/ping/402702b2-74a6-4e6b-adc7-205c2d8f2ee4
+ExecStopPost=/bin/sh -c 'if [ "$$EXIT_STATUS" != 0 ]; then curl -fsS -m 10 --retry 5 -o /dev/null http://10.10.0.8:9500/ping/402702b2-74a6-4e6b-adc7-205c2d8f2ee4/fail; fi'
