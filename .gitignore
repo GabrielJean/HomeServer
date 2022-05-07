@@ -1,3 +1,1 @@
-Docker/tailscale/env_file
-Docker/plexapps/env_file
-Docker/healthchecks/env_file
+env_file
