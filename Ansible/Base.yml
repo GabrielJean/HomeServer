@@ -32,11 +32,11 @@
         name: docker
         state: present
 
-    - name: Set authorized key taken from file
-      authorized_key:
-        user: gabriel
-        state: present
-        key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDLRyveQ+Y6F+ZvLHmBpUwNLJ7wGYaMAZJdCljCnZ+2raKfI3dwijG5vbDBOem/DJMLOQwuyJ/uyfBe3efKuX6pG6GeJHJpBHG+MNJ2EaPpbedldnLTCv/7L7wjwII/8oIqT/td2x0PSZcjjRyzs1WWf1F7K1vdDHAeEpl3dpcciGMdLGqY1eMpfDns24c5mfxFtI96FwgJRQGQd+VUCq9aS8hldlXbpWO2zI5K7Qji1vvyrYKC3rR1SmMpqVbY8iD3hYvAasSJ7eccEkdUzozWRw5qIFaHz5kkv7YZQ1FSl4pkHneJed4JvXSf0EFohoyS37DTClGruYog2rp/GktkGQfvyS/4EIomiWmR6tmBermaxtKgGTkyd61a/7BSH5wJZgSlCGSwpwCUxhct/eIKOJ1MFM4Fqb4IXKKJLZs/ll9MrKe7zJOByVwjb9uXbbL1UJbRrJSUgStSGk0uvNljn1GxC20jveXa1u3wPj5zjbd/B7uGDYab0ASWvFwXzDM="
+#     - name: Set authorized key taken from file
+#       authorized_key:
+#         user: gabriel
+#         state: present
+#         key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDLRyveQ+Y6F+ZvLHmBpUwNLJ7wGYaMAZJdCljCnZ+2raKfI3dwijG5vbDBOem/DJMLOQwuyJ/uyfBe3efKuX6pG6GeJHJpBHG+MNJ2EaPpbedldnLTCv/7L7wjwII/8oIqT/td2x0PSZcjjRyzs1WWf1F7K1vdDHAeEpl3dpcciGMdLGqY1eMpfDns24c5mfxFtI96FwgJRQGQd+VUCq9aS8hldlXbpWO2zI5K7Qji1vvyrYKC3rR1SmMpqVbY8iD3hYvAasSJ7eccEkdUzozWRw5qIFaHz5kkv7YZQ1FSl4pkHneJed4JvXSf0EFohoyS37DTClGruYog2rp/GktkGQfvyS/4EIomiWmR6tmBermaxtKgGTkyd61a/7BSH5wJZgSlCGSwpwCUxhct/eIKOJ1MFM4Fqb4IXKKJLZs/ll9MrKe7zJOByVwjb9uXbbL1UJbRrJSUgStSGk0uvNljn1GxC20jveXa1u3wPj5zjbd/B7uGDYab0ASWvFwXzDM="
 
     - name: Allow 'sudo' group to have passwordless sudo
       lineinfile:
