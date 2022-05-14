@@ -1,7 +1,7 @@
 version: "2.1"
 services:
   healthchecks:
-    image: lscr.io/linuxserver/healthchecks
+    image: lscr.io/linuxserver/healthchecks:2.1.20220513
     container_name: healthchecks
     env_file:
       - env_file
