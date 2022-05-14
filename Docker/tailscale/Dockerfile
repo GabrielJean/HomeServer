@@ -1,4 +1,4 @@
-FROM tailscale/tailscale
+FROM tailscale/tailscale:v1.24.2
 
 
 RUN mkdir /tailscale
