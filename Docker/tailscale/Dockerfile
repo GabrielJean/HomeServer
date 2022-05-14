@@ -1,4 +1,4 @@
-FROM tailscale/tailscale:v1.24.2
+FROM tailscale/tailscale:stable@sha256:fade10ce4b55873727e8567d54725c56101bb94a64236868a4e0a8019420ec43
 
 
 RUN mkdir /tailscale
