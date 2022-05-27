@@ -6,7 +6,7 @@ services:
     env_file:
       - env_file
     volumes:
-      # - /var/lib:/var/lib
+      - /var/lib:/var/lib
       - /dev/net/tun:/dev/net/tun
     cap_add:
       - NET_ADMIN
