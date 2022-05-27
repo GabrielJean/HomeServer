@@ -1,4 +1,3 @@
-version: "2.1"
 services:
   plex:
     image: lscr.io/linuxserver/plex:1.26.0
