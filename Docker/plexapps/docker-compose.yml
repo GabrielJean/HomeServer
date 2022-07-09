@@ -1,6 +1,6 @@
 services:
   plex:
-    image: lscr.io/linuxserver/plex:1.27.1
+    image: lscr.io/linuxserver/plex:1.25.0
     container_name: plex
     network_mode: host
     environment:
@@ -13,7 +13,7 @@ services:
     restart: unless-stopped
 
   jackett:
-    image: lscr.io/linuxserver/jackett:0.20.1251
+    image: lscr.io/linuxserver/jackett:0.20.1293
     container_name: jackett
     environment:
       - PUID=950
