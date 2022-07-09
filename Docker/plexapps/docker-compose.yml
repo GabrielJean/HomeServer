@@ -13,7 +13,7 @@ services:
     restart: unless-stopped
 
   jackett:
-    image: lscr.io/linuxserver/jackett:0.20.1058
+    image: lscr.io/linuxserver/jackett:0.20.1251
     container_name: jackett
     environment:
       - PUID=950
