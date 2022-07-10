@@ -60,7 +60,7 @@ services:
     restart: unless-stopped
 
   transmission-openvpn:
-    container_name: transmission-ovpn:latest@sha256:385f478e88dda3d694bd9d619c3ae155d6e6d02f44d94744923965974c625a93
+    container_name: transmission-ovpn
     cap_add:
       - NET_ADMIN
     volumes:
@@ -85,5 +85,5 @@ services:
             max-size: 10m
     ports:
         - '9091:9091'
-    image: haugene/transmission-openvpn:4.0
+    image: haugene/transmission-openvpn:latest@sha256:385f478e88dda3d694bd9d619c3ae155d6e6d02f44d94744923965974c625a93
     restart: unless-stopped
