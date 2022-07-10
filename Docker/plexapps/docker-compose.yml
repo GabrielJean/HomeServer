@@ -1,6 +1,6 @@
 services:
   plex:
-    image: lscr.io/linuxserver/plex:latest@sha256:f08899bcffcf1931270622a0cc4472fba6002cf3514a8d4838f0976d0bca6f0e
+    image: lscr.io/linuxserver/plex:latest@sha256:7181b47ee8b5ce9f70cc4ffa0e593eb218b2813b1a128070d2fa9b6bc2f8832d
     container_name: plex
     network_mode: host
     environment:
