@@ -13,7 +13,7 @@ services:
     restart: unless-stopped
 
   jackett:
-    image: lscr.io/linuxserver/jackett:0.20.1293
+    image: lscr.io/linuxserver/jackett:latest@sha256:c419f107a468f5be2f378037a4ff32edaf7b10f6b633a733104dfab8a04bd29e
     container_name: jackett
     environment:
       - PUID=950
@@ -29,7 +29,7 @@ services:
     restart: unless-stopped
 
   radarr:
-    image: lscr.io/linuxserver/radarr:4.1.0
+    image: lscr.io/linuxserver/radarr:latest@sha256:aa4d1c4f5f3e4d8ccf9489a69de503180f44b706bceb3e141970ef3032454e0c
     container_name: radarr
     environment:
       - PUID=950
@@ -44,7 +44,7 @@ services:
     restart: unless-stopped
 
   sonarr:
-    image: lscr.io/linuxserver/sonarr:3.0.8
+    image: lscr.io/linuxserver/sonarr:latest@sha256:80c2e593195c7566a5305fcc1c978517434ae395aa877f5c06e76047ecdc2070
     container_name: sonarr
     environment:
       - PUID=950
@@ -60,7 +60,7 @@ services:
     restart: unless-stopped
 
   transmission-openvpn:
-    container_name: transmission-ovpn
+    container_name: transmission-ovpn:latest@sha256:385f478e88dda3d694bd9d619c3ae155d6e6d02f44d94744923965974c625a93
     cap_add:
       - NET_ADMIN
     volumes:
