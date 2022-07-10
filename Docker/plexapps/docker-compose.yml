@@ -1,6 +1,6 @@
 services:
   plex:
-    image: lscr.io/linuxserver/plex:1.27.1.5916-6b0e31a64-ls122
+    image: lscr.io/linuxserver/plex:1.27.2
     container_name: plex
     network_mode: host
     environment:
@@ -85,5 +85,5 @@ services:
             max-size: 10m
     ports:
         - '9091:9091'
-    image: haugene/transmission-openvpn:latest@sha256:385f478e88dda3d694bd9d619c3ae155d6e6d02f44d94744923965974c625a93
+    image: haugene/transmission-openvpn:4.0
     restart: unless-stopped
