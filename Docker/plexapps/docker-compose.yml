@@ -29,7 +29,7 @@ services:
     restart: unless-stopped
 
   radarr:
-    image: lscr.io/linuxserver/radarr:latest@sha256:aa4d1c4f5f3e4d8ccf9489a69de503180f44b706bceb3e141970ef3032454e0c
+    image: lscr.io/linuxserver/radarr:latest@sha256:86281c62a28030e8b8c32f37b905d92028531ce4c48c50934e803329501196e3
     container_name: radarr
     environment:
       - PUID=950
