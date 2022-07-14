@@ -1,6 +1,6 @@
 services:
   healthchecks:
-    image: lscr.io/linuxserver/healthchecks:2.2.1
+    image: lscr.io/linuxserver/healthchecks:v2.2.1-ls129
     container_name: healthchecks
     env_file:
       - env_file
