@@ -3,7 +3,7 @@
   "extends": [
     "config:base",
     "docker:enableMajor"
-  ]
+  ],
   "packageRules": [
     {
       "matchPackageNames": ["lscr.io/linuxserver/jackett"],
