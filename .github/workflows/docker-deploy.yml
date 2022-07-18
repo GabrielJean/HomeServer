@@ -19,7 +19,7 @@ jobs:
     runs-on: self-hosted
     defaults:
       run:
-        working-directory: ./Docker
+        working-directory: /HomeServer/Docker
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
