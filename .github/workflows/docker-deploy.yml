@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 env: 
-  ANSIBLE_VAULT_PASSWORD_FILE: ${{secrets.ANSIBLE_VAULT_DOCKER}}
+  ANSIBLE_VAULT_PASSWORD_FILE: .vault_pass.txt
   
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -25,7 +25,10 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-
+      
+      - name: Create ansible_vault_password_file
+        run: echo "${{secrets.ANSIBLE_VAULT_DOCKER}}" >> .vault_pass.txt
+        
       - name: Docker secrets
         run: ansible-playbook Ansible/Docker-secrets.yml 
 
