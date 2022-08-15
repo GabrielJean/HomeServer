@@ -31,4 +31,4 @@ jobs:
 
 
       - name: Update Docker Compose
-        run: ./Docker/update.sh
+        run: cd Docker && ./update.sh
