@@ -44,7 +44,7 @@ services:
     restart: unless-stopped
 
   sonarr:
-    image: lscr.io/linuxserver/sonarr:3.0.8.1507-ls150
+    image: lscr.io/linuxserver/sonarr:3.0.9.1549-ls154
     container_name: sonarr
     environment:
       - PUID=950
