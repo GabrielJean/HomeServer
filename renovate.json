@@ -6,13 +6,9 @@
   ],
   "packageRules": [
     {
-      "matchPackageNames": ["lscr.io/linuxserver/jackett"],
+      "matchPackageNames": ["linuxserver/jackett"],
       "automerge": true,
       "schedule": ["before 3am on the first day of the month"]
-    },
-    {
-      "matchPackageNames": ["lscr.io/linuxserver/plex"],
-      "matchDatasources": ["docker"]
     }
   ]
 }
