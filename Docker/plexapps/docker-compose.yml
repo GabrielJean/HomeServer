@@ -1,6 +1,6 @@
 services:
   plex:
-    image: linuxserver/plex:1.28.1
+    image: linuxserver/plex:1.28.2
     container_name: plex
     network_mode: host
     environment:
@@ -13,7 +13,7 @@ services:
     restart: unless-stopped
 
   jackett:
-    image: lscr.io/linuxserver/jackett:v0.20.1680-ls74
+    image: linuxserver/jackett:0.20.1810
     container_name: jackett
     environment:
       - PUID=950
@@ -29,7 +29,7 @@ services:
     restart: unless-stopped
 
   radarr:
-    image: lscr.io/linuxserver/radarr:4.1.0.6175-ls146
+    image: linuxserver/radarr:4.1.0
     container_name: radarr
     environment:
       - PUID=950
@@ -44,7 +44,7 @@ services:
     restart: unless-stopped
 
   sonarr:
-    image: lscr.io/linuxserver/sonarr:3.0.9.1549-ls154
+    image: linuxserver/sonarr:3.0.9
     container_name: sonarr
     environment:
       - PUID=950
