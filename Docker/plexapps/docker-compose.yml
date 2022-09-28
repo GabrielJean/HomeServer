@@ -29,7 +29,7 @@ services:
     restart: unless-stopped
 
   radarr:
-    image: linuxserver/radarr:4.1.0
+    image: linuxserver/radarr:4.2.4
     container_name: radarr
     environment:
       - PUID=950
