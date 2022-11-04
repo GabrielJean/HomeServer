@@ -11,7 +11,19 @@ services:
       - /mnt/Vault/Apps/Plex:/config
       - /mnt/Vault/Medias:/Plex
     restart: unless-stopped
-
+    
+  overseerr:
+    image: docker pull linuxserver/overseerr:1.30.1
+    container_name: overseerr
+    environment:
+      - LOG_LEVEL=debug
+      - TZ=America/Toronto
+    ports:
+      - 5055:5055
+    volumes:
+      - /mnt/Vault/Apps/Overseerr:/app/config
+    restart: unless-stopped
+    
   jackett:
     image: linuxserver/jackett:0.20.2180
     container_name: jackett
