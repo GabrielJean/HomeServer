@@ -21,7 +21,7 @@ services:
     ports:
       - 5055:5055
     volumes:
-      - /mnt/Vault/Apps/Overseerr:/app/config
+      - /mnt/Vault/Apps/Overseerr:/config
     restart: unless-stopped
     
   jackett:
