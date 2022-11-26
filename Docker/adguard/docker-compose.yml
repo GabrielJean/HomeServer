@@ -10,7 +10,7 @@ services:
       - 853:853/tcp
       - 3001:3000/tcp
       - 3080:80/tcp
-      - 443:443/tcp
+#       - 443:443/tcp
     volumes:
       - /mnt/Vault/Apps/AdguardHome/work:/opt/adguardhome/work
       - /mnt/Vault/Apps/AdguardHome/conf:/opt/adguardhome/conf
