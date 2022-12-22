@@ -2,14 +2,14 @@
 */15 * * * * curl -fsS -m 10 --retry 5 -o /dev/null https://hc-ping.com/06aaf333-e20e-4955-a270-30ad875df0e1
 
 # OneDrive Sync
-0 */1 * * * rclone sync OneDrive: /mnt/Vault/OneDrive --log-file /mnt/Vault/Logs/OneDrive-Sync --log-level INFO --exclude=/Lightroom/Photos/ && curl -fsS -m 10 --retry 5 -o /dev/null http://10.10.0.8:9500/ping/bb727c24-9105-41f4-b8d4-d987bfb94403
+0 */1 * * * rclone sync OneDrive: /mnt/Vault/OneDrive --log-file /mnt/Vault/Logs/OneDrive-Sync --log-level INFO --exclude=/Lightroom/Photos/ && curl -fsS -m 10 --retry 5 -o /dev/null http://localhost:9500/ping/bb727c24-9105-41f4-b8d4-d987bfb94403
 
 
 # Lightroom Sync
-0 2 * * * rclone sync /mnt/Vault/Lightroom/Photos OneDrive:/Lightroom/Photos --log-file /mnt/Vault/Logs/Lightroom-Sync --log-level INFO && curl -fsS -m 10 --retry 5 -o /dev/null http://10.10.0.8:9500/ping/a60e9fcb-5c6e-4275-b963-7871b36a8f3e
+0 2 * * * rclone sync /mnt/Vault/Lightroom/Photos OneDrive:/Lightroom/Photos --log-file /mnt/Vault/Logs/Lightroom-Sync --log-level INFO && curl -fsS -m 10 --retry 5 -o /dev/null http://localhost:9500/ping/a60e9fcb-5c6e-4275-b963-7871b36a8f3e
 
 # UPS
 */5 * * * * /home/$(whoami)/HomeServer/Scripts/ups.sh
 
 # Apps
-0 0 */1 * * sudo rclone sync /mnt/Vault/Apps/ gjbackupst:/apps --log-file /mnt/Vault/Logs/Apps-Sync --log-level INFO --exclude=/Plex/Library/Application\ Support/Plex\ Media\ Server/{Media,Metadata,Cache}/ -P -L && curl -fsS -m 10 --retry 5 -o /dev/null http://10.10.0.8:9500/ping/a8f2ac14-3008-4dac-b7ee-238a0dc3d5a9
+0 0 */1 * * sudo rclone sync /mnt/Vault/Apps/ gjbackupst:/apps --log-file /mnt/Vault/Logs/Apps-Sync --log-level INFO --exclude=/Plex/Library/Application\ Support/Plex\ Media\ Server/{Media,Metadata,Cache}/ -P -L && curl -fsS -m 10 --retry 5 -o /dev/null http://localhost:9500/ping/a8f2ac14-3008-4dac-b7ee-238a0dc3d5a9
