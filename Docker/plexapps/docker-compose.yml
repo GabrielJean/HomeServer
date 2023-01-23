@@ -19,7 +19,7 @@ services:
       - /mnt/Vault/Apps/Plex:/config
       - /mnt/Vault/Medias:/Plex
     restart: unless-stopped
-    
+
   overseerr:
     image: sctx/overseerr:1.31.0
     container_name: overseerr
@@ -31,7 +31,7 @@ services:
     volumes:
       - /mnt/Vault/Apps/Overseerr:/app/config
     restart: unless-stopped
-    
+
   jackett:
     image: linuxserver/jackett:0.20.2464
     container_name: jackett
@@ -43,7 +43,6 @@ services:
       # - RUN_OPTS=<run options here> #optional
     volumes:
       - /mnt/Vault/Apps/Jackett:/config
-      - /mnt/Vault/Medias/Torrent:/downloads
     ports:
       - 9117:9117
     restart: unless-stopped
@@ -59,7 +58,23 @@ services:
       - TZ=Europe/London
     ports:
       - "${PORT:-8191}:8191"
-    restart: unless-stopped 
+    restart: unless-stopped
+
+
+  lidarr:
+    image: linuxserver/lidarr:latest
+    container_name: lidarr
+    environment:
+      - PUID=950
+      - PGID=950
+      - TZ=America/Toronto
+    volumes:
+      - /mnt/Vault/Apps/Lidarr:/config
+      - /mnt/Vault/Medias:/medias #optional
+    ports:
+      - 8686:8686
+    restart: unless-stopped
+
 
   radarr:
     image: linuxserver/radarr:4.2.4
@@ -70,8 +85,7 @@ services:
       - TZ=America/Toronto
     volumes:
       - /mnt/Vault/Apps/Radarr:/config
-      - /mnt/Vault/Medias/Movies:/medias/Movies
-      - /mnt/Vault/Medias/Torrent:/downloads
+      - /mnt/Vault/Medias:/medias
     ports:
       - 7878:7878
     restart: unless-stopped
@@ -85,9 +99,7 @@ services:
       - TZ=America/Toronto
     volumes:
       - /mnt/Vault/Apps/Sonarr:/config
-      - /mnt/Vault/Medias/Animes:/medias/Animes
-      - /mnt/Vault/Medias/TV:/medias/TV
-      - /mnt/Vault/Medias/Torrent:/downloads
+      - /mnt/Vault/Medias:/medias
     ports:
       - 8989:8989
     restart: unless-stopped
@@ -97,7 +109,7 @@ services:
     cap_add:
       - NET_ADMIN
     volumes:
-      - /mnt/Vault/Medias/Torrent:/downloads
+      - /mnt/Vault/Medias:/medias
     env_file:
       - env_file
     environment:
@@ -109,7 +121,7 @@ services:
       - TRANSMISSION_MAX_PEER_GLOBAL=99999
       - TRANSMISSION_PEER_LIMIT_GLOBAL=9999
       - TRANSMISSION_PEER_LIMIT_PER_TORRENT=9999
-      - TRANSMISSION_DOWNLOAD_DIR=/downloads
+      - TRANSMISSION_DOWNLOAD_DIR=/medias/Torrent
       - TRANSMISSION_INCOMPLETE_DIR_ENABLED=false
       - TRANSMISSION_WEB_UI=transmission-web-control
     logging:
