@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Docker-CI
+name: Docker
 
 # Controls when the workflow will run
 on:
@@ -33,3 +33,24 @@ jobs:
         
       - name: Docker Compose up
         run: ./update.sh
+
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    # The type of runner that the job will run on
+    runs-on: self-hosted
+    
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+      
+      - name: Create ansible_vault_password_file
+        run: echo "${{secrets.ANSIBLE_VAULT_DOCKER}}" > .vault_pass.txt
+        
+      - name: Docker secrets
+        run: ansible-playbook Ansible/Docker-secrets.yml --vault-password-file .vault_pass.txt
+
+
+      - name: Update Docker Compose
+        run: cd Docker && ./update.sh
