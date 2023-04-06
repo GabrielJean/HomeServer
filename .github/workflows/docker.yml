@@ -38,7 +38,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     # The type of runner that the job will run on
     runs-on: self-hosted
-    
+    needs: build
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
