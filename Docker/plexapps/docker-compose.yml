@@ -113,7 +113,7 @@ services:
     env_file:
       - env_file
     environment:
-      - LOCAL_NETWORK=192.168.10.0/24
+      - LOCAL_NETWORK=192.168.10.0/24,100.64.0.0/10
       - TRANSMISSION_RATIO_LIMIT=0
       - TRANSMISSION_RATIO_LIMIT_ENABLED=true
       - TRANSMISSION_DOWNLOAD_QUEUE_ENABLED=true
