@@ -9,6 +9,11 @@
       apt:
         pkg:
         - htop
+        - 7zip
+        - unzip
+        - gzip
+        - docker
+        - iperf3
         - vim
         - curl
         - wget
@@ -22,7 +27,13 @@
         - cockpit
         - cockpit-machines
         - cockpit-pcp
+        - cockpit-packagekit
+        - cockpit-storaged
+        - cockpit-system
+        - cockpit-sosreport
+        - cockpit-networkmanager
         - samba
+        - wakeonlan
         - rclone
         - zsh
         - zfsutils-linux
