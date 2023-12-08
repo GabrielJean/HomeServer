@@ -132,5 +132,5 @@ services:
             max-size: 10m
     ports:
         - '9091:9091'
-    image: haugene/transmission-openvpn:5.2
+    image: haugene/transmission-openvpn:5.3
     restart: unless-stopped
