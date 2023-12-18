@@ -1,4 +1,4 @@
-FROM tailscale/tailscale:stable@sha256:b97d51b7131dbdf1ef9994b6f447adacb2c1301d4af246c742a467fadac8f438
+FROM tailscale/tailscale:stable@sha256:ac0c192f6cba52877e4d9c2fe8943f16c0ab44927605a21416852590e3ccb71e
 
 
 RUN mkdir /tailscale_data
