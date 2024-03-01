@@ -33,7 +33,7 @@ services:
     restart: unless-stopped
 
   jackett:
-    image: linuxserver/jackett:0.21.1650
+    image: linuxserver/jackett:0.21.1888
     container_name: jackett
     environment:
       - PUID=950
