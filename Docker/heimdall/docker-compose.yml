@@ -7,7 +7,7 @@ services:
       - PGID=1000
       - TZ=America/Toronto
     volumes:
-      - /mnt/Vault/Apps/Heimdall:/config
+      - /Apps/Heimdall:/config
     ports:
       - 80:80
 #       - 443:443

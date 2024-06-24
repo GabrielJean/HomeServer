@@ -23,7 +23,7 @@ services:
       # - SECRET_KEY=<SECRET_KEY> #optional
       # - APPRISE_ENABLED=True/False #optional
     volumes:
-      - /mnt/Vault/Apps/Healthchecks:/config
+      - /Apps/Healthchecks:/config
     ports:
       - 9500:8000
     restart: unless-stopped
