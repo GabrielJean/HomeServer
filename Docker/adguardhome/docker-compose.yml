@@ -15,6 +15,6 @@ services:
       - 3080:80/tcp
 #       - 443:443/tcp
     volumes:
-      - /mnt/Vault/Apps/AdguardHome/work:/opt/adguardhome/work
-      - /mnt/Vault/Apps/AdguardHome/conf:/opt/adguardhome/conf
+      - /Apps/AdguardHome/work:/opt/adguardhome/work
+      - /Apps/AdguardHome/conf:/opt/adguardhome/conf
     restart: unless-stopped
