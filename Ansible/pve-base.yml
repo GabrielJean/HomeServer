@@ -1,0 +1,69 @@
+- hosts: linux_vms
+  order: sorted
+  become: true
+
+  tasks:
+
+    - name: Install a list of packages
+      apt:
+        pkg:
+        - qemu-guest-agent
+
+    - name: Ensure group "docker" exists
+      group:
+        name: docker
+        state: present
+
+    - name: Add user to docker group
+      user:
+        name: gabriel
+        groups: docker
+        append: yes
+
+    - name: Allow 'sudo' group to have passwordless sudo
+      lineinfile:
+        dest: /etc/sudoers
+        state: present
+        regexp: '^%sudo'
+        line: '%sudo ALL=(ALL) NOPASSWD: ALL'
+        validate: 'visudo -cf %s'
+
+    ## Install ZSH
+    - name: Install ZSH
+      apt:
+        name: zsh
+        state: present
+        update_cache: yes
+
+
+    - name: Check if prezto directory exists
+      stat:
+        path: "{{ ansible_env.HOME }}/.zprezto"
+      register: prezto_dir
+
+    - name: Clone prezto if it doesn't exist
+      shell: >
+        zsh -c 'git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"'
+      when: prezto_dir.stat.exists == False
+
+    - name: Set up prezto runcoms
+      shell: >
+        zsh -c 'setopt EXTENDED_GLOB;
+        for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do
+          ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}";
+        done'
+      become: false
+      when: prezto_dir.stat.exists == False
+
+    - name: Enable bash completion in zshrc
+      lineinfile:
+        path: "/home/{{ ansible_user }}/.zshrc"
+        line: "autoload -U +X bashcompinit && bashcompinit"
+        state: present
+      become: false
+
+    - name: Change default shell to ZSH
+      ansible.builtin.user:
+        name: "{{ ansible_user }}"
+        shell: /bin/zsh
+      become: false

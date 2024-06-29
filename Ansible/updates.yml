@@ -1,0 +1,16 @@
+---
+- name: Update Ubuntu servers
+  hosts: linux_vms
+  become: yes  # To escalate privileges using sudo
+  gather_facts: yes  # To gather facts about the hosts
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Upgrade all packages
+      apt:
+        upgrade: yes
+        autoremove: yes
+        autoclean: yes
