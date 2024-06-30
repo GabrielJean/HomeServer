@@ -28,9 +28,14 @@
         src: ../etc/sanoid/sanoid.conf
         dest: /etc/sanoid/sanoid.conf
 
-
     - name: Enable and start sanoid.timer
       systemd:
         name: sanoid.timer
         enabled: yes
-        state: started
+        state: started        
+
+    - name: Copy smb.conf
+      copy:
+        src: ../etc/samba/smb.conf
+        dest: /etc/samba/smb.conf
+
