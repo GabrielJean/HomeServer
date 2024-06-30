@@ -2,13 +2,13 @@ services:
   healthchecks:
     image: lscr.io/linuxserver/healthchecks:v2.2.1-ls129
     container_name: healthchecks
-    env_file:
-      - env_file
     environment:
       - PUID=1000
       - PGID=1000
       - SITE_ROOT=http://10.10.0.8:9500
       - SITE_NAME=Healthchecks.local
+      - SUPERUSER_EMAIL=${SUPERUSER_EMAIL}
+      - SUPERUSER_PASSWORD=${SUPERUSER_PASSWORD}
       # - DEFAULT_FROM_EMAIL=<DEFAULT_FROM_EMAIL>
       # - EMAIL_HOST=<EMAIL_HOST>
       # - EMAIL_PORT=<EMAIL_PORT>

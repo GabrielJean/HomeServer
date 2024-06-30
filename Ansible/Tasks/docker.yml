@@ -1,0 +1,44 @@
+- name: Check if Docker is installed
+  command: docker --version
+  register: docker_installed
+  ignore_errors: yes
+
+- name: Download Docker installation script
+  ansible.builtin.get_url:
+    url: https://get.docker.com
+    dest: /tmp/get-docker.sh
+    mode: '0755'
+  when: docker_installed.rc != 0
+
+- name: Run Docker installation script
+  ansible.builtin.shell: sh /tmp/get-docker.sh
+  when: docker_installed.rc != 0
+
+- name: Create a directory
+  file:
+    path: /home/gabriel/{{ application }}
+    state: directory
+
+
+- name: Copy docker compose file
+  ansible.builtin.copy:
+    src: ../Docker/{{ application }}/
+    dest: /home/gabriel/{{ application }}
+
+- name: Check if env required
+  ansible.builtin.stat:
+    path: ../Docker/{{ application }}/env.vault
+  register: env
+  delegate_to: localhost
+
+- name: Copy env file if required
+  ansible.builtin.copy:
+    src: ../Docker/{{ application }}/env.vault
+    dest: /home/gabriel/{{ application }}/.env
+    decrypt: yes
+  when: env.stat.exists
+
+- name: Run docker-compose up -d
+  ansible.builtin.shell: docker compose up -d
+  args:
+    chdir: /home/gabriel/{{ application }}/

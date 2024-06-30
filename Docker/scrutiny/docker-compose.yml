@@ -12,7 +12,6 @@ services:
       - /Apps/Scrutiny/config:/opt/scrutiny/config
       - /Apps/Scrutiny/influxdb:/opt/scrutiny/influxdb
     devices:
-      - "/dev/sda"
       - "/dev/sdb"
       - "/dev/sdc"
       - "/dev/sdd"

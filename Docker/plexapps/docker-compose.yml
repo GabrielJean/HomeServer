@@ -89,8 +89,6 @@ services:
       - NET_ADMIN
     volumes:
       - medias:/medias
-    env_file:
-      - env_file
     environment:
       - LOCAL_NETWORK=192.168.10.0/24,100.64.0.0/10
       - TRANSMISSION_SPEED_LIMIT_UP=0
@@ -105,6 +103,10 @@ services:
       - TRANSMISSION_DOWNLOAD_DIR=/medias/Torrent
       - TRANSMISSION_INCOMPLETE_DIR_ENABLED=false
       - TRANSMISSION_WEB_UI=transmission-web-control
+      - OPENVPN_PROVIDER=${OPENVPN_PROVIDER}
+      - OPENVPN_CONFIG=${OPENVPN_CONFIG}
+      - OPENVPN_USERNAME=${OPENVPN_USERNAME}
+      - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
     logging:
         driver: json-file
         options:
@@ -121,4 +123,4 @@ volumes:
       driver_opts:
         type: cifs
         device: //192.168.10.12/Medias
-        o: username=,password=
+        o: username=${CIFS_USERNAME},password=${CIFS_PASSWORD}
