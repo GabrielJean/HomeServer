@@ -1,0 +1,28 @@
+- name: AdguardHome
+  hosts: DNS-2
+  vars:
+    application: "adguardhome"
+  tasks:
+    - include_tasks: ./Tasks/docker.yml
+
+- name: Heimdall
+  hosts: Docker-2
+  vars:
+    application: "heimdall"
+  tasks:
+    - include_tasks: ./Tasks/docker.yml
+
+- name: pdf
+  hosts: Docker-2
+  vars:
+    application: "pdf"
+  tasks:
+    - include_tasks: ./Tasks/docker.yml
+
+- name: portainer
+  hosts: Docker-2
+  vars:
+    application: "portainer"
+  tasks:
+    - include_tasks: ./Tasks/docker.yml
+

@@ -2,70 +2,55 @@
   hosts: DNS-1
   vars:
     application: "adguardhome"
-  tasks: 
+  tasks:
     - include_tasks: ./Tasks/docker.yml
-
-# - name: AdguardHome-2
-#   hosts: DNS-2
-#   vars:
-#     application: "adguardhome"
-#   tasks: 
-#     - include_tasks: ./Tasks/docker.yml
 
 - name: Plex
   hosts: Plex-1
   vars:
     application: "plex"
-  tasks: 
+  tasks:
     - include_tasks: ./Tasks/docker.yml
 
 - name: PlexApps
   hosts: Docker-1
   vars:
     application: "plexapps"
-  tasks: 
-    - include_tasks: ./Tasks/docker.yml
-
-- name: Scrutiny
-  hosts: NAS-1
-  vars:
-    application: "scrutiny"
-  tasks: 
+  tasks:
     - include_tasks: ./Tasks/docker.yml
 
 - name: Heimdall
   hosts: Docker-1
   vars:
     application: "heimdall"
-  tasks: 
+  tasks:
     - include_tasks: ./Tasks/docker.yml
 
 - name: Gitea
   hosts: Docker-1
   vars:
     application: "gitea"
-  tasks: 
+  tasks:
     - include_tasks: ./Tasks/docker.yml
 
 - name: pdf
   hosts: Docker-1
   vars:
     application: "pdf"
-  tasks: 
+  tasks:
     - include_tasks: ./Tasks/docker.yml
 
 - name: Healthchecks
   hosts: Docker-1
   vars:
     application: "healthchecks"
-  tasks: 
+  tasks:
     - include_tasks: ./Tasks/docker.yml
 
 - name: portainer
   hosts: Docker-1
   vars:
     application: "portainer"
-  tasks: 
+  tasks:
     - include_tasks: ./Tasks/docker.yml
 
-  

@@ -123,4 +123,4 @@ volumes:
       driver_opts:
         type: cifs
         device: //192.168.10.12/Medias
-        o: username=${CIFS_USERNAME},password=${CIFS_PASSWORD}
+        o: username=${CIFS_USERNAME},password=${CIFS_PASSWORD},uid=950,gid=950

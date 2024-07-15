@@ -35,16 +35,17 @@
         state: present
         update_cache: yes
 
-
     - name: Check if prezto directory exists
       stat:
-        path: "{{ ansible_env.HOME }}/.zprezto"
+        path: "/home/gabriel/.zprezto"
       register: prezto_dir
+      become: false
 
     - name: Clone prezto if it doesn't exist
       shell: >
         zsh -c 'git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"'
       when: prezto_dir.stat.exists == False
+      become: false
 
     - name: Set up prezto runcoms
       shell: >
@@ -66,4 +67,3 @@
       ansible.builtin.user:
         name: "{{ ansible_user }}"
         shell: /bin/zsh
-      become: false
