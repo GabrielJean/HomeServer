@@ -3,11 +3,11 @@
   become: true
 
   tasks:
-
     - name: Install a list of packages
       apt:
         pkg:
         - qemu-guest-agent
+        - prometheus-node-exporter
 
     - name: Ensure group "docker" exists
       group:

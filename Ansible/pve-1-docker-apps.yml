@@ -47,6 +47,13 @@
   tasks:
     - include_tasks: ./Tasks/docker.yml
 
+- name: Monitoring
+  hosts: Docker-1
+  vars:
+    application: "monitoring"
+  tasks:
+    - include_tasks: ./Tasks/docker.yml
+
 - name: portainer
   hosts: Docker-1
   vars:

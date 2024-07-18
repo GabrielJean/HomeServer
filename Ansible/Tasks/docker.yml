@@ -20,23 +20,11 @@
     state: directory
 
 
-- name: Copy docker compose file
+- name: Copy Application folder
   ansible.builtin.copy:
     src: ../Docker/{{ application }}/
     dest: /home/gabriel/{{ application }}
-
-- name: Check if env required
-  ansible.builtin.stat:
-    path: ../Docker/{{ application }}/env.vault
-  register: env
-  delegate_to: localhost
-
-- name: Copy env file if required
-  ansible.builtin.copy:
-    src: ../Docker/{{ application }}/env.vault
-    dest: /home/gabriel/{{ application }}/.env
     decrypt: yes
-  when: env.stat.exists
 
 - name: Run docker-compose up -d
   ansible.builtin.shell: docker compose up -d
