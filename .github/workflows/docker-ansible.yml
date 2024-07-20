@@ -1,0 +1,52 @@
+name: Run Ansible Playbook
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+
+jobs:
+  run-playbook:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Tailscale
+        uses: tailscale/github-action@v2
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
+
+
+      - name: Install Ansible
+        run: |
+          python -m pip install --upgrade pip
+          pip install ansible
+
+      - name: Validate Docker Compose
+        run: for d in ./*/ ; do (cd "$d" && touch .env && docker compose config); done
+        working-directory: Docker
+
+      - name: Decrypt inventory.ini
+        run: ansible-vault decrypt inventory.ini
+        working-directory: Ansible
+
+      - name: Create ansible_vault_password_file
+        run: echo "${{secrets.ANSIBLE_VAULT_DOCKER}}" > .vault_pass.txt
+        working-directory: Ansible
+
+      - name: Run Ansible Playbook
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: 'false'  # Optionally disable host key checking
+        run: ansible-playbook pve-1-docker-apps.yml -i inventory.ini --vault-password-file .vault_pass.txt
+        working-directory: Ansible
