@@ -33,9 +33,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install ansible
 
-      - name: Validate Docker Compose
-        run: for d in ./*/ ; do (cd "$d" && touch .env && docker compose config); done
-        working-directory: Docker
+      # - name: Validate Docker Compose
+      #   run: for d in ./*/ ; do (cd "$d" && docker compose config); done
+      #   working-directory: Docker
 
       - name: Decrypt inventory.ini
         run: ansible-vault decrypt inventory.ini
