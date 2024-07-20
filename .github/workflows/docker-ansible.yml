@@ -37,13 +37,15 @@ jobs:
       #   run: for d in ./*/ ; do (cd "$d" && docker compose config); done
       #   working-directory: Docker
 
-      - name: Decrypt inventory.ini
-        run: ansible-vault decrypt inventory.ini
-        working-directory: Ansible
-
       - name: Create ansible_vault_password_file
         run: echo "${{secrets.ANSIBLE_VAULT_DOCKER}}" > .vault_pass.txt
         working-directory: Ansible
+
+
+      - name: Decrypt inventory.ini
+        run: ansible-vault decrypt --vault-password-file .vault_pass.txt inventory.ini 
+        working-directory: Ansible
+
 
       - name: Run Ansible Playbook
         env:
