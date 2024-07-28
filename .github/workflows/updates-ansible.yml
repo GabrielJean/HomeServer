@@ -4,13 +4,13 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-  # Schedule the workflow to run daily
+  # Schedule the workflow to run once a week
   schedule:
-    - cron: '0 0 * * *'  # Runs at midnight UTC every day
+    - cron: '0 0 * * 0'  # Runs at midnight UTC every Sunday
 
 
 jobs:
-  run-playbook:
+  linux-updates:
     runs-on: ubuntu-latest
 
     steps:
