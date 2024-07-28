@@ -1,20 +1,12 @@
-name: Deploy Docker
+name: Linux Updates
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'Docker/**'  # Trigger only when files in the Docker directory change
-
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'Docker/**'  # Trigger only when files in the Docker directory change
-
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+
+  # Schedule the workflow to run daily
+  schedule:
+    - cron: '0 0 * * *'  # Runs at midnight UTC every day
 
 
 jobs:
@@ -60,14 +52,8 @@ jobs:
         run: chmod 600 private_key
         working-directory: Ansible
 
-      - name: Run Ansible Playbook PVE-1
+      - name: Run Ansible updates playbook
         env:
           ANSIBLE_HOST_KEY_CHECKING: 'false'  # Optionally disable host key checking
-        run: ansible-playbook pve-1-docker-apps.yml --private-key private_key -i inventory.ini --extra-vars "ansible_user=ci" --vault-password-file .vault_pass.txt
-        working-directory: Ansible
-
-      - name: Run Ansible Playbook PVE-2
-        env:
-          ANSIBLE_HOST_KEY_CHECKING: 'false'  # Optionally disable host key checking
-        run: ansible-playbook pve-2-docker-apps.yml --private-key private_key -i inventory.ini --extra-vars "ansible_user=ci" --vault-password-file .vault_pass.txt
+        run: ansible-playbook updates.yml --private-key private_key -i inventory.ini --extra-vars "ansible_user=ci" --vault-password-file .vault_pass.txt
         working-directory: Ansible
