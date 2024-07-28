@@ -22,6 +22,14 @@
   tasks:
     - include_tasks: ./Tasks/docker.yml
 
+- name: HomeAssistant
+  hosts: Docker-2
+  become: yes
+  vars:
+    application: "homeassistant"
+  tasks:
+    - include_tasks: ./Tasks/docker.yml
+
 - name: Portainer
   hosts: Docker-2
   become: yes
