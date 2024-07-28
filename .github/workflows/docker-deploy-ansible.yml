@@ -5,7 +5,8 @@ on:
     branches:
       - main
     paths:
-      - 'Docker/**'  # Trigger only when files in the Docker directory change
+      - 'Docker/**'           # Trigger for changes in the Docker directory
+      - '**/*docker*' 
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
