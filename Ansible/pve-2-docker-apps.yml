@@ -1,5 +1,6 @@
 - name: AdguardHome
   hosts: DNS-2
+  become: yes
   vars:
     application: "adguardhome"
   tasks:
@@ -7,6 +8,7 @@
 
 - name: Heimdall
   hosts: Docker-2
+  become: yes
   vars:
     application: "heimdall"
   tasks:
@@ -14,15 +16,16 @@
 
 - name: pdf
   hosts: Docker-2
+  become: yes
   vars:
     application: "pdf"
   tasks:
     - include_tasks: ./Tasks/docker.yml
 
-- name: portainer
+- name: Portainer
   hosts: Docker-2
+  become: yes
   vars:
     application: "portainer"
   tasks:
     - include_tasks: ./Tasks/docker.yml
-

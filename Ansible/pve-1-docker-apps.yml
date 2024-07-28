@@ -1,5 +1,6 @@
 - name: AdguardHome
   hosts: DNS-1
+  become: yes
   vars:
     application: "adguardhome"
   tasks:
@@ -7,6 +8,7 @@
 
 - name: Plex
   hosts: Plex-1
+  become: yes
   vars:
     application: "plex"
   tasks:
@@ -14,6 +16,7 @@
 
 - name: PlexApps
   hosts: Docker-1
+  become: yes
   vars:
     application: "plexapps"
   tasks:
@@ -21,6 +24,7 @@
 
 - name: Heimdall
   hosts: Docker-1
+  become: yes
   vars:
     application: "heimdall"
   tasks:
@@ -28,6 +32,7 @@
 
 - name: Gitea
   hosts: Docker-1
+  become: yes
   vars:
     application: "gitea"
   tasks:
@@ -35,6 +40,7 @@
 
 - name: pdf
   hosts: Docker-1
+  become: yes
   vars:
     application: "pdf"
   tasks:
@@ -42,6 +48,7 @@
 
 - name: Healthchecks
   hosts: Docker-1
+  become: yes
   vars:
     application: "healthchecks"
   tasks:
@@ -49,15 +56,16 @@
 
 - name: Monitoring
   hosts: Docker-1
+  become: yes
   vars:
     application: "monitoring"
   tasks:
     - include_tasks: ./Tasks/docker.yml
 
-- name: portainer
+- name: Portainer
   hosts: Docker-1
+  become: yes
   vars:
     application: "portainer"
   tasks:
     - include_tasks: ./Tasks/docker.yml
-
