@@ -43,12 +43,20 @@ jobs:
 
 
       - name: Decrypt inventory.ini
-        run: ansible-vault decrypt --vault-password-file .vault_pass.txt inventory.ini 
+        run: ansible-vault decrypt --vault-password-file .vault_pass.txt inventory.ini
         working-directory: Ansible
 
+      - name: Retrieve SSH private key
+        id: ssh-key
+        run: echo "${{ secrets.CI_PRIVATE_KEY }}" > private_key
+        working-directory: Ansible
+
+      - name: Set permissions for private key
+        run: chmod 600 private_key
+        working-directory: Ansible
 
       - name: Run Ansible Playbook
         env:
           ANSIBLE_HOST_KEY_CHECKING: 'false'  # Optionally disable host key checking
-        run: ansible-playbook pve-1-docker-apps.yml -i inventory.ini --vault-password-file .vault_pass.txt
+        run: ansible-playbook pve-1-docker-apps.yml --private-key private_key -i inventory.ini --extra-vars "ansible_user=ci" --vault-password-file .vault_pass.txt
         working-directory: Ansible

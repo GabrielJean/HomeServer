@@ -28,6 +28,38 @@
         line: '%sudo ALL=(ALL) NOPASSWD: ALL'
         validate: 'visudo -cf %s'
 
+
+    - name: Create ci user
+      user:
+        name: "ci"
+        state: present
+        shell: /bin/bash
+        groups: "sudo,docker"  # Add user to both sudo and docker groups
+        append: yes  # Ensure the user is not removed from other groups
+
+    - name: Create .ssh directory for ci user
+      file:
+        path: "/home/ci/.ssh"
+        state: directory
+        owner: "ci"
+        group: "ci"
+        mode: '0700'
+
+    - name: Set authorized key for ci user
+      authorized_key:
+        user: "ci"
+        state: present
+        key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJKs8VG/z6RqU+mf2Dc/t2nrTLPgBqprJo5TtNRLTwdr"
+
+    - name: Set permissions for the home directory of ci user
+      file:
+        path: "/home/ci"
+        state: directory
+        owner: "ci"
+        group: "ci"
+        mode: '0755'
+
+
     ## Install ZSH
     - name: Install ZSH
       apt:
