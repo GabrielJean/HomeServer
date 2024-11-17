@@ -20,9 +20,9 @@ services:
     #   - 192.18.0.1
     #   - 192.18.0.2
     # # you can change the listen ip:port inside the container like this:
-    # entrypoint: /bin/sh -c "./upsnap serve --http 0.0.0.0:5000"
-    # healthcheck:
-    #   test: curl -fs "http://localhost:5000/api/health" || exit 1
-    #   interval: 10s
+    entrypoint: /bin/sh -c "./upsnap serve --http 0.0.0.0:5000"
+    healthcheck:
+      test: curl -fs "http://localhost:5000/api/health" || exit 1
+      interval: 10s
     # # or install custom packages for shutdown
     # entrypoint: /bin/sh -c "apk update && apk add --no-cache <YOUR_PACKAGE> && rm -rf /var/cache/apk/* && ./upsnap serve --http 0.0.0.0:8090"
