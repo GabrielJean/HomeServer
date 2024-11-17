@@ -78,3 +78,11 @@
     application: "upsnap"
   tasks:
     - include_tasks: ./Tasks/docker.yml
+
+- name: HomeAssistant
+  hosts: Docker-1
+  become: yes
+  vars:
+    application: "homeassistant"
+  tasks:
+    - include_tasks: ./Tasks/docker.yml
