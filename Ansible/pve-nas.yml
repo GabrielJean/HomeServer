@@ -13,6 +13,11 @@
         name: sanoid
         state: present
 
+    - name: Install Rclone
+      apt:
+        name: rclone
+        state: present
+
     - name: Install Smartmontools
       apt:
         name: smartmontools

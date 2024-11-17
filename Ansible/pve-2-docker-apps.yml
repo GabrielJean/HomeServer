@@ -37,3 +37,11 @@
     application: "portainer"
   tasks:
     - include_tasks: ./Tasks/docker.yml
+
+- name: Upsnap
+  hosts: Docker-2
+  become: yes
+  vars:
+    application: "upsnap"
+  tasks:
+    - include_tasks: ./Tasks/docker.yml
