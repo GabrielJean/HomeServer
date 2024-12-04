@@ -87,6 +87,8 @@ services:
     container_name: transmission-ovpn
     cap_add:
       - NET_ADMIN
+    devices:
+      - /dev/net/tun
     volumes:
       - medias:/medias
     environment:
