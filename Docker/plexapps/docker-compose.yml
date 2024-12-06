@@ -70,7 +70,7 @@ services:
     restart: unless-stopped
 
   sonarr:
-    image: linuxserver/sonarr:4.0.9
+    image: linuxserver/sonarr:4.0.11
     container_name: sonarr
     environment:
       - PUID=950
