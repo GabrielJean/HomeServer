@@ -56,7 +56,7 @@ services:
 
 
   radarr:
-    image: linuxserver/radarr:5.10.4
+    image: linuxserver/radarr:5.15.1
     container_name: radarr
     environment:
       - PUID=950
