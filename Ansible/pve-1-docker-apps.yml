@@ -59,6 +59,7 @@
   become: yes
   vars:
     application: "monitoring"
+    restart: true
   tasks:
     - include_tasks: ./Tasks/docker.yml
 

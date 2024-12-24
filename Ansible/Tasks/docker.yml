@@ -27,6 +27,10 @@
     decrypt: yes
 
 - name: Run docker-compose up -d
-  ansible.builtin.shell: docker compose up -d
+  ansible.builtin.shell: >
+    docker compose up -d
+    {% if restart | default(false) %}
+    --force-recreate
+    {% endif %}
   args:
     chdir: /home/gabriel/{{ application }}/
