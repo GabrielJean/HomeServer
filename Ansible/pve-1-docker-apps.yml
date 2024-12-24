@@ -86,3 +86,11 @@
     application: "homeassistant"
   tasks:
     - include_tasks: ./Tasks/docker.yml
+
+- name: Satisfactory
+  hosts: Satisfactory
+  become: yes
+  vars:
+    application: "satisfactory"
+  tasks:
+    - include_tasks: ./Tasks/docker.yml
