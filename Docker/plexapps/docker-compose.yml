@@ -27,8 +27,7 @@ services:
     restart: unless-stopped
 
   flaresolverr:
-    # DockerHub mirror flaresolverr/flaresolverr:latest
-    image: ghcr.io/flaresolverr/flaresolverr:v3.3.21
+    image: flaresolverr/flaresolverr:v3.3.21
     container_name: flaresolverr
     environment:
       - LOG_LEVEL=${LOG_LEVEL:-info}
@@ -40,19 +39,19 @@ services:
     restart: unless-stopped
 
 
-  lidarr:
-    image: linuxserver/lidarr:latest
-    container_name: lidarr
-    environment:
-      - PUID=950
-      - PGID=950
-      - TZ=America/Toronto
-    volumes:
-      - /Apps/Lidarr:/config
-      - medias:/medias #optional
-    ports:
-      - 8686:8686
-    restart: unless-stopped
+  # lidarr:
+  #   image: linuxserver/lidarr:latest
+  #   container_name: lidarr
+  #   environment:
+  #     - PUID=950
+  #     - PGID=950
+  #     - TZ=America/Toronto
+  #   volumes:
+  #     - /Apps/Lidarr:/config
+  #     - medias:/medias #optional
+  #   ports:
+  #     - 8686:8686
+  #   restart: unless-stopped
 
 
   radarr:

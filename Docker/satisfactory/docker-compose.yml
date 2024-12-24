@@ -2,14 +2,14 @@ services:
   satisfactory-server:
     container_name: 'satisfactory-server'
     hostname: 'satisfactory-server'
-    image: 'wolveix/satisfactory-server:latest'
+    image: 'wolveix/satisfactory-server:v1.9.1'
     ports:
       - '7777:7777/udp'
       - '7777:7777/tcp'
     volumes:
-      - './satisfactory-server:/config'
+      - '/satisfactory:/config'
     environment:
-      - MAXPLAYERS=4
+      - MAXPLAYERS=6
       - PGID=1000
       - PUID=1000
       - ROOTLESS=false
