@@ -6,6 +6,7 @@ services:
     ports:
       - '7777:7777/udp'
       - '7777:7777/tcp'
+      - '8080:8080/tcp'
     volumes:
       - '/satisfactory:/config'
     environment:
