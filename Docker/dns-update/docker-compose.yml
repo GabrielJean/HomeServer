@@ -1,0 +1,7 @@
+services:
+  dns-updater:
+    container_name: azure-dns-updater
+    build: .
+    image: azure-dns-updater:latest
+    env_file: .env
+    restart: unless-stopped

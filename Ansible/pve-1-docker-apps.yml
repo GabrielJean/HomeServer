@@ -95,3 +95,12 @@
     application: "satisfactory"
   tasks:
     - include_tasks: ./Tasks/docker.yml
+
+- name: dns-update
+  hosts: Docker-1
+  become: yes
+  vars:
+    application: "dns-update"
+    restart: true
+  tasks:
+    - include_tasks: ./Tasks/docker.yml
