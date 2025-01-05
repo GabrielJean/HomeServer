@@ -9,6 +9,16 @@ services:
     volumes:
       - /Apps/Heimdall:/config
     ports:
-      - 80:80
+      - 85:80
 #       - 443:443
     restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.heimdall.rule=Host(`heimdall.docker-1.gwebs.ca`) ||Host(`heimdall.docker-2.gwebs.ca`) "
+      - "traefik.http.routers.heimdall.entrypoints=web"
+    networks:
+      - traefik_default
+
+networks:
+  traefik_default:
+    external: true

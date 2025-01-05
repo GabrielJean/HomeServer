@@ -8,6 +8,12 @@ services:
     ports:
       - "9090:9090"
     restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.prometheus.rule=Host(`prometheus.docker-1.gwebs.ca`)"
+      - "traefik.http.routers.prometheus.entrypoints=web"
+    networks:
+      - traefik_default  
 
   grafana:
     image: grafana/grafana:11.4.0
@@ -19,6 +25,12 @@ services:
     volumes:
       - /Apps/Monitoring/Grafana:/var/lib/grafana
     restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.grafana.rule=Host(`grafana.docker-1.gwebs.ca`)"
+      - "traefik.http.routers.grafana.entrypoints=web"
+    networks:
+      - traefik_default  
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.50.0
@@ -37,3 +49,7 @@ services:
     deploy:
       restart_policy:
         condition: any
+
+networks:
+  traefik_default:
+    external: true

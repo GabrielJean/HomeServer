@@ -9,7 +9,7 @@ services:
       timeout: 10s
       retries: 16
     ports:
-      - 8080:8080
+      - 8085:8080
     # volumes:
     #   - /stirling/latest/data:/usr/share/tesseract-ocr/5/tessdata:rw
     #   - /stirling/latest/config:/configs:rw
@@ -25,3 +25,13 @@ services:
       METRICS_ENABLED: "true"
       # SYSTEM_GOOGLEVISIBILITY: "true"
       restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pdf.rule=Host(`pdf.docker-1.gwebs.ca`)"
+      - "traefik.http.routers.pdf.entrypoints=web"
+    networks:
+      - traefik_default
+
+networks:
+  traefik_default:
+    external: true

@@ -8,3 +8,7 @@ services:
     restart: unless-stopped
     privileged: true
     network_mode: host
+    # labels:
+    #   - "traefik.enable=true"
+    #   - "traefik.http.routers.heimdall.rule=Host(`homeassistant.docker-1.gwebs.ca`)"
+    #   - "traefik.http.routers.heimdall.entrypoints=web"

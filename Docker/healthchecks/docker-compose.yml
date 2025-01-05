@@ -27,3 +27,13 @@ services:
     ports:
       - 9500:8000
     restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.healthchecks.rule=Host(`healthchecks.docker-1.gwebs.ca`)"
+      - "traefik.http.routers.healthchecks.entrypoints=web"
+    networks:
+      - traefik_default
+
+networks:
+  traefik_default:
+    external: true

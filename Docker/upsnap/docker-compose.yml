@@ -26,3 +26,7 @@ services:
       interval: 10s
     # # or install custom packages for shutdown
     # entrypoint: /bin/sh -c "apk update && apk add --no-cache <YOUR_PACKAGE> && rm -rf /var/cache/apk/* && ./upsnap serve --http 0.0.0.0:8090"
+    # labels:
+    #   - "traefik.enable=true"
+    #   - "traefik.http.routers.heimdall.rule=Host(`upsnap.docker-1.gwebs.ca`)"
+    #   - "traefik.http.routers.heimdall.entrypoints=web"

@@ -1,7 +1,3 @@
-networks:
-  gitea:
-    external: false
-
 services:
   server:
     image: gitea/gitea:1.22.2
@@ -10,8 +6,6 @@ services:
       - USER_UID=1000
       - USER_GID=1000
     restart: always
-    networks:
-      - gitea
     volumes:
       - /Apps/Gitea:/data
       - /etc/timezone:/etc/timezone:ro
@@ -19,3 +13,14 @@ services:
     ports:
       - "3000:3000"
       - "222:222"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.gitea.rule=Host(`gitea.docker-1.gwebs.ca`)"
+      - "traefik.http.routers.gitea.entrypoints=web"
+      - "traefik.http.services.gitea.loadbalancer.server.port=3000"
+    networks:
+      - traefik_default
+
+networks:
+  traefik_default:
+    external: true

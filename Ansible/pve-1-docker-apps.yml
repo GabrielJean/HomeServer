@@ -96,6 +96,14 @@
   tasks:
     - include_tasks: ./Tasks/docker.yml
 
+- name: traefik
+  hosts: Docker-1
+  become: yes
+  vars:
+    application: "traefik"
+  tasks:
+    - include_tasks: ./Tasks/docker.yml
+
 - name: dns-update
   hosts: Docker-1
   become: yes

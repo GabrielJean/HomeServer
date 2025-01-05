@@ -14,19 +14,18 @@
   ansible.builtin.shell: sh /tmp/get-docker.sh
   when: docker_installed.rc != 0
 
-- name: Create a directory
+- name: Create application directory for {{ application }}
   file:
     path: /home/gabriel/{{ application }}
     state: directory
 
-
-- name: Copy Application folder
+- name: Copy application folder for {{ application }}
   ansible.builtin.copy:
     src: ../Docker/{{ application }}/
     dest: /home/gabriel/{{ application }}
     decrypt: yes
 
-- name: Run docker-compose up -d
+- name: Run docker-compose up -d for {{ application }}
   ansible.builtin.shell: >
     docker compose up -d
     {% if restart | default(false) %}
