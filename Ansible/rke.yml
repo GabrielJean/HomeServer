@@ -1,4 +1,3 @@
----
 - name: Setup RKE2 cluster with Tailscale
   hosts: rke_cluster
   become: true
@@ -6,7 +5,7 @@
     - vars/ts.yml
   tasks:
     - name: Install necessary dependencies
-      apt:
+      ansible.builtin.apt:
         name:
           - curl
           - gnupg
@@ -15,23 +14,23 @@
 
     - name: Install kubectl using Snap
       when: "inventory_hostname in groups['master']"
-      ansible.builtin.shell: snap install kubectl --classic
+      ansible.builtin.command: snap install kubectl --classic
 
 
     - name: Install Tailscale
-      shell: |
+      ansible.builtin.command: |
         curl -fsSL https://tailscale.com/install.sh | sh
       args:
         executable: /bin/bash
 
     - name: Authenticate Tailscale
-      shell: |
+      ansible.builtin.command: |
         tailscale up --authkey {{ tailscale_auth_key }}
       args:
         executable: /bin/bash
 
     - name: Add RKE2 repository
-      shell: |
+      ansible.builtin.command: |
         curl -sfL https://get.rke2.io | sh -
       args:
         executable: /bin/bash
@@ -40,32 +39,32 @@
       when: "inventory_hostname in groups['master']"
       block:
         - name: Get Tailscale IP on master
-          command: "tailscale ip -4"
+          ansible.builtin.command: "tailscale ip -4"
           register: master_tailscale_ip
 
         - name: Ensure /etc/rancher/rke2 directory exists
-          file:
+          ansible.builtin.file:
             path: /etc/rancher/rke2
             state: directory
 
         - name: Write RKE2 server configuration
-          copy:
+          ansible.builtin.copy:
             content: |
               advertise-address: {{ master_tailscale_ip.stdout }}
             dest: /etc/rancher/rke2/config.yaml
 
     - name: Enable and start RKE2 server on master node
       when: "inventory_hostname in groups['master']"
-      systemd:
+      ansible.builtin.systemd:
         name: rke2-server
         enabled: true
         state: started
 
     - name: Patch the rke2-canal-config configmap to set canal_iface to tailscale0
       when: "inventory_hostname in groups['master']"
-      ansible.builtin.shell:
+      ansible.builtin.command:
         cmd: "kubectl patch configmaps rke2-canal-config -n kube-system --kubeconfig /etc/rancher/rke2/rke2.yaml -p '{\"data\":{\"canal_iface\": \"tailscale0\"}}'"
-      become: yes
+      become: true
       become_user: root
       register: result
       until: result.rc == 0  # Check if return code (rc) is 0 (success)
@@ -75,7 +74,7 @@
 
     - name: Replace 127.0.0.1 in kubeconfig with master_tailscale_ip
       when: "inventory_hostname in groups['master']"
-      become: yes
+      become: true
       become_user: root
       ansible.builtin.replace:
         path: "/etc/rancher/rke2/rke2.yaml"  # Replace with the actual path to your kubeconfig file
@@ -84,39 +83,47 @@
 
     - name: Fetch RKE2 config file
       when: "inventory_hostname in groups['master']"
-      become: yes
+      become: true
       become_user: root
-      fetch:
+      ansible.builtin.fetch:
         src: /etc/rancher/rke2/rke2.yaml
         dest: ~/.kube/config  # This will copy to the local ansible host's .kube/config
-        flat: yes  # Ensures that the file is copied directly to the destination without directories
+        flat: true  # Ensures that the file is copied directly to the destination without directories
 
+
+    - name: Download RKE2 agent installation script
+      when: "inventory_hostname in groups['worker']"
+      ansible.builtin.get_url:
+        url: https://get.rke2.io
+        dest: /tmp/get_rke2.sh
+        mode: '0755'
 
     - name: Install RKE2 agent on worker nodes
       when: "inventory_hostname in groups['worker']"
-      shell: |
-        curl -sfL https://get.rke2.io | INSTALL_RKE2_TYPE="agent" sh -
+      ansible.builtin.command: sh /tmp/get_rke2.sh
       args:
         executable: /bin/bash
+      environment:
+        INSTALL_RKE2_TYPE: "agent"
 
     - name: Configure RKE2 agent with Tailscale and LAN IPs
       when: "inventory_hostname in groups['worker']"
       block:
         - name: Get Tailscale IP on worker
-          command: "tailscale ip -4"
+          ansible.builtin.command: "tailscale ip -4"
           register: worker_tailscale_ip
 
         - name: Get LAN IP on worker
-          shell: "hostname -I | awk '{print $1}'"
+          ansible.builtin.command: "hostname -I | awk '{print $1}'"
           register: worker_lan_ip
 
         - name: Ensure /etc/rancher/rke2 directory exists
-          file:
+          ansible.builtin.file:
             path: /etc/rancher/rke2
             state: directory
 
         - name: Write RKE2 agent configuration
-          copy:
+          ansible.builtin.copy:
             content: |
               node-ip: {{ worker_tailscale_ip.stdout }}
               node-external-ip: {{ worker_lan_ip.stdout }}
@@ -126,17 +133,17 @@
       when: "inventory_hostname in groups['master']"
       block:
         - name: Get RKE2 join token
-          command: "cat /var/lib/rancher/rke2/server/node-token"
+          ansible.builtin.command: "cat /var/lib/rancher/rke2/server/node-token"
           register: join_token
 
         - name: Get Tailscale IP on master
-          command: "tailscale ip -4"
+          ansible.builtin.command: "tailscale ip -4"
           register: master_tailscale_ip
       run_once: true
 
     - name: Join worker nodes to the cluster using Tailscale IP of master
       when: "inventory_hostname in groups['worker']"
-      shell: |
+      ansible.builtin.command: |
         echo "server: https://{{ master_tailscale_ip.stdout }}:9345" >> /etc/rancher/rke2/config.yaml
         echo "token: {{ join_token.stdout }}" >> /etc/rancher/rke2/config.yaml
       args:
@@ -144,7 +151,7 @@
 
     - name: Enable and start RKE2 agent on worker node
       when: "inventory_hostname in groups['worker']"
-      systemd:
+      ansible.builtin.systemd:
         name: rke2-agent
         enabled: true
         state: started

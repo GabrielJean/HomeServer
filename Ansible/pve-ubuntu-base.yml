@@ -4,7 +4,7 @@
 
   tasks:
     - name: Install a list of packages
-      apt:
+      ansible.builtin.apt:
         pkg:
         - qemu-guest-agent
         - prometheus-node-exporter
@@ -46,7 +46,7 @@
         mode: '0700'
 
     - name: Set authorized key for ci user
-      authorized_key:
+      ansible.posix.authorized_key:
         user: "ci"
         state: present
         key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJKs8VG/z6RqU+mf2Dc/t2nrTLPgBqprJo5TtNRLTwdr"
@@ -62,7 +62,7 @@
 
     ## Install ZSH
     - name: Install ZSH
-      apt:
+      ansible.builtin.apt:
         name: zsh
         state: present
         update_cache: yes

@@ -1,19 +1,20 @@
-- hosts: Plex-1
+- name: Install NVIDIA drivers on Plex-1
+  hosts: Plex-1
   order: sorted
   become: true
 
   tasks:
     - name: Install nvidia-headless-565-server
-      apt:
+      ansible.builtin.apt:
         name: nvidia-headless-565-server
         state: present
 
     - name: Install nvidia-utils-565-server
-      apt:
+      ansible.builtin.apt:
         name: nvidia-utils-565-server
         state: present
 
     - name: Install libnvidia-encode-565-server
-      apt:
+      ansible.builtin.apt:
         name: libnvidia-encode-565-server
         state: present

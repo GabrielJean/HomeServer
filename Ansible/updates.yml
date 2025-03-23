@@ -1,16 +1,16 @@
 ---
 - name: Update Ubuntu servers
   hosts: linux_vms
-  become: yes  # To escalate privileges using sudo
-  gather_facts: yes  # To gather facts about the hosts
+  become: true  # To escalate privileges using sudo
+  gather_facts: true  # To gather facts about the hosts
 
   tasks:
-    - name: Update apt cache
-      apt:
-        update_cache: yes
+    - name: Update ansible.builtin.apt cache
+      ansible.builtin.apt:
+        update_cache: true
 
     - name: Upgrade all packages
-      apt:
-        upgrade: yes
-        autoremove: yes
-        autoclean: yes
+      ansible.builtin.apt:
+        upgrade: true
+        autoremove: true
+        autoclean: true

@@ -1,47 +1,53 @@
 - name: AdguardHome
   hosts: DNS-2
-  become: yes
+  become: true
   vars:
     application: "adguardhome"
   tasks:
-    - include_tasks: ./Tasks/docker.yml
+    - name: Include Docker tasks
+      ansible.builtin.include_tasks: ./Tasks/docker.yml
 
 - name: Heimdall
   hosts: Docker-2
-  become: yes
+  become: true
   vars:
     application: "heimdall"
   tasks:
-    - include_tasks: ./Tasks/docker.yml
+    - name: Include Docker tasks
+      ansible.builtin.include_tasks: ./Tasks/docker.yml
 
-- name: pdf
+- name: Pdf
   hosts: Docker-2
-  become: yes
+  become: true
   vars:
     application: "pdf"
   tasks:
-    - include_tasks: ./Tasks/docker.yml
+    - name: Include Docker tasks
+      ansible.builtin.include_tasks: ./Tasks/docker.yml
 
 - name: HomeAssistant
   hosts: Docker-2
-  become: yes
+  become: true
   vars:
     application: "homeassistant"
   tasks:
-    - include_tasks: ./Tasks/docker.yml
+    - name: Include Docker tasks
+      ansible.builtin.include_tasks: ./Tasks/docker.yml
 
 - name: Portainer
   hosts: Docker-2
-  become: yes
+  become: true
   vars:
     application: "portainer"
   tasks:
-    - include_tasks: ./Tasks/docker.yml
+    - name: Include Docker tasks
+      ansible.builtin.include_tasks: ./Tasks/docker.yml
 
 - name: Upsnap
   hosts: Docker-2
-  become: yes
+  become: true
   vars:
     application: "upsnap"
   tasks:
-    - include_tasks: ./Tasks/docker.yml
+    - name: Include Docker tasks
+      ansible.builtin.include_tasks: ./Tasks/docker.yml

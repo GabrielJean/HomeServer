@@ -1,114 +1,127 @@
 - name: AdguardHome
   hosts: DNS-1
-  become: yes
+  become: true
   vars:
     application: "adguardhome"
   tasks:
-    - include_tasks: ./Tasks/docker.yml
+    - name: Include Docker tasks
+      ansible.builtin.include_tasks: ./Tasks/docker.yml
 
 - name: Plex
   hosts: Plex-1
-  become: yes
+  become: true
   vars:
     application: "plex"
   tasks:
-    - include_tasks: ./Tasks/docker.yml
+    - name: Include Docker tasks
+      ansible.builtin.include_tasks: ./Tasks/docker.yml
 
 - name: PlexApps
   hosts: Docker-1
-  become: yes
+  become: true
   vars:
     application: "plexapps"
   tasks:
-    - include_tasks: ./Tasks/docker.yml
+    - name: Include Docker tasks
+      ansible.builtin.include_tasks: ./Tasks/docker.yml
 
 - name: Heimdall
   hosts: Docker-1
-  become: yes
+  become: true
   vars:
     application: "heimdall"
   tasks:
-    - include_tasks: ./Tasks/docker.yml
+    - name: Include Docker tasks
+      ansible.builtin.include_tasks: ./Tasks/docker.yml
 
 - name: Gitea
   hosts: Docker-1
-  become: yes
+  become: true
   vars:
     application: "gitea"
   tasks:
-    - include_tasks: ./Tasks/docker.yml
-
-- name: pdf
+    - name: Include Docker tasks
+      ansible.builtin.include_tasks: ./Tasks/docker.yml
+- name: Pdf
   hosts: Docker-1
-  become: yes
+  become: true
   vars:
     application: "pdf"
   tasks:
-    - include_tasks: ./Tasks/docker.yml
+    - name: Include Docker tasks
+      ansible.builtin.include_tasks: ./Tasks/docker.yml
 
 - name: Healthchecks
   hosts: Docker-1
-  become: yes
+  become: true
   vars:
     application: "healthchecks"
   tasks:
-    - include_tasks: ./Tasks/docker.yml
+    - name: Include Docker tasks
+      ansible.builtin.include_tasks: ./Tasks/docker.yml
 
 - name: Monitoring
   hosts: Docker-1
-  become: yes
+  become: true
   vars:
     application: "monitoring"
     restart: true
   tasks:
-    - include_tasks: ./Tasks/docker.yml
+    - name: Include Docker tasks
+      ansible.builtin.include_tasks: ./Tasks/docker.yml
 
 - name: Portainer
   hosts: Docker-1
-  become: yes
+  become: true
   vars:
     application: "portainer"
   tasks:
-    - include_tasks: ./Tasks/docker.yml
+    - name: Include Docker tasks
+      ansible.builtin.include_tasks: ./Tasks/docker.yml
 
 
 - name: Upsnap
   hosts: Docker-1
-  become: yes
+  become: true
   vars:
     application: "upsnap"
   tasks:
-    - include_tasks: ./Tasks/docker.yml
+    - name: Include Docker tasks
+      ansible.builtin.include_tasks: ./Tasks/docker.yml
 
 - name: HomeAssistant
   hosts: Docker-1
-  become: yes
+  become: true
   vars:
     application: "homeassistant"
   tasks:
-    - include_tasks: ./Tasks/docker.yml
+    - name: Include Docker tasks
+      ansible.builtin.include_tasks: ./Tasks/docker.yml
 
 - name: Satisfactory
   hosts: Satisfactory
-  become: yes
+  become: true
   vars:
     application: "satisfactory"
   tasks:
-    - include_tasks: ./Tasks/docker.yml
+    - name: Include Docker tasks
+      ansible.builtin.include_tasks: ./Tasks/docker.yml
 
-- name: traefik
+- name: Traefik
   hosts: Docker-1
-  become: yes
+  become: true
   vars:
     application: "traefik"
   tasks:
-    - include_tasks: ./Tasks/docker.yml
+    - name: Include Docker tasks
+      ansible.builtin.include_tasks: ./Tasks/docker.yml
 
-- name: dns-update
+- name: Dns-update
   hosts: Docker-1
-  become: yes
+  become: true
   vars:
     application: "dns-update"
     restart: true
   tasks:
-    - include_tasks: ./Tasks/docker.yml
+    - name: Include Docker tasks
+      ansible.builtin.include_tasks: ./Tasks/docker.yml

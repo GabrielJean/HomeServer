@@ -1,7 +1,7 @@
 - name: Check if Docker is installed
   command: docker --version
   register: docker_installed
-  ignore_errors: yes
+  ignore_errors: true
 
 - name: Download Docker installation script
   ansible.builtin.get_url:
@@ -11,11 +11,11 @@
   when: docker_installed.rc != 0
 
 - name: Run Docker installation script
-  ansible.builtin.shell: sh /tmp/get-docker.sh
+  ansible.builtin.command: sh /tmp/get-docker.sh
   when: docker_installed.rc != 0
 
 - name: Create application directory for {{ application }}
-  file:
+  ansible.builtin.file:
     path: /home/gabriel/{{ application }}
     state: directory
 
@@ -23,10 +23,10 @@
   ansible.builtin.copy:
     src: ../Docker/{{ application }}/
     dest: /home/gabriel/{{ application }}
-    decrypt: yes
+    decrypt: true
 
 - name: Run docker-compose up -d for {{ application }}
-  ansible.builtin.shell: >
+  ansible.builtin.command: >
     docker compose up -d
     {% if restart | default(false) %}
     --force-recreate
