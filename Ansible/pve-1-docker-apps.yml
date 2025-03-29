@@ -107,6 +107,15 @@
     - name: Include Docker tasks
       ansible.builtin.include_tasks: ./Tasks/docker.yml
 
+- name: Open-webui
+  hosts: Docker-1
+  become: true
+  vars:
+    application: "open-webui"
+  tasks:
+    - name: Include Docker tasks
+      ansible.builtin.include_tasks: ./Tasks/docker.yml
+
 - name: Traefik
   hosts: Docker-1
   become: true

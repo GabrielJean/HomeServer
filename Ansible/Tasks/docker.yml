@@ -1,5 +1,5 @@
 - name: Check if Docker is installed
-  command: docker --version
+  ansible.builtin.command: docker --version
   register: docker_installed
   ignore_errors: true
 
