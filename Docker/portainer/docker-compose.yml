@@ -7,12 +7,12 @@ services:
       - 9443:9443
       - 9000:9000
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock 
+      - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.portainer.rule=Host(`portainer.docker-1.gwebs.ca`)"
+      - "traefik.http.routers.portainer.rule=Host(`portainer.docker-1.gwebs.ca`) ||Host(`portainer.docker-2.gwebs.ca`) "
       - "traefik.http.routers.portainer.entrypoints=web"
       - "traefik.http.services.portainer.loadbalancer.server.port=9000"
     networks:
