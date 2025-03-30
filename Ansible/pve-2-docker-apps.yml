@@ -1,3 +1,12 @@
+- name: Traefik
+  hosts: Docker-1
+  become: true
+  vars:
+    application: "traefik"
+  tasks:
+    - name: Include Docker tasks
+      ansible.builtin.include_tasks: ./Tasks/docker.yml
+
 - name: AdguardHome
   hosts: DNS-2
   become: true
