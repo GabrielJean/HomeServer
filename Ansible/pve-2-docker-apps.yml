@@ -1,5 +1,5 @@
 - name: Traefik
-  hosts: Docker-1
+  hosts: Docker-2
   become: true
   vars:
     application: "traefik"
