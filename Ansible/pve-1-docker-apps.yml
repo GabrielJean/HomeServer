@@ -1,127 +1,90 @@
-- name: Traefik
-  hosts: Docker-1
+- name: Deploy Docker Applications
+  hosts: all
   become: true
-  vars:
-    application: "traefik"
+  strategy: free
   tasks:
-    - name: Include Docker tasks
+    - name: Deploy Traefik
       ansible.builtin.include_tasks: ./Tasks/docker.yml
+      vars:
+        application: "traefik"
+      when: inventory_hostname == "Docker-1"
 
-- name: AdguardHome
-  hosts: DNS-1
-  become: true
-  vars:
-    application: "adguardhome"
-  tasks:
-    - name: Include Docker tasks
+    - name: Deploy AdguardHome
       ansible.builtin.include_tasks: ./Tasks/docker.yml
+      vars:
+        application: "adguardhome"
+      when: inventory_hostname == "DNS-1"
 
-- name: Plex
-  hosts: Plex-1
-  become: true
-  vars:
-    application: "plex"
-  tasks:
-    - name: Include Docker tasks
+    - name: Deploy Plex
       ansible.builtin.include_tasks: ./Tasks/docker.yml
+      vars:
+        application: "plex"
+      when: inventory_hostname == "Plex-1"
 
-- name: PlexApps
-  hosts: Docker-1
-  become: true
-  vars:
-    application: "plexapps"
-  tasks:
-    - name: Include Docker tasks
+    - name: Deploy PlexApps
       ansible.builtin.include_tasks: ./Tasks/docker.yml
+      vars:
+        application: "plexapps"
+      when: inventory_hostname == "Docker-1"
 
-- name: Heimdall
-  hosts: Docker-1
-  become: true
-  vars:
-    application: "heimdall"
-  tasks:
-    - name: Include Docker tasks
+    - name: Deploy Heimdall
       ansible.builtin.include_tasks: ./Tasks/docker.yml
+      vars:
+        application: "heimdall"
+      when: inventory_hostname == "Docker-1"
 
-- name: Gitea
-  hosts: Docker-1
-  become: true
-  vars:
-    application: "gitea"
-  tasks:
-    - name: Include Docker tasks
+    - name: Deploy Gitea
       ansible.builtin.include_tasks: ./Tasks/docker.yml
-- name: Pdf
-  hosts: Docker-1
-  become: true
-  vars:
-    application: "pdf"
-  tasks:
-    - name: Include Docker tasks
-      ansible.builtin.include_tasks: ./Tasks/docker.yml
+      vars:
+        application: "gitea"
+      when: inventory_hostname == "Docker-1"
 
-- name: Healthchecks
-  hosts: Docker-1
-  become: true
-  vars:
-    application: "healthchecks"
-  tasks:
-    - name: Include Docker tasks
+    - name: Deploy Pdf
       ansible.builtin.include_tasks: ./Tasks/docker.yml
+      vars:
+        application: "pdf"
+      when: inventory_hostname == "Docker-1"
 
-- name: Monitoring
-  hosts: Docker-1
-  become: true
-  vars:
-    application: "monitoring"
-    restart: true
-  tasks:
-    - name: Include Docker tasks
+    - name: Deploy Healthchecks
       ansible.builtin.include_tasks: ./Tasks/docker.yml
+      vars:
+        application: "healthchecks"
+      when: inventory_hostname == "Docker-1"
 
-- name: Portainer
-  hosts: Docker-1
-  become: true
-  vars:
-    application: "portainer"
-  tasks:
-    - name: Include Docker tasks
+    - name: Deploy Monitoring
       ansible.builtin.include_tasks: ./Tasks/docker.yml
+      vars:
+        application: "monitoring"
+        restart: true
+      when: inventory_hostname == "Docker-1"
 
-
-- name: Upsnap
-  hosts: Docker-1
-  become: true
-  vars:
-    application: "upsnap"
-  tasks:
-    - name: Include Docker tasks
+    - name: Deploy Portainer
       ansible.builtin.include_tasks: ./Tasks/docker.yml
+      vars:
+        application: "portainer"
+      when: inventory_hostname == "Docker-1"
 
-- name: HomeAssistant
-  hosts: Docker-1
-  become: true
-  vars:
-    application: "homeassistant"
-  tasks:
-    - name: Include Docker tasks
+    - name: Deploy Upsnap
       ansible.builtin.include_tasks: ./Tasks/docker.yml
+      vars:
+        application: "upsnap"
+      when: inventory_hostname == "Docker-1"
 
-- name: Satisfactory
-  hosts: Satisfactory
-  become: true
-  vars:
-    application: "satisfactory"
-  tasks:
-    - name: Include Docker tasks
+    - name: Deploy HomeAssistant
       ansible.builtin.include_tasks: ./Tasks/docker.yml
+      vars:
+        application: "homeassistant"
+      when: inventory_hostname == "Docker-1"
 
-- name: Dns-update
-  hosts: Docker-1
-  become: true
-  vars:
-    application: "dns-update"
-    restart: true
-  tasks:
-    - name: Include Docker tasks
+    - name: Deploy Satisfactory
       ansible.builtin.include_tasks: ./Tasks/docker.yml
+      vars:
+        application: "satisfactory"
+      when: inventory_hostname == "Satisfactory"
+
+    - name: Deploy Dns-update
+      ansible.builtin.include_tasks: ./Tasks/docker.yml
+      vars:
+        application: "dns-update"
+        restart: true
+      when: inventory_hostname == "Docker-1"

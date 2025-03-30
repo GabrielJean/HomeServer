@@ -1,62 +1,46 @@
-- name: Traefik
-  hosts: Docker-2
+- name: Deploy Docker Applications
+  hosts: all
   become: true
-  vars:
-    application: "traefik"
+  strategy: free
   tasks:
-    - name: Include Docker tasks
+    - name: Deploy Traefik
       ansible.builtin.include_tasks: ./Tasks/docker.yml
+      vars:
+        application: "traefik"
+      when: inventory_hostname == "Docker-2"
 
-- name: AdguardHome
-  hosts: DNS-2
-  become: true
-  vars:
-    application: "adguardhome"
-  tasks:
-    - name: Include Docker tasks
+    - name: Deploy AdguardHome
       ansible.builtin.include_tasks: ./Tasks/docker.yml
+      vars:
+        application: "adguardhome"
+      when: inventory_hostname == "DNS-2"
 
-- name: Heimdall
-  hosts: Docker-2
-  become: true
-  vars:
-    application: "heimdall"
-  tasks:
-    - name: Include Docker tasks
+    - name: Deploy Heimdall
       ansible.builtin.include_tasks: ./Tasks/docker.yml
+      vars:
+        application: "heimdall"
+      when: inventory_hostname == "Docker-2"
 
-- name: Pdf
-  hosts: Docker-2
-  become: true
-  vars:
-    application: "pdf"
-  tasks:
-    - name: Include Docker tasks
+    - name: Deploy Pdf
       ansible.builtin.include_tasks: ./Tasks/docker.yml
+      vars:
+        application: "pdf"
+      when: inventory_hostname == "Docker-2"
 
-- name: HomeAssistant
-  hosts: Docker-2
-  become: true
-  vars:
-    application: "homeassistant"
-  tasks:
-    - name: Include Docker tasks
+    - name: Deploy HomeAssistant
       ansible.builtin.include_tasks: ./Tasks/docker.yml
+      vars:
+        application: "homeassistant"
+      when: inventory_hostname == "Docker-2"
 
-- name: Portainer
-  hosts: Docker-2
-  become: true
-  vars:
-    application: "portainer"
-  tasks:
-    - name: Include Docker tasks
+    - name: Deploy Portainer
       ansible.builtin.include_tasks: ./Tasks/docker.yml
+      vars:
+        application: "portainer"
+      when: inventory_hostname == "Docker-2"
 
-- name: Upsnap
-  hosts: Docker-2
-  become: true
-  vars:
-    application: "upsnap"
-  tasks:
-    - name: Include Docker tasks
+    - name: Deploy Upsnap
       ansible.builtin.include_tasks: ./Tasks/docker.yml
+      vars:
+        application: "upsnap"
+      when: inventory_hostname == "Docker-2"
