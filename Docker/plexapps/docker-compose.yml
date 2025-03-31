@@ -150,6 +150,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.transmission.rule=Host(`transmission.docker-1.gwebs.ca`)"
       - "traefik.http.routers.transmission.entrypoints=web"
+      - "traefik.http.services.transmission.loadbalancer.server.port=9091"
     networks:
       - traefik_default
 
