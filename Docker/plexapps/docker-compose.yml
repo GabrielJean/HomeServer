@@ -112,52 +112,96 @@ services:
     networks:
       - traefik_default
 
-  transmission-openvpn:
-    container_name: transmission-ovpn
+  # transmission-openvpn:
+  #   container_name: transmission-ovpn
+  #   cap_add:
+  #     - NET_ADMIN
+  #   devices:
+  #     - /dev/net/tun
+  #   volumes:
+  #     - medias:/medias
+  #   environment:
+  #     - LOCAL_NETWORK=192.168.10.0/24,100.64.0.0/10
+  #     - TRANSMISSION_SPEED_LIMIT_UP=0
+  #     - TRANSMISSION_SPEED_LIMIT_UP_ENABLED=true
+  #     - TRANSMISSION_RATIO_LIMIT=0
+  #     - TRANSMISSION_RATIO_LIMIT_ENABLED=true
+  #     - TRANSMISSION_DOWNLOAD_QUEUE_ENABLED=true
+  #     - TRANSMISSION_DOWNLOAD_QUEUE_SIZE=9999
+  #     - TRANSMISSION_MAX_PEER_GLOBAL=99999
+  #     - TRANSMISSION_PEER_LIMIT_GLOBAL=9999
+  #     - TRANSMISSION_PEER_LIMIT_PER_TORRENT=9999
+  #     - TRANSMISSION_DOWNLOAD_DIR=/medias/Torrent
+  #     - TRANSMISSION_INCOMPLETE_DIR_ENABLED=false
+  #     - TRANSMISSION_WEB_UI=transmission-web-control
+  #     - OPENVPN_PROVIDER=${OPENVPN_PROVIDER}
+  #     - OPENVPN_CONFIG=${OPENVPN_CONFIG}
+  #     - OPENVPN_USERNAME=${OPENVPN_USERNAME}
+  #     - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
+  #   logging:
+  #       driver: json-file
+  #       options:
+  #           max-size: 10m
+  #   ports:
+  #       - '9091:9091'
+  #   image: haugene/transmission-openvpn:5.3
+  #   restart: unless-stopped
+  #   labels:
+  #     - "traefik.enable=true"
+  #     - "traefik.http.routers.transmission.rule=Host(`transmission.docker-1.gwebs.ca`)"
+  #     - "traefik.http.routers.transmission.entrypoints=web"
+  #     - "traefik.http.services.transmission.loadbalancer.server.port=9091"
+  #   networks:
+  #     - traefik_default
+
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    network_mode: "service:gluetun"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - WEBUI_PORT=8087
+      - TORRENTING_PORT=6881
+    volumes:
+      - /Apps/qbittorrent/appdata:/config
+      - medias:/medias
+    restart: unless-stopped
+
+  gluetun:
+    image: qmcgaw/gluetun
+    container_name: gluetun
     cap_add:
       - NET_ADMIN
     devices:
-      - /dev/net/tun
-    volumes:
-      - medias:/medias
-    environment:
-      - LOCAL_NETWORK=192.168.10.0/24,100.64.0.0/10
-      - TRANSMISSION_SPEED_LIMIT_UP=0
-      - TRANSMISSION_SPEED_LIMIT_UP_ENABLED=true
-      - TRANSMISSION_RATIO_LIMIT=0
-      - TRANSMISSION_RATIO_LIMIT_ENABLED=true
-      - TRANSMISSION_DOWNLOAD_QUEUE_ENABLED=true
-      - TRANSMISSION_DOWNLOAD_QUEUE_SIZE=9999
-      - TRANSMISSION_MAX_PEER_GLOBAL=99999
-      - TRANSMISSION_PEER_LIMIT_GLOBAL=9999
-      - TRANSMISSION_PEER_LIMIT_PER_TORRENT=9999
-      - TRANSMISSION_DOWNLOAD_DIR=/medias/Torrent
-      - TRANSMISSION_INCOMPLETE_DIR_ENABLED=false
-      - TRANSMISSION_WEB_UI=transmission-web-control
-      - OPENVPN_PROVIDER=${OPENVPN_PROVIDER}
-      - OPENVPN_CONFIG=${OPENVPN_CONFIG}
-      - OPENVPN_USERNAME=${OPENVPN_USERNAME}
-      - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
-    logging:
-        driver: json-file
-        options:
-            max-size: 10m
+      - /dev/net/tun:/dev/net/tun
+    # volumes:
+    #   - ./gluetun:/gluetun
     ports:
-        - '9091:9091'
-    image: haugene/transmission-openvpn:5.3
-    restart: unless-stopped
+      - 8087:8087
+      - 6881:6881
+      - 6881:6881/udp
+
+    environment:
+      - VPN_SERVICE_PROVIDER=private internet access
+      - OPENVPN_USER=${OPENVPN_USERNAME}
+      - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
+      - SERVER_REGIONS=Bahamas
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.transmission.rule=Host(`transmission.docker-1.gwebs.ca`)"
-      - "traefik.http.routers.transmission.entrypoints=web"
-      - "traefik.http.services.transmission.loadbalancer.server.port=9091"
+      - "traefik.http.routers.qbittorent.rule=Host(`qbittorent.docker-1.gwebs.ca`)"
+      - "traefik.http.routers.qbittorent.entrypoints=web"
+      - "traefik.http.services.qbittorent.loadbalancer.server.port=8087"
     networks:
       - traefik_default
+
+
+
 
 networks:
   traefik_default:
     external: true
-
 
 volumes:
     medias:
