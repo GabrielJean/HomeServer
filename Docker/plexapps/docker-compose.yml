@@ -159,13 +159,13 @@ services:
     container_name: qbittorrent
     network_mode: "service:gluetun"
     environment:
-      - PUID=1000
-      - PGID=1000
+      - PUID=950
+      - PGID=950
       - TZ=Etc/UTC
       - WEBUI_PORT=8087
       - TORRENTING_PORT=6881
     volumes:
-      - /Apps/qbittorrent/appdata:/config
+      - /Apps/qbittorrent:/config/qBittorrent
       - medias:/medias
     restart: unless-stopped
 
