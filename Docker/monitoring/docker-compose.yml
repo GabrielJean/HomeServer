@@ -37,7 +37,7 @@ services:
       - traefik_default
 
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:v0.50.0
+    image: gcr.io/cadvisor/cadvisor:v0.52.1
     container_name: cadvisor
     privileged: true
     ports:
