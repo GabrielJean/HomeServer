@@ -88,3 +88,9 @@
         application: "dns-update"
         restart: true
       when: inventory_hostname == "Docker-1"
+
+    - name: Deploy Open-webui
+      ansible.builtin.include_tasks: ./Tasks/docker.yml
+      vars:
+        application: "open-webui"
+      when: inventory_hostname == "Docker-1"
