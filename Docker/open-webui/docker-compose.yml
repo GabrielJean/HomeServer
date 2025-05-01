@@ -14,6 +14,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.ai.rule=Host(`ai.docker-1.gwebs.ca`)"
       - "traefik.http.routers.ai.entrypoints=web"
+      - "traefik.http.services.ai.loadbalancer.server.port=8080"
     networks:
       - traefik_default
 
