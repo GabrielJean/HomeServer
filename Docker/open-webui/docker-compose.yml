@@ -2,10 +2,21 @@ services:
   open-webui:
     image: ghcr.io/open-webui/open-webui:main
     container_name: open-webui
-    ports:
-      - "3055:8080"
+#    ports:
+#      - "3055:8080"
     # environment:
     #   - OPENAI_API_KEY=your_secret_key
     volumes:
       - /Apps/open-webui/:/app/backend/data
-    restart: always
+    restart: unless-stopped
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ai.rule=Host(`ai.docker-1.gwebs.ca`)"
+      - "traefik.http.routers.ai.entrypoints=web"
+    networks:
+      - traefik_default
+
+networks:
+  traefik_default:
+    external: true
