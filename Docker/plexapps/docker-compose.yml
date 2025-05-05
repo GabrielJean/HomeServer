@@ -1,6 +1,6 @@
 services:
   overseerr:
-    image: sctx/overseerr:1.33.2
+    image: sctx/overseerr:1.34.0
     container_name: overseerr
     environment:
       - LOG_LEVEL=debug
