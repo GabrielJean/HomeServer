@@ -20,7 +20,7 @@ services:
       - traefik_default
 
   grafana:
-    image: grafana/grafana:11.4.0
+    image: grafana/grafana:11.6.1
     container_name: grafana
     ports:
       - "3500:3000"
