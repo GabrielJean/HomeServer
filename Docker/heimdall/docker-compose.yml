@@ -14,8 +14,9 @@ services:
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.heimdall.rule=Host(`heimdall.docker-1.gwebs.ca`) ||Host(`heimdall.docker-2.gwebs.ca`) "
-      - "traefik.http.routers.heimdall.entrypoints=web"
+      - "traefik.http.routers.heimdall.rule=Host(`heimdall.docker-1.gwebs.ca`) || Host(`heimdall.docker-2.gwebs.ca`)"
+      - "traefik.http.routers.heimdall.entrypoints=websecure"
+      - "traefik.http.routers.heimdall.tls=true"
     networks:
       - traefik_default
 

@@ -13,7 +13,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.overseerr.rule=Host(`overseerr.docker-1.gwebs.ca`)"
-      - "traefik.http.routers.overseerr.entrypoints=web"
+      - "traefik.http.routers.overseerr.entrypoints=websecure"
+      - "traefik.http.routers.overseerr.tls=true"
     networks:
       - traefik_default
 
@@ -34,7 +35,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.jackett.rule=Host(`jackett.docker-1.gwebs.ca`)"
-      - "traefik.http.routers.jackett.entrypoints=web"
+      - "traefik.http.routers.jackett.entrypoints=websecure"
+      - "traefik.http.routers.jackett.tls=true"
     networks:
       - traefik_default
 
@@ -52,7 +54,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.flaresolverr.rule=Host(`flaresolverr.docker-1.gwebs.ca`)"
-      - "traefik.http.routers.flaresolverr.entrypoints=web"
+      - "traefik.http.routers.flaresolverr.entrypoints=websecure"
+      - "traefik.http.routers.flaresolverr.tls=true"
     networks:
       - traefik_default
 
@@ -88,7 +91,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.radarr.rule=Host(`radarr.docker-1.gwebs.ca`)"
-      - "traefik.http.routers.radarr.entrypoints=web"
+      - "traefik.http.routers.radarr.entrypoints=websecure"
+      - "traefik.http.routers.radarr.tls=true"
     networks:
       - traefik_default
 
@@ -108,7 +112,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.sonarr.rule=Host(`sonarr.docker-1.gwebs.ca`)"
-      - "traefik.http.routers.sonarr.entrypoints=web"
+      - "traefik.http.routers.sonarr.entrypoints=websecure"
+      - "traefik.http.routers.sonarr.tls=true"
     networks:
       - traefik_default
 
@@ -149,8 +154,7 @@ services:
   #   labels:
   #     - "traefik.enable=true"
   #     - "traefik.http.routers.transmission.rule=Host(`transmission.docker-1.gwebs.ca`)"
-  #     - "traefik.http.routers.transmission.entrypoints=web"
-  #     - "traefik.http.services.transmission.loadbalancer.server.port=9091"
+  #     - "traefik.http.routers.transmission.entrypoints=websecure"
   #   networks:
   #     - traefik_default
 
@@ -191,7 +195,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.qbittorent.rule=Host(`qbittorent.docker-1.gwebs.ca`)"
-      - "traefik.http.routers.qbittorent.entrypoints=web"
+      - "traefik.http.routers.qbittorent.entrypoints=websecure"
+      - "traefik.http.routers.qbittorent.tls=true"
       - "traefik.http.services.qbittorent.loadbalancer.server.port=8087"
     networks:
       - traefik_default
