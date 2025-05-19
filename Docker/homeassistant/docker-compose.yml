@@ -10,5 +10,6 @@ services:
     network_mode: host
     # labels:
     #   - "traefik.enable=true"
-    #   - "traefik.http.routers.heimdall.rule=Host(`homeassistant.docker-1.gwebs.ca`)"
-    #   - "traefik.http.routers.heimdall.entrypoints=web"
+    #   - "traefik.http.routers.homeassistant.rule=Host(`homeassistant.docker-1.gwebs.ca`)"
+    #   - "traefik.http.routers.homeassistant.entrypoints=websecure"
+    #   - "traefik.http.routers.homeassistant.tls=true"

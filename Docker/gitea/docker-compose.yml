@@ -16,7 +16,11 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.gitea.rule=Host(`gitea.docker-1.gwebs.ca`)"
-      - "traefik.http.routers.gitea.entrypoints=web"
+      - "traefik.http.routers.gitea.entrypoints=web,websecure"
+      - "traefik.http.routers.gitea.tls=true"
+      - "traefik.http.routers.gitea.tls.certresolver=le"
+      - "traefik.http.routers.gitea.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
       - "traefik.http.services.gitea.loadbalancer.server.port=3000"
     networks:
       - traefik_default

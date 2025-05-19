@@ -30,7 +30,12 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.healthchecks.rule=Host(`healthchecks.docker-1.gwebs.ca`)"
-      - "traefik.http.routers.healthchecks.entrypoints=web"
+      - "traefik.http.routers.healthchecks.entrypoints=web,websecure"
+      - "traefik.http.routers.healthchecks.tls=true"
+      - "traefik.http.routers.healthchecks.tls.certresolver=le"
+      - "traefik.http.routers.healthchecks.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.services.healthchecks.loadbalancer.server.port=8000"
     networks:
       - traefik_default
 

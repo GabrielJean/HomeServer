@@ -28,5 +28,6 @@ services:
     # entrypoint: /bin/sh -c "apk update && apk add --no-cache <YOUR_PACKAGE> && rm -rf /var/cache/apk/* && ./upsnap serve --http 0.0.0.0:8090"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.upsnap.rule=Host(`upsnap.docker-1.gwebs.ca`) ||Host(`upsnap.docker-2.gwebs.ca`) "
-      - "traefik.http.routers.upsnap.entrypoints=web"
+      - "traefik.http.routers.upsnap.rule=Host(`upsnap.docker-1.gwebs.ca`) || Host(`upsnap.docker-2.gwebs.ca`)"
+      - "traefik.http.routers.upsnap.entrypoints=websecure"
+      - "traefik.http.routers.upsnap.tls=true"
