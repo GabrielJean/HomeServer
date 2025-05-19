@@ -1,0 +1,5 @@
+services:
+  jokedepapa:
+    image: gitea.docker-1.gwebs.ca/gabriel/jokedepapa-js:latest
+    container_name: jokedepapa
+    restart: unless-stopped

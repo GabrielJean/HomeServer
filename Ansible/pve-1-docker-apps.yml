@@ -94,3 +94,9 @@
       vars:
         application: "open-webui"
       when: inventory_hostname == "Docker-1"
+
+    - name: Deploy Joke-de-jean
+      ansible.builtin.include_tasks: ./Tasks/docker.yml
+      vars:
+        application: "joke-de-jean"
+      when: inventory_hostname == "Docker-1"
