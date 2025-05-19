@@ -13,8 +13,12 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.overseerr.rule=Host(`overseerr.docker-1.gwebs.ca`)"
-      - "traefik.http.routers.overseerr.entrypoints=websecure"
+      - "traefik.http.routers.overseerr.entrypoints=web,websecure"
       - "traefik.http.routers.overseerr.tls=true"
+      - "traefik.http.routers.overseerr.tls.certresolver=le"
+      - "traefik.http.routers.overseerr.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.services.overseerr.loadbalancer.server.port=5055"
     networks:
       - traefik_default
 
@@ -35,8 +39,12 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.jackett.rule=Host(`jackett.docker-1.gwebs.ca`)"
-      - "traefik.http.routers.jackett.entrypoints=websecure"
+      - "traefik.http.routers.jackett.entrypoints=web,websecure"
       - "traefik.http.routers.jackett.tls=true"
+      - "traefik.http.routers.jackett.tls.certresolver=le"
+      - "traefik.http.routers.jackett.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.services.jackett.loadbalancer.server.port=9117"
     networks:
       - traefik_default
 
@@ -54,8 +62,12 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.flaresolverr.rule=Host(`flaresolverr.docker-1.gwebs.ca`)"
-      - "traefik.http.routers.flaresolverr.entrypoints=websecure"
+      - "traefik.http.routers.flaresolverr.entrypoints=web,websecure"
       - "traefik.http.routers.flaresolverr.tls=true"
+      - "traefik.http.routers.flaresolverr.tls.certresolver=le"
+      - "traefik.http.routers.flaresolverr.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.services.flaresolverr.loadbalancer.server.port=8191"
     networks:
       - traefik_default
 
@@ -91,8 +103,12 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.radarr.rule=Host(`radarr.docker-1.gwebs.ca`)"
-      - "traefik.http.routers.radarr.entrypoints=websecure"
+      - "traefik.http.routers.radarr.entrypoints=web,websecure"
       - "traefik.http.routers.radarr.tls=true"
+      - "traefik.http.routers.radarr.tls.certresolver=le"
+      - "traefik.http.routers.radarr.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.services.radarr.loadbalancer.server.port=7878"
     networks:
       - traefik_default
 
@@ -112,51 +128,60 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.sonarr.rule=Host(`sonarr.docker-1.gwebs.ca`)"
-      - "traefik.http.routers.sonarr.entrypoints=websecure"
+      - "traefik.http.routers.sonarr.entrypoints=web,websecure"
       - "traefik.http.routers.sonarr.tls=true"
+      - "traefik.http.routers.sonarr.tls.certresolver=le"
+      - "traefik.http.routers.sonarr.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.services.sonarr.loadbalancer.server.port=8989"
     networks:
       - traefik_default
 
-  # transmission-openvpn:
-  #   container_name: transmission-ovpn
-  #   cap_add:
-  #     - NET_ADMIN
-  #   devices:
-  #     - /dev/net/tun
-  #   volumes:
-  #     - medias:/medias
-  #   environment:
-  #     - LOCAL_NETWORK=192.168.10.0/24,100.64.0.0/10
-  #     - TRANSMISSION_SPEED_LIMIT_UP=0
-  #     - TRANSMISSION_SPEED_LIMIT_UP_ENABLED=true
-  #     - TRANSMISSION_RATIO_LIMIT=0
-  #     - TRANSMISSION_RATIO_LIMIT_ENABLED=true
-  #     - TRANSMISSION_DOWNLOAD_QUEUE_ENABLED=true
-  #     - TRANSMISSION_DOWNLOAD_QUEUE_SIZE=9999
-  #     - TRANSMISSION_MAX_PEER_GLOBAL=99999
-  #     - TRANSMISSION_PEER_LIMIT_GLOBAL=9999
-  #     - TRANSMISSION_PEER_LIMIT_PER_TORRENT=9999
-  #     - TRANSMISSION_DOWNLOAD_DIR=/medias/Torrent
-  #     - TRANSMISSION_INCOMPLETE_DIR_ENABLED=false
-  #     - TRANSMISSION_WEB_UI=transmission-web-control
-  #     - OPENVPN_PROVIDER=${OPENVPN_PROVIDER}
-  #     - OPENVPN_CONFIG=${OPENVPN_CONFIG}
-  #     - OPENVPN_USERNAME=${OPENVPN_USERNAME}
-  #     - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
-  #   logging:
-  #       driver: json-file
-  #       options:
-  #           max-size: 10m
-  #   ports:
-  #       - '9091:9091'
-  #   image: haugene/transmission-openvpn:5.3
-  #   restart: unless-stopped
-  #   labels:
-  #     - "traefik.enable=true"
-  #     - "traefik.http.routers.transmission.rule=Host(`transmission.docker-1.gwebs.ca`)"
-  #     - "traefik.http.routers.transmission.entrypoints=websecure"
-  #   networks:
-  #     - traefik_default
+  transmission-openvpn:
+    container_name: transmission-ovpn
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun
+    volumes:
+      - medias:/medias
+    environment:
+      - LOCAL_NETWORK=192.168.10.0/24,100.64.0.0/10
+      - TRANSMISSION_SPEED_LIMIT_UP=0
+      - TRANSMISSION_SPEED_LIMIT_UP_ENABLED=true
+      - TRANSMISSION_RATIO_LIMIT=0
+      - TRANSMISSION_RATIO_LIMIT_ENABLED=true
+      - TRANSMISSION_DOWNLOAD_QUEUE_ENABLED=true
+      - TRANSMISSION_DOWNLOAD_QUEUE_SIZE=9999
+      - TRANSMISSION_MAX_PEER_GLOBAL=99999
+      - TRANSMISSION_PEER_LIMIT_GLOBAL=9999
+      - TRANSMISSION_PEER_LIMIT_PER_TORRENT=9999
+      - TRANSMISSION_DOWNLOAD_DIR=/medias/Torrent
+      - TRANSMISSION_INCOMPLETE_DIR_ENABLED=false
+      - TRANSMISSION_WEB_UI=transmission-web-control
+      - OPENVPN_PROVIDER=${OPENVPN_PROVIDER}
+      - OPENVPN_CONFIG=${OPENVPN_CONFIG}
+      - OPENVPN_USERNAME=${OPENVPN_USERNAME}
+      - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
+    logging:
+        driver: json-file
+        options:
+            max-size: 10m
+    ports:
+        - '9091:9091'
+    image: haugene/transmission-openvpn:5.3
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.transmission.rule=Host(`transmission.docker-1.gwebs.ca`)"
+      - "traefik.http.routers.transmission.entrypoints=websecure"
+      - "traefik.http.routers.transmission.tls=true"
+      - "traefik.http.routers.transmission.tls.certresolver=le"
+      - "traefik.http.routers.transmission.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.services.transmission.loadbalancer.server.port=9091"
+    networks:
+      - traefik_default
 
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
@@ -172,6 +197,15 @@ services:
       - /Apps/qbittorrent:/config/qBittorrent
       - medias:/medias
     restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.qbittorent.rule=Host(`qbittorent.docker-1.gwebs.ca`)"
+      - "traefik.http.routers.qbittorent.entrypoints=web,websecure"
+      - "traefik.http.routers.qbittorent.tls=true"
+      - "traefik.http.routers.qbittorent.tls.certresolver=le"
+      - "traefik.http.routers.qbittorent.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.services.qbittorent.loadbalancer.server.port=8087"
 
   gluetun:
     image: qmcgaw/gluetun

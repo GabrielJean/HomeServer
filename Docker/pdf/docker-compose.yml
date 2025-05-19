@@ -28,7 +28,12 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.pdf.rule=Host(`pdf.docker-1.gwebs.ca`) || Host(`pdf.docker-2.gwebs.ca`)"
-      - "traefik.http.routers.pdf.entrypoints=websecure"
+      - "traefik.http.routers.pdf.entrypoints=web,websecure"
+      - "traefik.http.routers.pdf.tls=true"
+      - "traefik.http.routers.pdf.tls.certresolver=le"
+      - "traefik.http.routers.pdf.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.services.pdf.loadbalancer.server.port=8080"
     networks:
       - traefik_default
 

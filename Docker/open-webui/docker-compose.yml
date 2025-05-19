@@ -13,8 +13,11 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.ai.rule=Host(`ai.docker-1.gwebs.ca`)"
-      - "traefik.http.routers.ai.entrypoints=websecure"
+      - "traefik.http.routers.ai.entrypoints=web,websecure"
       - "traefik.http.routers.ai.tls=true"
+      - "traefik.http.routers.ai.tls.certresolver=le"
+      - "traefik.http.routers.ai.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
       - "traefik.http.services.ai.loadbalancer.server.port=8080"
     networks:
       - traefik_default

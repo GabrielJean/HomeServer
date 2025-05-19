@@ -33,8 +33,11 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.grafana.rule=Host(`grafana.docker-1.gwebs.ca`)"
-      - "traefik.http.routers.grafana.entrypoints=websecure"
+      - "traefik.http.routers.grafana.entrypoints=web,websecure"
       - "traefik.http.routers.grafana.tls=true"
+      - "traefik.http.routers.grafana.tls.certresolver=le"
+      - "traefik.http.routers.grafana.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
     networks:
       - traefik_default
 
