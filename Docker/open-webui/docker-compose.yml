@@ -12,6 +12,7 @@ services:
       - ENABLE_OPENAI_API=True
       - OPENAI_API_BASE_URL=https://gabri-ma4hd9yd-eastus2.openai.azure.com
       - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - AZURE_OPENAI_API_VERSION=2025-01-01-preview
       - GOOGLE_PSE_API_KEY=${GOOGLE_PSE_API_KEY}
       - GOOGLE_PSE_ENGINE_ID=${GOOGLE_PSE_ENGINE_ID}
       - WEB_SEARCH_ENGINE=google_pse
