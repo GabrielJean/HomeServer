@@ -8,7 +8,12 @@ services:
       - MICROSOFT_CLIENT_ID=${MICROSOFT_CLIENT_ID}
       - MICROSOFT_CLIENT_SECRET=${MICROSOFT_CLIENT_SECRET}
       - MICROSOFT_TENANT_ID=${MICROSOFT_TENANT_ID}
-      - ENABLE_OAUTH_SIGNUP="True"
+      - ENABLE_OAUTH_SIGNUP=True
+      - ENABLE_OPENAI_API=True
+      - OPENAI_API_BASE_URL=https://gabri-ma4hd9yd-eastus2.openai.azure.com
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - GOOGLE_PSE_API_KEY=${GOOGLE_PSE_API_KEY}
+      - GOOGLE_PSE_ENGINE_ID=${GOOGLE_PSE_ENGINE_ID}
     volumes:
       - /Apps/open-webui/:/app/backend/data
     restart: unless-stopped
