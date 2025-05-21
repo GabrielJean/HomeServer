@@ -4,8 +4,11 @@ services:
     container_name: open-webui
 #    ports:
 #      - "3055:8080"
-    # environment:
-    #   - OPENAI_API_KEY=your_secret_key
+    environment:
+      - MICROSOFT_CLIENT_ID=${MICROSOFT_CLIENT_ID}
+      - MICROSOFT_CLIENT_SECRET=${MICROSOFT_CLIENT_SECRET}
+      - MICROSOFT_TENANT_ID=${MICROSOFT_TENANT_ID}
+      - ENABLE_OAUTH_SIGNUP="True"
     volumes:
       - /Apps/open-webui/:/app/backend/data
     restart: unless-stopped
