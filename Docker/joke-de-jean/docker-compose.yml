@@ -6,7 +6,4 @@ services:
     volumes:
       # Mount config.json as read-only
       - ./config.json:/app/config.json:ro
-      # Mount persistent bot log
-      - ./bot.log:/app/bot.log
-      # Mount persistent command history
-      - ./command_history.json:/app/command_history.json
+      - /Apps/jokedejean:/app/data/
