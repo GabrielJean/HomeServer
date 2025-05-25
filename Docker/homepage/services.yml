@@ -1,0 +1,57 @@
+- Apps:
+    - AI:
+        href: https://ai.docker-1.gwebs.ca
+        icon: ai.png
+    - FlareSolverr:
+        href: https://flaresolverr.docker-1.gwebs.ca
+        icon: flaresolverr.png
+    - Gitea:
+        href: https://gitea.docker-1.gwebs.ca
+        icon: gitea.png
+    - Heimdall:
+        href: https://heimdall.docker-1.gwebs.ca
+        icon: heimdall.png
+    - Jackett:
+        href: https://jackett.docker-1.gwebs.ca
+        icon: jackett.png
+    - Overseerr:
+        href: https://overseerr.docker-1.gwebs.ca
+        icon: overseerr.png
+    - PDF:
+        href: https://pdf.docker-1.gwebs.ca
+        icon: pdf.png
+    - Portainer:
+        href: https://portainer.docker-1.gwebs.ca
+        icon: portainer.png
+    - Qbittorent:
+        href: https://qbittorent.docker-1.gwebs.ca
+        icon: qbittorrent.png
+    - Radarr:
+        href: https://radarr.docker-1.gwebs.ca
+        icon: radarr.png
+    - Sonarr:
+        href: https://sonarr.docker-1.gwebs.ca
+        icon: sonarr.png
+    - Transmission:
+        href: https://transmission.docker-1.gwebs.ca
+        icon: transmission.png
+
+- Monitoring:
+    - Grafana:
+        href: https://grafana.docker-1.gwebs.ca
+        icon: grafana.png
+    - Prometheus:
+        href: https://prometheus.docker-1.gwebs.ca
+        icon: prometheus.png
+    - Healthchecks:
+        href: https://healthchecks.docker-1.gwebs.ca
+        icon: healthchecks.png
+
+- Management:
+    - Traefik:
+        href: https://traefik.docker-1.gwebs.ca
+        icon: traefik.png
+        description: Traefik Dashboard (edit URL as needed)
+    - Homepage:
+        href: https://homepage.docker-1.gwebs.ca
+        icon: homepage.png
