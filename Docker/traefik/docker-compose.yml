@@ -3,7 +3,8 @@ services:
     image: "traefik:v3.4"
     container_name: "traefik"
     command:
-      - "--api.insecure=true"
+      - "--api.dashboard=true"
+      - "--api.insecure=false"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--entryPoints.web.address=:80"
@@ -14,6 +15,7 @@ services:
       - "--certificatesresolvers.le.acme.dnschallenge.resolvers=1.1.1.1:53,8.8.8.8:53"
       - "--certificatesresolvers.le.acme.dnschallenge.delaybeforecheck=0"
       - "--certificatesresolvers.le.acme.caserver=https://acme-v02.api.letsencrypt.org/directory"
+      - "--entryPoints.dashboard.address=:8080"
     environment:
       - BASE_DOMAIN=docker-1.gwebs.ca
       - AZURE_CLIENT_ID=${AZURE_CLIENT_ID}
@@ -30,6 +32,17 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "/Apps/Traefik/letsencrypt:/letsencrypt"
     restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.docker-1.gwebs.ca`)"
+      - "traefik.http.routers.traefik.entrypoints=websecure"
+      - "traefik.http.routers.traefik.tls=true"
+      - "traefik.http.routers.traefik.tls.certresolver=le"
+      - "traefik.http.routers.traefik.service=api@internal"
+      - "traefik.http.routers.traefik-insecure.rule=Host(`traefik.docker-1.gwebs.ca`)"
+      - "traefik.http.routers.traefik-insecure.entrypoints=web"
+      - "traefik.http.routers.traefik-insecure.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
 
 networks:
   traefik_default:
