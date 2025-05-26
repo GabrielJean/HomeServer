@@ -1,8 +1,13 @@
 title: My Homelab Dashboard
 theme: dark
 headerStyle: underlined
-background: https://i.imgur.com/hOzzkCY.jpeg
-backgroundOpacity: 0.2
+
+background:
+  image: https://images.pexels.com/photos/33545/sunrise-phu-quoc-island-ocean.jpg?cs=srgb&dl=pexels-pixabay-33545.jpg&fm=jpg&w=5938&h=3919
+  blur: sm # sm, "", md, xl... see https://tailwindcss.com/docs/backdrop-blur
+  saturate: 50 # 0, 50, 100... see https://tailwindcss.com/docs/backdrop-saturate
+  brightness: 50 # 0, 50, 75... see https://tailwindcss.com/docs/backdrop-brightness
+
 favicon: https://gethomepage.dev/assets/favicon.ico
 
 update_check: true
