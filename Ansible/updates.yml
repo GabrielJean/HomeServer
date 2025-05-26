@@ -1,11 +1,10 @@
 ---
 - name: Update Ubuntu servers
   hosts: linux_vms
-  become: true  # To escalate privileges using sudo
-  gather_facts: true  # To gather facts about the hosts
-
+  become: true
+  gather_facts: true
   tasks:
-    - name: Update ansible.builtin.apt cache
+    - name: Update apt cache
       ansible.builtin.apt:
         update_cache: true
 
@@ -14,3 +13,14 @@
         upgrade: true
         autoremove: true
         autoclean: true
+
+    - name: Check if docker is installed
+      ansible.builtin.stat:
+        path: /usr/bin/docker
+      register: docker_stat
+
+    - name: Run 'docker system prune -a'
+      ansible.builtin.command: docker system prune -af
+      when: docker_stat.stat.exists
+      # Optionally, become: true if docker needs sudo
+      # become: true
