@@ -2,11 +2,14 @@ services:
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
     container_name: homepage
+    restart: unless-stopped   # <---- Added this line
     # Remove "ports:" unless you need local direct access (Traefik is handling HTTP/S)
     volumes:
-      - ./settings.yaml:/app/config/settings.yml:ro
-      - ./services.yaml:/app/config/services.yml:ro
-      - ./widgets.yaml:/app/config/widgets.yml:ro
+      - ./settings.yaml:/app/config/settings.yaml:ro
+      - ./services.yaml:/app/config/services.yaml:ro
+      - ./widgets.yaml:/app/config/widgets.yaml:ro
+      - ./bookmarks.yaml:/app/config/bookmarks.yaml:ro
+      - ./docker.yaml:/app/config/docker.yaml:ro
       - /var/run/docker.sock:/var/run/docker.sock  # (optional) For docker integrations
     environment:
       HOMEPAGE_ALLOWED_HOSTS: homepage.docker-1.gwebs.ca

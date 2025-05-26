@@ -37,6 +37,7 @@
       ansible.builtin.include_tasks: ./Tasks/docker.yml
       vars:
         application: "homepage"
+        restart: true
       when: inventory_hostname == "Docker-1"
 
     - name: Deploy Gitea
@@ -105,4 +106,6 @@
       ansible.builtin.include_tasks: ./Tasks/docker.yml
       vars:
         application: "joke-de-jean"
+        restart: true
+        pull_latest: true
       when: inventory_hostname == "Docker-1"

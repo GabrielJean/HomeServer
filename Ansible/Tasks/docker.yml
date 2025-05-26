@@ -26,10 +26,9 @@
     decrypt: true
 
 - name: Run docker-compose up -d for {{ application }}
-  ansible.builtin.command: >
+  ansible.builtin.command: >-
     docker compose up -d
-    {% if restart | default(false) %}
-    --force-recreate
-    {% endif %}
+    {% if restart | default(false) %} --force-recreate{% endif %}
+    {% if pull_latest | default(false) %} --pull always{% endif %}
   args:
     chdir: /home/gabriel/{{ application }}/

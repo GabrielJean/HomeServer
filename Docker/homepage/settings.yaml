@@ -1,0 +1,61 @@
+title: My Homelab Dashboard
+theme: dark
+headerStyle: underlined
+background: https://i.imgur.com/hOzzkCY.jpeg
+backgroundOpacity: 0.2
+favicon: https://raw.githubusercontent.com/gethomepage/homepage/main/public/favicon.ico
+
+update_check: true
+
+allowed_hosts:
+  - homepage.docker-1.gwebs.ca
+  - localhost
+  - 127.0.0.1
+
+useEqualHeights: true
+hideVersion: true
+hideFooter: true
+showStats: true
+
+hideQuickLaunch: true     # <<< Hides the quicklaunch/search bar entirely
+
+# You can now remove quicklaunch block since it's hidden globally:
+# quicklaunch:
+#   provider: google
+#   target: _self
+#   searchDescriptions: true
+#   hideInternetSearch: true
+#   hideVisitURL: true
+
+layout:
+  Media:
+    icon: mdi-play-circle-outline
+    style: row
+    columns: 4
+  Infrastructure:
+    icon: mdi-server
+    style: row
+    columns: 4
+  Monitoring:
+    icon: mdi-chart-areaspline
+    style: row
+    columns: 4
+  Tools:
+    icon: mdi-tools
+    style: row
+    columns: 4
+  Network:
+    icon: mdi-shield-check-outline
+    style: row
+    columns: 4
+  Home Automation:
+    icon: mdi-home-assistant
+    style: row
+    columns: 2
+
+customCss: []
+customJs: []
+
+# banner:
+#   message: "Welcome to My Homelab Dashboard!"
+#   style: "info"
