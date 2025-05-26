@@ -33,27 +33,27 @@ layout:
     icon: mdi-docker
     style: column
     columns: 1
-    Media:
+    Media-1:
       icon: mdi-play-circle-outline
       style: row
       columns: 4
-    Infrastructure:
+    Infrastructure-1:
       icon: mdi-server
       style: row
       columns: 4
-    Monitoring:
+    Monitoring-1:
       icon: mdi-chart-areaspline
       style: row
       columns: 4
-    Tools:
+    Tools-1:
       icon: mdi-tools
       style: row
       columns: 4
-    Network:
+    Network-1:
       icon: mdi-shield-check-outline
       style: row
       columns: 4
-    Home Automation:
+    Home Automation-1:
       icon: mdi-home-assistant
       style: row
       columns: 4
@@ -62,23 +62,23 @@ layout:
     icon: mdi-docker
     style: column
     columns: 1
-    Infrastructure:
+    Infrastructure-2:
       icon: mdi-server
       style: row
       columns: 4
-    Tools:
+    Tools-2:
       icon: mdi-tools
       style: row
       columns: 4
-    Monitoring:
+    Monitoring-2:
       icon: mdi-chart-areaspline
       style: row
       columns: 4
-    Home Automation:
+    Home Automation-2:
       icon: mdi-home-assistant
       style: row
       columns: 4
-    Network:
+    Network-2:
       icon: mdi-shield-check-outline
       style: row
       columns: 4
