@@ -28,31 +28,60 @@ hideQuickLaunch: true     # <<< Hides the quicklaunch/search bar entirely
 #   hideVisitURL: true
 
 layout:
-  Media:
-    icon: mdi-play-circle-outline
-    style: row
-    columns: 4
-  Infrastructure:
-    icon: mdi-server
-    style: row
-    columns: 4
-  Monitoring:
-    icon: mdi-chart-areaspline
-    style: row
-    columns: 4
-  Tools:
-    icon: mdi-tools
-    style: row
-    columns: 4
-  Network:
-    icon: mdi-shield-check-outline
-    style: row
-    columns: 4
-  Home Automation:
-    icon: mdi-home-assistant
-    style: row
-    columns: 2
-
+  Docker-1:
+    tab: Docker-1
+    icon: mdi-docker
+    style: column
+    columns: 1
+    Media:
+      icon: mdi-play-circle-outline
+      style: row
+      columns: 4
+    Infrastructure:
+      icon: mdi-server
+      style: row
+      columns: 4
+    Monitoring:
+      icon: mdi-chart-areaspline
+      style: row
+      columns: 4
+    Tools:
+      icon: mdi-tools
+      style: row
+      columns: 4
+    Network:
+      icon: mdi-shield-check-outline
+      style: row
+      columns: 4
+    Home Automation:
+      icon: mdi-home-assistant
+      style: row
+      columns: 4
+  Docker-2:
+    tab: Docker-2
+    icon: mdi-docker
+    style: column
+    columns: 1
+    Infrastructure:
+      icon: mdi-server
+      style: row
+      columns: 4
+    Tools:
+      icon: mdi-tools
+      style: row
+      columns: 4
+    Monitoring:
+      icon: mdi-chart-areaspline
+      style: row
+      columns: 4
+    Home Automation:
+      icon: mdi-home-assistant
+      style: row
+      columns: 4
+    Network:
+      icon: mdi-shield-check-outline
+      style: row
+      columns: 4
 customCss: []
 customJs: []
 
