@@ -1,53 +1,25 @@
-- name: Deploy Docker Applications
+- name: Deploy Docker Applications for PVE-2
   hosts: all
   become: true
-  strategy: free
+  vars:
+    docker_apps_by_host:
+      Docker-2:
+        - { name: traefik }
+        - { name: heimdall }
+        - { name: homepage-2, restart: true }
+        - { name: pdf }
+        - { name: homeassistant }
+        - { name: portainer }
+        - { name: upsnap }
+      DNS-2:
+        - { name: adguardhome }
   tasks:
-    - name: Deploy Traefik
+    - name: Deploy docker apps for each host on PVE-2
       ansible.builtin.include_tasks: ./Tasks/docker.yml
+      loop: "{{ docker_apps_by_host[inventory_hostname] | default([]) }}"
+      loop_control:
+        loop_var: item
       vars:
-        application: "traefik"
-      when: inventory_hostname == "Docker-2"
-
-    - name: Deploy AdguardHome
-      ansible.builtin.include_tasks: ./Tasks/docker.yml
-      vars:
-        application: "adguardhome"
-      when: inventory_hostname == "DNS-2"
-
-    - name: Deploy Heimdall
-      ansible.builtin.include_tasks: ./Tasks/docker.yml
-      vars:
-        application: "heimdall"
-      when: inventory_hostname == "Docker-2"
-
-    - name: Deploy HomePage
-      ansible.builtin.include_tasks: ./Tasks/docker.yml
-      vars:
-        application: "homepage-2"
-        restart: true
-      when: inventory_hostname == "Docker-2"
-
-    - name: Deploy Pdf
-      ansible.builtin.include_tasks: ./Tasks/docker.yml
-      vars:
-        application: "pdf"
-      when: inventory_hostname == "Docker-2"
-
-    - name: Deploy HomeAssistant
-      ansible.builtin.include_tasks: ./Tasks/docker.yml
-      vars:
-        application: "homeassistant"
-      when: inventory_hostname == "Docker-2"
-
-    - name: Deploy Portainer
-      ansible.builtin.include_tasks: ./Tasks/docker.yml
-      vars:
-        application: "portainer"
-      when: inventory_hostname == "Docker-2"
-
-    - name: Deploy Upsnap
-      ansible.builtin.include_tasks: ./Tasks/docker.yml
-      vars:
-        application: "upsnap"
-      when: inventory_hostname == "Docker-2"
+        application: "{{ item.name }}"
+        restart: "{{ item.restart | default(omit) }}"
+        pull_latest: "{{ item.pull_latest | default(omit) }}"

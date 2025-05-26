@@ -1,111 +1,36 @@
-- name: Deploy Docker Applications
+- name: Deploy Docker Applications for PVE-1
   hosts: all
   become: true
-  strategy: free
+  vars:
+    docker_apps_by_host:
+      Docker-1:
+        - { name: traefik }
+        - { name: plexapps }
+        - { name: heimdall }
+        - { name: homepage-1, restart: true }
+        - { name: gitea }
+        - { name: pdf }
+        - { name: healthchecks }
+        - { name: monitoring, restart: true }
+        - { name: portainer }
+        - { name: upsnap }
+        - { name: homeassistant }
+        - { name: dns-update, restart: true }
+        - { name: open-webui }
+        - { name: joke-de-jean, restart: true, pull_latest: true }
+      DNS-1:
+        - { name: adguardhome }
+      Plex-1:
+        - { name: plex }
+      Satisfactory:
+        - { name: satisfactory }
   tasks:
-    - name: Deploy Traefik
+    - name: Deploy docker apps for each host on PVE-1
       ansible.builtin.include_tasks: ./Tasks/docker.yml
+      loop: "{{ docker_apps_by_host[inventory_hostname] | default([]) }}"
+      loop_control:
+        loop_var: item
       vars:
-        application: "traefik"
-      when: inventory_hostname == "Docker-1"
-
-    - name: Deploy AdguardHome
-      ansible.builtin.include_tasks: ./Tasks/docker.yml
-      vars:
-        application: "adguardhome"
-      when: inventory_hostname == "DNS-1"
-
-    - name: Deploy Plex
-      ansible.builtin.include_tasks: ./Tasks/docker.yml
-      vars:
-        application: "plex"
-      when: inventory_hostname == "Plex-1"
-
-    - name: Deploy PlexApps
-      ansible.builtin.include_tasks: ./Tasks/docker.yml
-      vars:
-        application: "plexapps"
-      when: inventory_hostname == "Docker-1"
-
-    - name: Deploy Heimdall
-      ansible.builtin.include_tasks: ./Tasks/docker.yml
-      vars:
-        application: "heimdall"
-      when: inventory_hostname == "Docker-1"
-
-    - name: Deploy HomePage
-      ansible.builtin.include_tasks: ./Tasks/docker.yml
-      vars:
-        application: "homepage-1"
-        restart: true
-      when: inventory_hostname == "Docker-1"
-
-    - name: Deploy Gitea
-      ansible.builtin.include_tasks: ./Tasks/docker.yml
-      vars:
-        application: "gitea"
-      when: inventory_hostname == "Docker-1"
-
-    - name: Deploy Pdf
-      ansible.builtin.include_tasks: ./Tasks/docker.yml
-      vars:
-        application: "pdf"
-      when: inventory_hostname == "Docker-1"
-
-    - name: Deploy Healthchecks
-      ansible.builtin.include_tasks: ./Tasks/docker.yml
-      vars:
-        application: "healthchecks"
-      when: inventory_hostname == "Docker-1"
-
-    - name: Deploy Monitoring
-      ansible.builtin.include_tasks: ./Tasks/docker.yml
-      vars:
-        application: "monitoring"
-        restart: true
-      when: inventory_hostname == "Docker-1"
-
-    - name: Deploy Portainer
-      ansible.builtin.include_tasks: ./Tasks/docker.yml
-      vars:
-        application: "portainer"
-      when: inventory_hostname == "Docker-1"
-
-    - name: Deploy Upsnap
-      ansible.builtin.include_tasks: ./Tasks/docker.yml
-      vars:
-        application: "upsnap"
-      when: inventory_hostname == "Docker-1"
-
-    - name: Deploy HomeAssistant
-      ansible.builtin.include_tasks: ./Tasks/docker.yml
-      vars:
-        application: "homeassistant"
-      when: inventory_hostname == "Docker-1"
-
-    - name: Deploy Satisfactory
-      ansible.builtin.include_tasks: ./Tasks/docker.yml
-      vars:
-        application: "satisfactory"
-      when: inventory_hostname == "Satisfactory"
-
-    - name: Deploy Dns-update
-      ansible.builtin.include_tasks: ./Tasks/docker.yml
-      vars:
-        application: "dns-update"
-        restart: true
-      when: inventory_hostname == "Docker-1"
-
-    - name: Deploy Open-webui
-      ansible.builtin.include_tasks: ./Tasks/docker.yml
-      vars:
-        application: "open-webui"
-      when: inventory_hostname == "Docker-1"
-
-    - name: Deploy Joke-de-jean
-      ansible.builtin.include_tasks: ./Tasks/docker.yml
-      vars:
-        application: "joke-de-jean"
-        restart: true
-        pull_latest: true
-      when: inventory_hostname == "Docker-1"
+        application: "{{ item.name }}"
+        restart: "{{ item.restart | default(omit) }}"
+        pull_latest: "{{ item.pull_latest | default(omit) }}"
