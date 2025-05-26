@@ -24,7 +24,7 @@
     - name: Deploy HomePage
       ansible.builtin.include_tasks: ./Tasks/docker.yml
       vars:
-        application: "homepage"
+        application: "homepage-2"
         restart: true
       when: inventory_hostname == "Docker-2"
 

@@ -1,0 +1,36 @@
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    restart: unless-stopped   # <---- Added this line
+    # Remove "ports:" unless you need local direct access (Traefik is handling HTTP/S)
+    volumes:
+      - ./settings.yaml:/app/config/settings.yaml:ro
+      - ./services.yaml:/app/config/services.yaml:ro
+      - ./widgets.yaml:/app/config/widgets.yaml:ro
+      - ./bookmarks.yaml:/app/config/bookmarks.yaml:ro
+      - ./docker.yaml:/app/config/docker.yaml:ro
+      - /var/run/docker.sock:/var/run/docker.sock  # (optional) For docker integrations
+    environment:
+      HOMEPAGE_ALLOWED_HOSTS: homepage.docker-1.gwebs.ca,homepage.docker-2.gwebs.ca
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.homepage.rule=Host(`homepage.docker-1.gwebs.ca`) || Host(`homepage.docker-2.gwebs.ca`)"
+      - "traefik.http.routers.homepage.entrypoints=websecure"
+      - "traefik.http.routers.homepage.tls=true"
+      - "traefik.http.routers.homepage.tls.certresolver=le"
+      - "traefik.http.routers.homepage.tls.domains[0].main=docker-1.gwebs.ca"
+      - "traefik.http.routers.homepage.tls.domains[0].sans=*.docker-1.gwebs.ca"
+      - "traefik.http.routers.homepage.tls.domains[1].main=docker-2.gwebs.ca"
+      - "traefik.http.routers.homepage.tls.domains[1].sans=*.docker-2.gwebs.ca"
+      - "traefik.http.routers.homepage-insecure.rule=Host(`homepage.docker-1.gwebs.ca`) || Host(`homepage.docker-2.gwebs.ca`)"
+      - "traefik.http.routers.homepage-insecure.entrypoints=web"
+      - "traefik.http.routers.homepage-insecure.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.services.homepage.loadbalancer.server.port=3000"
+    networks:
+      - traefik_default
+
+networks:
+  traefik_default:
+    external: true

@@ -28,57 +28,28 @@ hideQuickLaunch: true     # <<< Hides the quicklaunch/search bar entirely
 #   hideVisitURL: true
 
 layout:
-  Docker-1:
-    tab: Docker-1
-    icon: mdi-docker
-    style: column
-    columns: 1
-    Media-1:
-      icon: mdi-play-circle-outline
-      style: row
-      columns: 4
-    Infrastructure-1:
-      icon: mdi-server
-      style: row
-      columns: 4
-    Monitoring-1:
-      icon: mdi-chart-areaspline
-      style: row
-      columns: 4
-    Tools-1:
-      icon: mdi-tools
-      style: row
-      columns: 4
-    Network-1:
-      icon: mdi-shield-check-outline
-      style: row
-      columns: 4
-    Home Automation-1:
-      icon: mdi-home-assistant
-      style: row
-      columns: 4
   Docker-2:
     tab: Docker-2
     icon: mdi-docker
     style: column
     columns: 1
-    Infrastructure-2:
+    Infrastructure:
       icon: mdi-server
       style: row
       columns: 4
-    Tools-2:
+    Tools:
       icon: mdi-tools
       style: row
       columns: 4
-    Monitoring-2:
+    Monitoring:
       icon: mdi-chart-areaspline
       style: row
       columns: 4
-    Home Automation-2:
+    Home Automation:
       icon: mdi-home-assistant
       style: row
       columns: 4
-    Network-2:
+    Network:
       icon: mdi-shield-check-outline
       style: row
       columns: 4
