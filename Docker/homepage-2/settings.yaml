@@ -34,7 +34,6 @@ hideQuickLaunch: true     # <<< Hides the quicklaunch/search bar entirely
 
 layout:
   Docker-2:
-    tab: Docker-2
     icon: mdi-docker
     style: column
     columns: 1
