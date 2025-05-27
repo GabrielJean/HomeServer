@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  setup:
+  run-pve-1:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -22,7 +22,7 @@ jobs:
           pip install ansible
 
       - name: Create ansible_vault_password_file
-        run: echo "${{secrets.ANSIBLE_VAULT_DOCKER}}" > .vault_pass.txt
+        run: echo "${{ secrets.ANSIBLE_VAULT_DOCKER }}" > .vault_pass.txt
         working-directory: Ansible
 
       - name: Decrypt inventory.ini
@@ -37,42 +37,12 @@ jobs:
         run: chmod 600 private_key
         working-directory: Ansible
 
-      - name: Upload Ansible folder
-        uses: actions/upload-artifact@v4
-        with:
-          name: ansible-folder
-          path: Ansible/
-
-  run-pve-1:
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: Tailscale
         uses: tailscale/github-action@v3
         with:
           oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
           oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
           tags: tag:ci
-
-      - name: Install Ansible
-        run: |
-          python -m pip install --upgrade pip
-          pip install ansible
-
-      - name: Create ansible_vault_password_file
-        run: echo "${{ secrets.ANSIBLE_VAULT_DOCKER }}" > .vault_pass.txt
-        working-directory: Ansible
-
-      - name: Retrieve SSH private key
-        run: echo "${{ secrets.CI_PRIVATE_KEY }}" > private_key
-        working-directory: Ansible
-
-      - name: Set permissions for private key
-        run: chmod 600 private_key
-        working-directory: Ansible
 
       - name: Run Ansible Playbook PVE-1
         env:
@@ -81,18 +51,10 @@ jobs:
         working-directory: Ansible
 
   run-pve-2:
-    needs: setup
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Tailscale
-        uses: tailscale/github-action@v3
-        with:
-          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
-          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
-          tags: tag:ci
 
       - name: Install Ansible
         run: |
@@ -103,6 +65,10 @@ jobs:
         run: echo "${{ secrets.ANSIBLE_VAULT_DOCKER }}" > .vault_pass.txt
         working-directory: Ansible
 
+      - name: Decrypt inventory.ini
+        run: ansible-vault decrypt --vault-password-file .vault_pass.txt inventory.ini
+        working-directory: Ansible
+
       - name: Retrieve SSH private key
         run: echo "${{ secrets.CI_PRIVATE_KEY }}" > private_key
         working-directory: Ansible
@@ -110,6 +76,13 @@ jobs:
       - name: Set permissions for private key
         run: chmod 600 private_key
         working-directory: Ansible
+
+      - name: Tailscale
+        uses: tailscale/github-action@v3
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
 
       - name: Run Ansible Playbook PVE-2
         env:

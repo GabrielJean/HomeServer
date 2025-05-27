@@ -45,11 +45,18 @@
         group: "ci"
         mode: '0700'
 
+    - name: Remove all existing authorized keys for ci user
+      file:
+        path: "/home/ci/.ssh/authorized_keys"
+        state: absent
+        owner: "ci"
+        group: "ci"
+
     - name: Set authorized key for ci user
       ansible.posix.authorized_key:
         user: "ci"
         state: present
-        key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJKs8VG/z6RqU+mf2Dc/t2nrTLPgBqprJo5TtNRLTwdr"
+        key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJsHP1ihWUwQOSIrUackHvv5PR9DI3VWHM2cF0Gh6wMA"
 
     - name: Set permissions for the home directory of ci user
       file:
