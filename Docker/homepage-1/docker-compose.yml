@@ -10,6 +10,7 @@ services:
       - ./widgets.yaml:/app/config/widgets.yaml:ro
       - ./bookmarks.yaml:/app/config/bookmarks.yaml:ro
       - ./docker.yaml:/app/config/docker.yaml:ro
+      - /Apps/HomePage:/app/data  # Persistent data storage
       - /var/run/docker.sock:/var/run/docker.sock  # (optional) For docker integrations
     environment:
       HOMEPAGE_ALLOWED_HOSTS: homepage.docker-1.gwebs.ca,homepage.docker-2.gwebs.ca

@@ -2,11 +2,34 @@
 # https://gethomepage.dev/configs/info-widgets/
 
 - resources:
+    label: CPU
     cpu: true
-    memory: true
-    disk: /
 
-- search:
-    provider: google
-    target: _blank
+- resources:
+    label: Uptime
+    uptime: true
+
+- resources:
+    label: Network
+    network: true
+
+- resources:
+    label: Memory
+    expanded: true
+    memory: true
+
+- resources:
+    label: /
+    expanded: true
+    disk:
+      - /
+
+- resources:
+    label: /Apps
+    expanded: true
+    disk:
+      - /app/data
+# - search:
+#     provider: google
+#     target: _blank
 
