@@ -4,6 +4,5 @@ services:
     container_name: jokedejean
     restart: unless-stopped
     volumes:
-      # Mount config.json as read-only
-      - ./config.json:/app/config.json:ro
-      - /Apps/jokedejean:/app/data/
+      - ./config.json:/app/discordbot/config.json:ro
+      - /Apps/jokedejean:/app/discordbot/data/
