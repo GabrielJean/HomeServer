@@ -3,6 +3,7 @@
   hosts: linux_vms
   become: true
   gather_facts: true
+  strategy: free    # <--- Add this line
   tasks:
     - name: Update apt cache
       ansible.builtin.apt:
@@ -22,5 +23,4 @@
     - name: Run 'docker system prune -a'
       ansible.builtin.command: docker system prune -af
       when: docker_stat.stat.exists
-      # Optionally, become: true if docker needs sudo
-      # become: true
+      # become: true # Uncomment if needed

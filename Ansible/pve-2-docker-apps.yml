@@ -1,6 +1,7 @@
 - name: Deploy Docker Applications for PVE-2
   hosts: all
   become: true
+  strategy: free       # Use free strategy for parallel execution
   vars:
     docker_apps_by_host:
       Docker-2:
