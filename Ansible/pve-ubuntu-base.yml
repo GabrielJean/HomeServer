@@ -6,8 +6,8 @@
     - name: Install a list of packages
       ansible.builtin.apt:
         pkg:
-        - qemu-guest-agent
-        - prometheus-node-exporter
+          - qemu-guest-agent
+          - prometheus-node-exporter
 
     - name: Ensure group "docker" exists
       group:
@@ -28,14 +28,13 @@
         line: '%sudo ALL=(ALL) NOPASSWD: ALL'
         validate: 'visudo -cf %s'
 
-
     - name: Create ci user
       user:
         name: "ci"
         state: present
         shell: /bin/bash
-        groups: "sudo,docker"  # Add user to both sudo and docker groups
-        append: yes  # Ensure the user is not removed from other groups
+        groups: "sudo,docker"
+        append: yes
 
     - name: Create .ssh directory for ci user
       file:
@@ -65,7 +64,6 @@
         owner: "ci"
         group: "ci"
         mode: '0755'
-
 
     ## Install ZSH
     - name: Install ZSH
@@ -106,3 +104,7 @@
       ansible.builtin.user:
         name: "{{ ansible_user }}"
         shell: /bin/zsh
+
+    ## Clean old journal logs
+    - name: Vacuum journal logs older than 14 days
+      command: journalctl --vacuum-time=14d
