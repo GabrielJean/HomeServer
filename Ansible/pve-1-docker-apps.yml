@@ -19,6 +19,7 @@
         - { name: dns-update, restart: true }
         - { name: open-webui }
         - { name: joke-de-jean, restart: true, pull_latest: true }
+        - { name: code-server }
       DNS-1:
         - { name: adguardhome }
       Plex-1:
