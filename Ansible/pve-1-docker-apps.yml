@@ -1,7 +1,8 @@
 - name: Deploy Docker Applications for PVE-1
   hosts: all
   become: true
-  strategy: free       # <--- add this line
+  strategy: free
+  ignore_unreachable: yes
   vars:
     docker_apps_by_host:
       Docker-1:

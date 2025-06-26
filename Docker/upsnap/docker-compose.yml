@@ -1,7 +1,7 @@
 services:
   upsnap:
     container_name: upsnap
-    image: ghcr.io/seriousm4x/upsnap:5 # images are also available on docker hub: seriousm4x/upsnap:4
+    image: ghcr.io/seriousm4x/upsnap:5
     network_mode: host
     restart: unless-stopped
     volumes:
@@ -12,6 +12,7 @@ services:
       interval: 10s
     labels:
       - "traefik.enable=true"
+      - "traefik.http.services.upsnap.loadbalancer.server.port=5000"
       - "traefik.http.routers.upsnap.rule=Host(`upsnap.docker-1.gwebs.ca`) || Host(`upsnap.docker-2.gwebs.ca`)"
       - "traefik.http.routers.upsnap.entrypoints=websecure"
       - "traefik.http.routers.upsnap.tls=true"
@@ -20,5 +21,4 @@ services:
       - "traefik.http.routers.upsnap-insecure.entrypoints=web"
       - "traefik.http.routers.upsnap-insecure.middlewares=redirect-to-https"
       - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
-      - "traefik.http.services.upsnap.loadbalancer.server.port=5000"
       - "traefik.http.services.upsnap.loadbalancer.server.scheme=http"
