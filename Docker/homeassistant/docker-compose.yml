@@ -8,8 +8,5 @@ services:
     restart: unless-stopped
     privileged: true
     network_mode: host
-    # labels:
-    #   - "traefik.enable=true"
-    #   - "traefik.http.routers.homeassistant.rule=Host(`homeassistant.docker-1.gwebs.ca`)"
-    #   - "traefik.http.routers.homeassistant.entrypoints=websecure"
-    #   - "traefik.http.routers.homeassistant.tls=true"
+    devices:
+      - /dev/serial/by-id/usb-Itead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_V2_9a520d8a0274ef118d78e71e313510fd-if00-port0:/dev/ttyUSB0
