@@ -3,6 +3,8 @@ services:
     image: gitea.docker-1.gwebs.ca/gabriel/jokedejean:latest
     container_name: jokedejean
     restart: unless-stopped
+    environment:
+      - LOAD_REDDIT=true
     volumes:
       - ./config.json:/app/discordbot/config.json:ro
       - /Apps/jokedejean:/app/discordbot/data/
