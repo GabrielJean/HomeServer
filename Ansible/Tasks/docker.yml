@@ -1,33 +1,18 @@
-- name: Skip if host is unreachable
-  meta: end_host
-  when: inventory_hostname not in ansible_play_hosts
-
-- name: Check if Docker is installed
-  ansible.builtin.command: docker --version
-  register: docker_installed
-  ignore_errors: true
-
-- name: Download Docker installation script
-  ansible.builtin.get_url:
-    url: https://get.docker.com
-    dest: /tmp/get-docker.sh
-    mode: '0755'
-  when: docker_installed.rc != 0
-
-- name: Run Docker installation script
-  ansible.builtin.command: sh /tmp/get-docker.sh
-  when: docker_installed.rc != 0
+# Tasks/docker.yml
 
 - name: Create application directory for {{ application }}
   ansible.builtin.file:
     path: /home/gabriel/{{ application }}
     state: directory
 
-- name: Copy application folder for {{ application }}
+- name: Copy application folder for {{ application }} only if different
   ansible.builtin.copy:
     src: ../Docker/{{ application }}/
     dest: /home/gabriel/{{ application }}
     decrypt: true
+    mode: preserve
+    force: true  # Only overwrites if changed
+    remote_src: no
 
 - name: Build docker compose command for {{ application }}
   ansible.builtin.set_fact:
@@ -40,7 +25,18 @@
   ansible.builtin.debug:
     msg: "{{ docker_compose_command }}"
 
-- name: Run docker-compose up -d for {{ application }}
+- name: Run docker-compose up asynchronously for {{ application }}
   ansible.builtin.command: "{{ docker_compose_command }}"
   args:
     chdir: /home/gabriel/{{ application }}/
+  async: 300
+  poll: 0
+  register: compose_async
+
+- name: Wait for docker-compose up to finish for {{ application }}
+  ansible.builtin.async_status:
+    jid: "{{ compose_async.ansible_job_id }}"
+  register: async_poll
+  until: async_poll.finished
+  retries: 10
+  delay: 5
