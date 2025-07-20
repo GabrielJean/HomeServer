@@ -8,7 +8,7 @@
     docker_apps_by_host:
       Docker-1:
         - { name: traefik }
-        - { name: teamspeak }
+        # - { name: teamspeak }
         - { name: plexapps }
         - { name: heimdall }
         - { name: homepage-1, restart: true }
