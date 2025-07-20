@@ -1,9 +1,9 @@
----
 - name: Update Ubuntu servers
   hosts: linux_vms
   become: true
   gather_facts: true
-  strategy: free    # <--- Add this line
+  strategy: free
+  ignore_unreachable: true       # <--- Add this line
   tasks:
     - name: Update apt cache
       ansible.builtin.apt:
