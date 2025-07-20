@@ -40,3 +40,4 @@
   until: async_poll.finished
   retries: 10
   delay: 5
+  when: compose_async.ansible_job_id is defined
