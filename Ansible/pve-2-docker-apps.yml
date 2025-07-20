@@ -18,13 +18,14 @@
         - { name: adguardhome }
 
   tasks:
-    - name: Skip if host is unreachable
+    - name: Skip all tasks if host is unreachable
       meta: end_host
-      when: inventory_hostname not in ansible_play_hosts
+      when: ansible_unreachable is defined and ansible_unreachable
 
     - name: Check if host has docker apps
       ansible.builtin.set_fact:
-        has_docker_apps: "{{ inventory_hostname in docker_apps_by_host and docker_apps_by_host[inventory_hostname] | length > 0 }}"
+        has_docker_apps: "{{ inventory_hostname in docker_apps_by_host and docker_apps_by_host[inventory_hostname]|length > 0 }}"
+      when: not (ansible_unreachable is defined and ansible_unreachable)
 
     - name: Ensure Docker is installed (only if needed)
       ansible.builtin.include_tasks: ./Tasks/install_docker.yml
