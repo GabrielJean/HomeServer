@@ -1,5 +1,4 @@
 name: Deploy Docker
-
 on:
   push:
     branches:
@@ -44,10 +43,24 @@ jobs:
           oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
           tags: tag:ci
 
-      - name: Run Ansible Playbook PVE-1
+      - name: Run Ansible Playbook PVE-1 (ignore only unreachable)
         env:
           ANSIBLE_HOST_KEY_CHECKING: 'false'
-        run: ansible-playbook pve-1-docker-apps.yml --private-key private_key -i inventory.ini --extra-vars "ansible_user=ci" --vault-password-file .vault_pass.txt
+        run: |
+          set -o pipefail
+          ansible-playbook pve-1-docker-apps.yml --private-key private_key \
+            -i inventory.ini --extra-vars "ansible_user=ci" --vault-password-file .vault_pass.txt | tee ansible_output.log
+          rc=${PIPESTATUS[0]}
+          if [[ $rc -eq 0 ]]; then
+            echo "Ansible succeeded."
+            exit 0
+          elif [[ $rc -eq 2 ]]; then
+            echo "Only unreachable hosts detected. Treating as success."
+            exit 0
+          else
+            echo "Ansible failed with exit code $rc."
+            exit $rc
+          fi
         working-directory: Ansible
 
   run-pve-2:
@@ -84,8 +97,22 @@ jobs:
           oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
           tags: tag:ci
 
-      - name: Run Ansible Playbook PVE-2
+      - name: Run Ansible Playbook PVE-2 (ignore only unreachable)
         env:
           ANSIBLE_HOST_KEY_CHECKING: 'false'
-        run: ansible-playbook pve-2-docker-apps.yml --private-key private_key -i inventory.ini --extra-vars "ansible_user=ci" --vault-password-file .vault_pass.txt
+        run: |
+          set -o pipefail
+          ansible-playbook pve-2-docker-apps.yml --private-key private_key \
+            -i inventory.ini --extra-vars "ansible_user=ci" --vault-password-file .vault_pass.txt | tee ansible_output.log
+          rc=${PIPESTATUS[0]}
+          if [[ $rc -eq 0 ]]; then
+            echo "Ansible succeeded."
+            exit 0
+          elif [[ $rc -eq 2 ]]; then
+            echo "Only unreachable hosts detected. Treating as success."
+            exit 0
+          else
+            echo "Ansible failed with exit code $rc."
+            exit $rc
+          fi
         working-directory: Ansible

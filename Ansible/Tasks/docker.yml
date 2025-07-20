@@ -1,3 +1,7 @@
+- name: Skip if host is unreachable
+  meta: end_host
+  when: inventory_hostname not in ansible_play_hosts
+
 - name: Check if Docker is installed
   ansible.builtin.command: docker --version
   register: docker_installed
