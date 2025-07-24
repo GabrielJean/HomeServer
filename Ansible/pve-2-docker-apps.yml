@@ -3,7 +3,6 @@
   become: true
   strategy: free
   ignore_unreachable: yes
-
   vars:
     docker_apps_by_host:
       Docker-2:
@@ -16,21 +15,34 @@
         - { name: upsnap }
       DNS-2:
         - { name: adguardhome }
-
+  pre_tasks:
+    - name: Ensure cadvisor is installed on all docker hosts
+      ansible.builtin.set_fact:
+        docker_apps_by_host: >-
+          {{
+            docker_apps_by_host |
+            dict2items |
+            map('combine',
+              {'key': item.key,
+               'value': (item.value + [ {'name': 'cadvisor'} ]) |
+                         unique(attribute='name')
+              })
+              | list | items2dict
+          }}
+      vars:
+        item: "{{ item }}"
+      loop: "{{ docker_apps_by_host | dict2items }}"
   tasks:
     - name: Skip all tasks if host is unreachable
       meta: end_host
       when: ansible_unreachable is defined and ansible_unreachable
-
     - name: Check if host has docker apps
       ansible.builtin.set_fact:
         has_docker_apps: "{{ inventory_hostname in docker_apps_by_host and docker_apps_by_host[inventory_hostname]|length > 0 }}"
       when: not (ansible_unreachable is defined and ansible_unreachable)
-
     - name: Ensure Docker is installed (only if needed)
       ansible.builtin.include_tasks: ./Tasks/install_docker.yml
       when: has_docker_apps
-
     - name: Deploy docker apps (only if host has apps)
       ansible.builtin.include_tasks: ./Tasks/docker.yml
       loop: "{{ docker_apps_by_host[inventory_hostname] | default([]) }}"
