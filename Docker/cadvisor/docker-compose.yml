@@ -12,7 +12,5 @@ services:
       - /var/lib/docker/:/var/lib/docker:ro
       - /dev/disk/:/dev/disk:ro
     devices:
-      - /dev/kmsg
-    deploy:
-      restart_policy:
-        condition: any
+      - /dev/kmsg:/dev/kmsg
+    restart: unless-stopped
