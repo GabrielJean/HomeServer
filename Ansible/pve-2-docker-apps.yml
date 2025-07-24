@@ -4,10 +4,9 @@
   strategy: free
   ignore_unreachable: yes
 
-  # All app mapping defined & patched in pre_tasks!
   pre_tasks:
     - name: Define docker apps by host (without cadvisor)
-      ansible.builtin.set_fact:
+      set_fact:
         _docker_apps_by_host:
           Docker-2:
             - { name: traefik }
@@ -20,21 +19,21 @@
           DNS-2:
             - { name: adguardhome }
 
-    - name: Ensure cadvisor is installed on all docker hosts
-      ansible.builtin.set_fact:
+    - name: Ensure cadvisor is present in docker apps for all hosts
+      set_fact:
         docker_apps_by_host: >-
           {{
-            _docker_apps_by_host
-            | dict2items
-            | map('combine',
-                {'key': item.key,
-                  'value': (item.value + [ {'name': 'cadvisor'} ]) | unique(attribute='name')
-                })
-            | list | items2dict
+            _docker_apps_by_host |
+            dict(
+              (host,
+               (_docker_apps_by_host[host]
+                + ([{'name': 'cadvisor'}]
+                   if 'cadvisor' not in (_docker_apps_by_host[host]|map(attribute='name')|list)
+                   else [])
+               )
+              ) for host in _docker_apps_by_host
+            )
           }}
-      vars:
-        item: "{{ item }}"
-      loop: "{{ _docker_apps_by_host | dict2items }}"
 
   tasks:
     - name: Skip all tasks if host is unreachable
@@ -42,16 +41,16 @@
       when: ansible_unreachable is defined and ansible_unreachable
 
     - name: Check if host has docker apps
-      ansible.builtin.set_fact:
+      set_fact:
         has_docker_apps: "{{ inventory_hostname in docker_apps_by_host and docker_apps_by_host[inventory_hostname]|length > 0 }}"
       when: not (ansible_unreachable is defined and ansible_unreachable)
 
     - name: Ensure Docker is installed (only if needed)
-      ansible.builtin.include_tasks: ./Tasks/install_docker.yml
+      include_tasks: ./Tasks/install_docker.yml
       when: has_docker_apps | default(false)
 
     - name: Deploy docker apps (only if host has apps)
-      ansible.builtin.include_tasks: ./Tasks/docker.yml
+      include_tasks: ./Tasks/docker.yml
       loop: "{{ docker_apps_by_host[inventory_hostname] | default([]) }}"
       loop_control:
         loop_var: item
