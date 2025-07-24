@@ -3,48 +3,51 @@
   become: true
   strategy: free
   ignore_unreachable: yes
-  vars:
-    docker_apps_by_host:
-      Docker-1:
-        - { name: traefik }
-        # - { name: teamspeak }
-        - { name: plexapps }
-        - { name: heimdall }
-        - { name: homepage-1, restart: true }
-        - { name: gitea }
-        - { name: pdf }
-        - { name: healthchecks }
-        - { name: monitoring, restart: true }
-        - { name: portainer }
-        - { name: upsnap }
-        # - { name: homeassistant }
-        - { name: dns-update, restart: true }
-        - { name: open-webui }
-        - { name: joke-de-jean, restart: true, pull_latest: true }
-        - { name: code-server }
-      DNS-1:
-        - { name: adguardhome }
-      Plex-1:
-        - { name: plex }
-      Satisfactory:
-        - { name: satisfactory }
+
   pre_tasks:
+    - name: Define docker apps by host (without cadvisor)
+      ansible.builtin.set_fact:
+        _docker_apps_by_host:
+          Docker-1:
+            - { name: traefik }
+            # - { name: teamspeak }
+            - { name: plexapps }
+            - { name: heimdall }
+            - { name: homepage-1, restart: true }
+            - { name: gitea }
+            - { name: pdf }
+            - { name: healthchecks }
+            - { name: monitoring, restart: true }
+            - { name: portainer }
+            - { name: upsnap }
+            # - { name: homeassistant }
+            - { name: dns-update, restart: true }
+            - { name: open-webui }
+            - { name: joke-de-jean, restart: true, pull_latest: true }
+            - { name: code-server }
+          DNS-1:
+            - { name: adguardhome }
+          Plex-1:
+            - { name: plex }
+          Satisfactory:
+            - { name: satisfactory }
+
     - name: Ensure cadvisor is installed on all docker hosts
       ansible.builtin.set_fact:
         docker_apps_by_host: >-
           {{
-            docker_apps_by_host |
-            dict2items |
-            map('combine',
-              {'key': item.key,
-               'value': (item.value + [ {'name': 'cadvisor'} ]) |
-                        unique(attribute='name')
-              })
+            _docker_apps_by_host
+            | dict2items
+            | map('combine',
+                {'key': item.key,
+                  'value': (item.value + [ {'name': 'cadvisor'} ]) | unique(attribute='name')
+                })
             | list | items2dict
           }}
       vars:
         item: "{{ item }}"
-      loop: "{{ docker_apps_by_host | dict2items }}"
+      loop: "{{ _docker_apps_by_host | dict2items }}"
+
   tasks:
     - name: Skip all tasks if host is unreachable
       meta: end_host
