@@ -2,109 +2,121 @@
   order: sorted
   become: true
 
+  vars:
+    main_user: gabriel
+
   tasks:
-    - name: Install a list of packages
+
+    - name: "Ensure package cache is fresh"
+      ansible.builtin.apt:
+        update_cache: yes
+      changed_when: false
+
+    - name: "Install qemu-guest-agent and prometheus-node-exporter"
       ansible.builtin.apt:
         pkg:
           - qemu-guest-agent
           - prometheus-node-exporter
+        state: present
 
-    - name: Ensure group "docker" exists
-      group:
+    - name: "Ensure group 'docker' exists"
+      ansible.builtin.group:
         name: docker
         state: present
 
-    - name: Add user to docker group
-      user:
-        name: gabriel
+    - name: "Add {{ main_user }} to docker group"
+      ansible.builtin.user:
+        name: "{{ main_user }}"
         groups: docker
         append: yes
 
-    - name: Allow 'sudo' group to have passwordless sudo
-      lineinfile:
+    - name: "Allow 'sudo' group to have passwordless sudo"
+      ansible.builtin.lineinfile:
         dest: /etc/sudoers
         state: present
         regexp: '^%sudo'
         line: '%sudo ALL=(ALL) NOPASSWD: ALL'
         validate: 'visudo -cf %s'
 
-    - name: Create ci user
-      user:
-        name: "ci"
+    - name: "Ensure ci user exists (with sudo and docker groups, bash shell)"
+      ansible.builtin.user:
+        name: ci
         state: present
         shell: /bin/bash
-        groups: "sudo,docker"
+        groups: sudo,docker
         append: yes
 
-    - name: Create .ssh directory for ci user
-      file:
+    - name: "Create .ssh directory for ci user"
+      ansible.builtin.file:
         path: "/home/ci/.ssh"
         state: directory
-        owner: "ci"
-        group: "ci"
+        owner: ci
+        group: ci
         mode: '0700'
 
-    - name: Remove all existing authorized keys for ci user
-      file:
+    - name: "Remove all existing authorized keys for ci user (WARNING: this deletes ALL keys!)"
+      ansible.builtin.file:
         path: "/home/ci/.ssh/authorized_keys"
         state: absent
-        owner: "ci"
-        group: "ci"
+        owner: ci
+        group: ci
 
-    - name: Set authorized key for ci user
+    - name: "Set authorized key for ci user"
       ansible.posix.authorized_key:
-        user: "ci"
+        user: ci
         state: present
         key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJsHP1ihWUwQOSIrUackHvv5PR9DI3VWHM2cF0Gh6wMA"
 
-    - name: Set permissions for the home directory of ci user
-      file:
+    - name: "Set permissions for the home directory of ci user"
+      ansible.builtin.file:
         path: "/home/ci"
         state: directory
-        owner: "ci"
-        group: "ci"
+        owner: ci
+        group: ci
         mode: '0755'
 
-    ## Install ZSH
-    - name: Install ZSH
+    - name: "Install ZSH"
       ansible.builtin.apt:
         name: zsh
         state: present
-        update_cache: yes
 
-    - name: Check if prezto directory exists
-      stat:
-        path: "/home/gabriel/.zprezto"
+    - name: "Check if prezto directory exists for {{ main_user }}"
+      ansible.builtin.stat:
+        path: "/home/{{ main_user }}/.zprezto"
       register: prezto_dir
       become: false
 
-    - name: Clone prezto if it doesn't exist
+    - name: "Clone prezto if it doesn't exist"
       shell: >
         zsh -c 'git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"'
+      args:
+        chdir: "/home/{{ main_user }}"
       when: prezto_dir.stat.exists == False
       become: false
 
-    - name: Set up prezto runcoms
+    - name: "Set up prezto runcoms"
       shell: >
         zsh -c 'setopt EXTENDED_GLOB;
         for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do
           ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}";
         done'
+      args:
+        chdir: "/home/{{ main_user }}"
       become: false
       when: prezto_dir.stat.exists == False
 
-    - name: Enable bash completion in zshrc
-      lineinfile:
-        path: "/home/{{ ansible_user }}/.zshrc"
+    - name: "Enable bash completion in ~/.zshrc"
+      ansible.builtin.lineinfile:
+        path: "/home/{{ main_user }}/.zshrc"
         line: "autoload -U +X bashcompinit && bashcompinit"
         state: present
+        create: yes
       become: false
 
-    - name: Change default shell to ZSH
+    - name: "Change default shell to ZSH for {{ main_user }}"
       ansible.builtin.user:
-        name: "{{ ansible_user }}"
+        name: "{{ main_user }}"
         shell: /bin/zsh
 
-    ## Clean old journal logs
-    - name: Vacuum journal logs older than 14 days
-      command: journalctl --vacuum-time=14d
+    - name: "Vacuum journal logs older than 14 days"
+      ansible.builtin.command: journalctl --vacuum-time=14d
