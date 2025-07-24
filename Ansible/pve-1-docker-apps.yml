@@ -32,21 +32,26 @@
           Satisfactory:
             - { name: satisfactory }
 
+    - name: Initialize docker_apps_by_host
+      set_fact:
+        docker_apps_by_host: {}
+
     - name: Ensure cadvisor is present in docker apps for all hosts
       set_fact:
         docker_apps_by_host: >-
           {{
-            _docker_apps_by_host |
-            dict(
-              (host,
-               (_docker_apps_by_host[host]
-                + ([{'name': 'cadvisor'}]
-                   if 'cadvisor' not in (_docker_apps_by_host[host]|map(attribute='name')|list)
-                   else [])
-               )
-              ) for host in _docker_apps_by_host
-            )
+            docker_apps_by_host | combine({
+              item.key:
+                (
+                  item.value
+                  + ([{'name': 'cadvisor'}]
+                     if 'cadvisor' not in (item.value | map(attribute='name') | list)
+                     else []
+                   )
+                )
+            })
           }}
+      with_dict: "{{ _docker_apps_by_host }}"
 
   tasks:
     - name: Skip all tasks if host is unreachable
