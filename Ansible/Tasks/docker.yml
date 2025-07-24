@@ -10,7 +10,7 @@
     src: ../Docker/{{ application }}/
     dest: /home/gabriel/{{ application }}
     decrypt: true
-    mode: preserve
+    mode: '0755'
     force: true  # Only overwrites if changed
     remote_src: no
 
