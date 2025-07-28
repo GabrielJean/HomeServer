@@ -1,12 +1,12 @@
 ---
-
 - name: Ensure dependencies and Tailscale on all RKE2 hosts
   hosts: rke_cluster
   become: true
   gather_facts: true
   vars_files:
     - vars/ts.yml
-
+  vars:
+    ubuntu_codename: "{{ ansible_distribution_release }}"
   tasks:
     - name: Ensure apt dependencies
       ansible.builtin.apt:
@@ -18,14 +18,16 @@
 
     - name: Setup Tailscale apt signing key and repo
       ansible.builtin.apt_key:
-        url: https://pkgs.tailscale.com/stable/ubuntu/focal.noarmor.gpg
+        url: "https://pkgs.tailscale.com/stable/ubuntu/{{ ubuntu_codename }}.noarmor.gpg"
         state: present
+      when: ansible_distribution == "Ubuntu"
 
     - name: Add Tailscale apt repository
       ansible.builtin.apt_repository:
-        repo: deb https://pkgs.tailscale.com/stable/ubuntu focal main
+        repo: "deb https://pkgs.tailscale.com/stable/ubuntu {{ ubuntu_codename }} main"
         state: present
         update_cache: yes
+      when: ansible_distribution == "Ubuntu"
 
     - name: Install Tailscale
       ansible.builtin.apt:
@@ -65,7 +67,6 @@
   gather_facts: false
   vars_files:
     - vars/ts.yml
-
   tasks:
     - name: Download and install RKE2 if not present
       stat:
@@ -150,7 +151,6 @@
   gather_facts: false
   vars_files:
     - vars/ts.yml
-
   tasks:
     - name: Wait for Master facts
       pause:
