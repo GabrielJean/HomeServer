@@ -8,10 +8,10 @@ data:
     global:
       checkNewVersion: false
       sendAnonymousUsage: false
-    
+
     serversTransport:
       insecureSkipVerify: true
-    
+
     entryPoints:
       web:
         address: ":80"
@@ -22,7 +22,7 @@ data:
               scheme: https
       websecure:
         address: ":443"
-    
+
     providers:
       kubernetesIngress:
         publishedService:
@@ -30,7 +30,7 @@ data:
       kubernetesCRD:
         enabled: true
         allowCrossNamespace: true
-    
+
     certificatesResolvers:
       letsencrypt:
         acme:
@@ -42,16 +42,16 @@ data:
           # caServer: https://acme-v02.api.letsencrypt.org/directory
           # For testing, use staging
           caServer: https://acme-staging-v02.api.letsencrypt.org/directory
-    
+
     log:
       level: INFO
-    
+
     accessLog: {}
-    
+
     api:
       dashboard: true
       insecure: false
-    
+
     metrics:
       prometheus:
         addEntryPointsLabels: true
@@ -143,7 +143,7 @@ metadata:
     metallb.universe.tf/address-pool: lan1-pool
 spec:
   type: LoadBalancer
-  loadBalancerIP: 192.168.10.200  # First IP from the pool
+  loadBalancerIP: 192.168.10.29  # First IP from the pool
   ports:
     - name: web
       port: 80
@@ -166,7 +166,7 @@ metadata:
     metallb.universe.tf/address-pool: lan2-pool
 spec:
   type: LoadBalancer
-  loadBalancerIP: 192.168.15.200  # First IP from the pool
+  loadBalancerIP: 192.168.15.29  # First IP from the pool
   ports:
     - name: web
       port: 80
