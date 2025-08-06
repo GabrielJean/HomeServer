@@ -1,0 +1,7 @@
+pm_api_url      = "https://proxmox.example.com:8006/api2/json"
+pm_user         = "root@pam"
+pm_password     = "yourpassword"
+pm_node         = "proxmox1"
+template_name   = "Ubuntu-Cloud"
+ssh_public_key  = "~/.ssh/id_rsa.pub"
+ci_user         = "gabriel"
