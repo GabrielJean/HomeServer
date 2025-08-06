@@ -1,0 +1,196 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: traefik-config
+  namespace: traefik-system
+data:
+  traefik.yml: |
+    global:
+      checkNewVersion: false
+      sendAnonymousUsage: false
+
+    serversTransport:
+      insecureSkipVerify: true
+
+    entryPoints:
+      web:
+        address: ":80"
+        http:
+          redirections:
+            entrypoint:
+              to: websecure
+              scheme: https
+      websecure:
+        address: ":443"
+
+    providers:
+      kubernetesIngress:
+        publishedService:
+          enabled: true
+      kubernetesCRD:
+        enabled: true
+        allowCrossNamespace: true
+
+    certificatesResolvers:
+      letsencrypt:
+        acme:
+          email: your-email@example.com  # Change this to your email
+          storage: /data/acme.json
+          httpChallenge:
+            entryPoint: web
+          # Uncomment for production
+          # caServer: https://acme-v02.api.letsencrypt.org/directory
+          # For testing, use staging
+          caServer: https://acme-staging-v02.api.letsencrypt.org/directory
+
+    log:
+      level: INFO
+
+    accessLog: {}
+
+    api:
+      dashboard: true
+      insecure: false
+
+    metrics:
+      prometheus:
+        addEntryPointsLabels: true
+        addServicesLabels: true
+        addRoutersLabels: true
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traefik
+  namespace: traefik-system
+  labels:
+    app: traefik
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: traefik
+  template:
+    metadata:
+      labels:
+        app: traefik
+    spec:
+      serviceAccountName: traefik
+      containers:
+        - name: traefik
+          image: traefik:v3.0
+          args:
+            - --configfile=/config/traefik.yml
+          ports:
+            - name: web
+              containerPort: 80
+            - name: websecure
+              containerPort: 443
+            - name: traefik
+              containerPort: 8080
+          volumeMounts:
+            - name: config
+              mountPath: /config
+              readOnly: true
+            - name: data
+              mountPath: /data
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+      volumes:
+        - name: config
+          configMap:
+            name: traefik-config
+        - name: data
+          emptyDir: {}
+      # Anti-affinity to spread across nodes
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - traefik
+              topologyKey: kubernetes.io/hostname
+---
+# Service for LAN 1 (192.168.10.x)
+apiVersion: v1
+kind: Service
+metadata:
+  name: traefik-lan1
+  namespace: traefik-system
+  annotations:
+    metallb.universe.tf/address-pool: lan1-pool
+spec:
+  type: LoadBalancer
+  loadBalancerIP: 192.168.10.29  # First IP from the pool
+  ports:
+    - name: web
+      port: 80
+      targetPort: web
+      protocol: TCP
+    - name: websecure
+      port: 443
+      targetPort: websecure
+      protocol: TCP
+  selector:
+    app: traefik
+---
+# Service for LAN 2 (192.168.15.x)
+apiVersion: v1
+kind: Service
+metadata:
+  name: traefik-lan2
+  namespace: traefik-system
+  annotations:
+    metallb.universe.tf/address-pool: lan2-pool
+spec:
+  type: LoadBalancer
+  loadBalancerIP: 192.168.15.29  # First IP from the pool
+  ports:
+    - name: web
+      port: 80
+      targetPort: web
+      protocol: TCP
+    - name: websecure
+      port: 443
+      targetPort: websecure
+      protocol: TCP
+  selector:
+    app: traefik
+---
+# Internal service for dashboard access
+apiVersion: v1
+kind: Service
+metadata:
+  name: traefik-dashboard
+  namespace: traefik-system
+spec:
+  type: ClusterIP
+  ports:
+    - name: traefik
+      port: 8080
+      targetPort: traefik
+      protocol: TCP
+  selector:
+    app: traefik
