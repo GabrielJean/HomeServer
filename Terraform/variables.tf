@@ -19,10 +19,10 @@ variable "pm_node1" {
   type        = string
 }
 
-variable "pm_node2" {
-  description = "Second Proxmox node (edge node, e.g. proxmox2)"
-  type        = string
-}
+# variable "pm_node2" {
+#   description = "Second Proxmox node (edge node, e.g. proxmox2)"
+#   type        = string
+# }
 
 variable "template_name" {
   description = "Name of the VM template to clone from"
