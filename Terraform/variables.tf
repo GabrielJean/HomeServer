@@ -1,3 +1,29 @@
+variable "azure_storage_account_name" {
+  description = "Azure Storage Account Name for Terraform backend"
+  type        = string
+}
+
+variable "azure_storage_account_key" {
+  description = "Azure Storage Account Key for Terraform backend"
+  type        = string
+  sensitive   = true
+}
+
+variable "azure_resource_group_name" {
+  description = "Azure Resource Group Name for Terraform backend"
+  type        = string
+}
+
+variable "azure_storage_container_name" {
+  description = "Azure Storage Container Name for Terraform backend"
+  type        = string
+}
+
+variable "azure_backend_key" {
+  description = "Azure backend state file key (blob name)"
+  type        = string
+  default     = "terraform.tfstate"
+}
 variable "pm_api_url" {
   description = "Proxmox API URL (e.g. https://proxmox.example.com:8006/api2/json)"
   type        = string
