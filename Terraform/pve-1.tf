@@ -3,6 +3,7 @@
 # Ubuntu-Cloud (TEMPLATE)
 # ==============================================
 resource "proxmox_virtual_environment_vm" "Ubuntu-Cloud" {
+  provider = proxmox.pve1
   name            = "Ubuntu-Cloud"
   node_name       = "pve-1"
   scsi_hardware   = "virtio-scsi-single"
@@ -128,6 +129,7 @@ resource "proxmox_virtual_environment_vm" "Ubuntu-Cloud" {
 # DNS-1
 # ==============================================
 resource "proxmox_virtual_environment_vm" "DNS-1" {
+  provider = proxmox.pve1
   name            = "DNS-1"
   node_name       = "pve-1"
   scsi_hardware   = "virtio-scsi-single"
@@ -277,6 +279,7 @@ resource "proxmox_virtual_environment_vm" "DNS-1" {
 # Plex-1
 # ==============================================
 resource "proxmox_virtual_environment_vm" "Plex-1" {
+  provider = proxmox.pve1
   name            = "Plex-1"
   node_name       = "pve-1"
   scsi_hardware   = "virtio-scsi-single"
@@ -437,6 +440,7 @@ resource "proxmox_virtual_environment_vm" "Plex-1" {
 # Docker-1
 # ==============================================
 resource "proxmox_virtual_environment_vm" "Docker-1" {
+  provider = proxmox.pve1
   name            = "Docker-1"
   node_name       = "pve-1"
   scsi_hardware   = "virtio-scsi-single"
@@ -586,6 +590,7 @@ resource "proxmox_virtual_environment_vm" "Docker-1" {
 # Satisfactory
 # ==============================================
 resource "proxmox_virtual_environment_vm" "Satisfactory" {
+  provider = proxmox.pve1
   name            = "Satisfactory"
   node_name       = "pve-1"
   scsi_hardware   = "virtio-scsi-single"
