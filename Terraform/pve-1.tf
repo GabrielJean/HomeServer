@@ -1,717 +1,160 @@
 
-# ==============================================
-# Ubuntu-Cloud (TEMPLATE)
-# ==============================================
-resource "proxmox_virtual_environment_vm" "Ubuntu-Cloud" {
-  provider = proxmox.pve1
-  name            = "Ubuntu-Cloud"
-  node_name       = "pve-1"
-  scsi_hardware   = "virtio-scsi-single"
-  started         = false
-  tablet_device   = true
-  tags            = []
-  template        = true
-  vm_id           = 101
-  keyboard_layout = "en-us"
-  migrate         = false
-  on_boot         = true
-  reboot          = false
-  reboot_after_update = true
-  stop_on_destroy = false
-  timeout_clone        = 1800
-  timeout_create       = 1800
-  timeout_migrate      = 1800
-  timeout_reboot       = 1800
-  timeout_shutdown_vm  = 1800
-  timeout_start_vm     = 1800
-  timeout_stop_vm      = 300
-
-  agent {
-    enabled = true
-    timeout = "15m"
-    trim    = false
-    type    = "virtio"
-  }
-
-  cpu {
-    cores        = 4
-    sockets      = 1
-    type         = "x86-64-v2-AES"
-    numa         = true
-    limit        = 0
-    hotplugged   = 0
-    units        = 1024
-    flags        = []
-    architecture = null
-    affinity     = null
-  }
-
-  memory {
-    dedicated      = 4096
-    floating       = 0
-    hugepages      = null
-    keep_hugepages = false
-    shared         = 0
-  }
-
-  disk {
-    aio               = "io_uring"
-    backup            = true
-    cache             = "none"
-    datastore_id      = "local-lvm"
-    discard           = "ignore"
-    file_format       = "raw"
-    file_id           = null
-    import_from       = null
-    interface         = "scsi0"
-    iothread          = true
-    path_in_datastore = "base-101-disk-0"
-    replicate         = true
-    serial            = null
-    size              = 10
-    ssd               = false
-  }
-
-  network_device {
-    bridge      = "vmbr0"
-    model       = "virtio"
-    mac_address = "BC:24:11:83:F1:A0"
-    firewall    = true
-    enabled     = true
-    disconnected = false
-    mtu         = 0
-    queues      = 0
-    rate_limit  = 0
-    trunks      = null
-    vlan_id     = 0
-  }
-
-  initialization {
-    datastore_id         = "local-lvm"
-    interface            = "ide0"
-    meta_data_file_id    = null
-    network_data_file_id = null
-    type                 = null
-    user_data_file_id    = null
-    vendor_data_file_id  = null
-
-    dns {
-      domain  = "gwebs.ca"
-      servers = ["192.168.10.5"]
-    }
-
-    ip_config {
-      ipv4 {
-        address = "dhcp"
-        gateway = null
-      }
-      ipv6 {
-        address = "dhcp"
-        gateway = null
-      }
-    }
-
-    user_account {
-      username = "gabriel"
-      keys     = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDpRej6BHMw/6qH5zmyzE4mI6skbjSowAeqUPBpOP8sR gabri@Gwebs-PC-1"
-      ]
-      password = null
-    }
-  }
-
-  operating_system {
-    type = "l26"
+module "nas_1" {
+  source    = "./modules/proxmox_vm"
+  providers = { proxmox = proxmox.pve1 }
+  name      = "NAS-1"
+  node_name = "pve-1"
+  vm_id     = 104
+  cpu_cores = 4
+  memory_dedicated = 10240
+  disks = [
+    # Boot disk on scsi0
+    { size = 30,   interface = "scsi0", path_in_datastore = "vm-104-disk-0" },
+    # ZFS-backed raw disks (passthrough) — managed but not backed up
+    { size = 3726, interface = "scsi2", path_in_datastore = "/dev/disk/by-id/ata-WDC_WD40EFRX-68N32N0_WD-WCC7K0PFZTDV", backup = false, iothread = false, raw = true },
+    { size = 3726, interface = "scsi3", path_in_datastore = "/dev/disk/by-id/ata-WDC_WD40EFRX-68N32N0_WD-WCC7K0ZZLF4D", backup = false, iothread = false, raw = true },
+    { size = 3726, interface = "scsi4", path_in_datastore = "/dev/disk/by-id/ata-WDC_WD40EFRX-68N32N0_WD-WCC7K0RKY2R4", backup = false, iothread = false, raw = true },
+    { size = 3726, interface = "scsi5", path_in_datastore = "/dev/disk/by-id/ata-WDC_WD40EFRX-68N32N0_WD-WCC7K3RFKDKV", backup = false, iothread = false, raw = true }
+  ]
+  network_devices = [
+    { mac_address = "BC:24:11:81:72:3A" }
+  ]
+  init_ipv4_address = "192.168.10.12/24"
+  init_ipv4_gateway = "192.168.10.1"
+  startup = {
+    order      = 2
+    up_delay   = 30
+    down_delay = -1
   }
 }
 
-# ==============================================
-# DNS-1
-# ==============================================
-resource "proxmox_virtual_environment_vm" "DNS-1" {
-  provider = proxmox.pve1
-  name            = "DNS-1"
-  node_name       = "pve-1"
-  scsi_hardware   = "virtio-scsi-single"
-  started         = true
-  tablet_device   = true
-  tags            = []
-  template        = false
-  vm_id           = 102
-  keyboard_layout = "en-us"
-  migrate         = false
-  on_boot         = true
-  reboot          = false
-  reboot_after_update = true
-  stop_on_destroy = false
-  timeout_clone        = 1800
-  timeout_create       = 1800
-  timeout_migrate      = 1800
-  timeout_reboot       = 1800
-  timeout_shutdown_vm  = 1800
-  timeout_start_vm     = 1800
-  timeout_stop_vm      = 300
+module "ubuntu_cloud" {
+  source    = "./modules/proxmox_vm"
+  providers = { proxmox = proxmox.pve1 }
+  name      = "Ubuntu-Cloud"
+  node_name = "pve-1"
+  vm_id     = 101
+  template  = true
+  started   = false
+  cpu_cores = 4
+  memory_dedicated = 4096
+  disks = [
+    { size = 10, interface = "scsi0", path_in_datastore = "base-101-disk-0" }
+  ]
+  network_devices = [
+    { mac_address = "BC:24:11:83:F1:A0" }
+  ]
+  init_dns_servers = ["192.168.10.5"]
+}
 
-  agent {
-    enabled = true
-    timeout = "15m"
-    trim    = false
-    type    = "virtio"
-  }
 
-  cpu {
-    cores        = 2
-    sockets      = 1
-    type         = "x86-64-v2-AES"
-    numa         = true
-    limit        = 0
-    hotplugged   = 0
-    units        = 1024
-    flags        = []
-    architecture = null
-    affinity     = null
-  }
-
-  memory {
-    dedicated      = 2048
-    floating       = 0
-    hugepages      = null
-    keep_hugepages = false
-    shared         = 0
-  }
-
-  disk {
-    aio               = "io_uring"
-    backup            = true
-    cache             = "none"
-    datastore_id      = "local-lvm"
-    discard           = "ignore"
-    file_format       = "raw"
-    file_id           = null
-    import_from       = null
-    interface         = "scsi0"
-    iothread          = true
-    path_in_datastore = "vm-102-disk-0"
-    replicate         = true
-    serial            = null
-    size              = 30
-    ssd               = false
-  }
-
-  disk {
-    aio               = "io_uring"
-    backup            = true
-    cache             = "none"
-    datastore_id      = "local-lvm"
-    discard           = "ignore"
-    file_format       = "raw"
-    file_id           = null
-    import_from       = null
-    interface         = "scsi1"
-    iothread          = true
-    path_in_datastore = "vm-102-disk-1"
-    replicate         = true
-    serial            = null
-    size              = 30
-    ssd               = false
-  }
-
-  network_device {
-    bridge      = "vmbr0"
-    model       = "virtio"
-    mac_address = "BC:24:11:F1:1B:37"
-    firewall    = true
-    enabled     = true
-    disconnected = false
-    mtu         = 0
-    queues      = 0
-    rate_limit  = 0
-    trunks      = null
-    vlan_id     = 0
-  }
-
-  initialization {
-    datastore_id         = "local-lvm"
-    interface            = "ide0"
-    meta_data_file_id    = null
-    network_data_file_id = null
-    type                 = null
-    user_data_file_id    = null
-    vendor_data_file_id  = null
-
-    dns {
-      domain  = "gwebs.ca"
-      servers = ["192.168.10.1"]
-    }
-
-    ip_config {
-      ipv4 {
-        address = "192.168.10.5/24"
-        gateway = "192.168.10.1"
-      }
-      ipv6 {
-        address = "dhcp"
-        gateway = null
-      }
-    }
-
-    user_account {
-      username = "gabriel"
-      keys     = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDpRej6BHMw/6qH5zmyzE4mI6skbjSowAeqUPBpOP8sR gabri@Gwebs-PC-1"
-      ]
-      password = null
-    }
-  }
-
-  operating_system {
-    type = "l26"
-  }
-
-  startup {
+module "dns_1" {
+  source    = "./modules/proxmox_vm"
+  providers = { proxmox = proxmox.pve1 }
+  name      = "DNS-1"
+  node_name = "pve-1"
+  vm_id     = 102
+  cpu_cores = 2
+  memory_dedicated = 2048
+  disks = [
+    { size = 30, interface = "scsi0", path_in_datastore = "vm-102-disk-0" },
+    { size = 30, interface = "scsi1", path_in_datastore = "vm-102-disk-1" }
+  ]
+  network_devices = [
+    { mac_address = "BC:24:11:F1:1B:37" }
+  ]
+  init_ipv4_address = "192.168.10.5/24"
+  init_ipv4_gateway = "192.168.10.1"
+  startup = {
     order      = 1
     up_delay   = 20
     down_delay = -1
   }
 }
 
-# ==============================================
-# Plex-1
-# ==============================================
-resource "proxmox_virtual_environment_vm" "Plex-1" {
-  provider = proxmox.pve1
-  name            = "Plex-1"
-  node_name       = "pve-1"
-  scsi_hardware   = "virtio-scsi-single"
-  started         = true
-  tablet_device   = true
-  tags            = []
-  template        = false
-  vm_id           = 103
-  keyboard_layout = "en-us"
-  migrate         = false
-  on_boot         = true
-  reboot          = false
-  reboot_after_update = true
-  stop_on_destroy = false
-  timeout_clone        = 1800
-  timeout_create       = 1800
-  timeout_migrate      = 1800
-  timeout_reboot       = 1800
-  timeout_shutdown_vm  = 1800
-  timeout_start_vm     = 1800
-  timeout_stop_vm      = 300
 
-  agent {
-    enabled = true
-    timeout = "15m"
-    trim    = false
-    type    = "virtio"
-  }
-
-  cpu {
-    cores        = 8
-    sockets      = 1
-    type         = "x86-64-v2-AES"
-    numa         = true
-    limit        = 0
-    hotplugged   = 0
-    units        = 1024
-    flags        = []
-    architecture = null
-    affinity     = null
-  }
-
-  memory {
-    dedicated      = 4096
-    floating       = 0
-    hugepages      = null
-    keep_hugepages = false
-    shared         = 0
-  }
-
-  disk {
-    aio               = "io_uring"
-    backup            = true
-    cache             = "none"
-    datastore_id      = "local-lvm"
-    discard           = "ignore"
-    file_format       = "raw"
-    file_id           = null
-    import_from       = null
-    interface         = "scsi0"
-    iothread          = true
-    path_in_datastore = "vm-103-disk-0"
-    replicate         = true
-    serial            = null
-    size              = 30
-    ssd               = false
-  }
-
-  disk {
-    aio               = "io_uring"
-    backup            = true
-    cache             = "none"
-    datastore_id      = "local-lvm"
-    discard           = "ignore"
-    file_format       = "raw"
-    file_id           = null
-    import_from       = null
-    interface         = "scsi2"
-    iothread          = true
-    path_in_datastore = "vm-103-disk-2"
-    replicate         = true
-    serial            = null
-    size              = 50
-    ssd               = false
-  }
-
-  hostpci {
-    device   = "hostpci0"
-    id       = "0000:06:00"
-    mapping  = null
-    mdev     = null
-    pcie     = false
-    rom_file = null
-    rombar   = true
-    xvga     = false
-  }
-
-  network_device {
-    bridge      = "vmbr0"
-    model       = "virtio"
-    mac_address = "BC:24:11:20:FA:3B"
-    firewall    = true
-    enabled     = true
-    disconnected = false
-    mtu         = 0
-    queues      = 0
-    rate_limit  = 0
-    trunks      = null
-    vlan_id     = 0
-  }
-
-  initialization {
-    datastore_id         = "local-lvm"
-    interface            = "ide0"
-    meta_data_file_id    = null
-    network_data_file_id = null
-    type                 = null
-    user_data_file_id    = null
-    vendor_data_file_id  = null
-
-    dns {
-      domain  = "gwebs.ca"
-      servers = ["192.168.10.1"]
-    }
-
-    ip_config {
-      ipv4 {
-        address = "192.168.10.13/24"
-        gateway = "192.168.10.1"
-      }
-      ipv6 {
-        address = "dhcp"
-        gateway = null
-      }
-    }
-
-    user_account {
-      username = "gabriel"
-      keys     = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDpRej6BHMw/6qH5zmyzE4mI6skbjSowAeqUPBpOP8sR gabri@Gwebs-PC-1"
-      ]
-      password = null
-    }
-  }
-
-  operating_system {
-    type = "l26"
-  }
-
-  startup {
+module "plex_1" {
+  source    = "./modules/proxmox_vm"
+  providers = { proxmox = proxmox.pve1 }
+  name      = "Plex-1"
+  node_name = "pve-1"
+  vm_id     = 103
+  cpu_cores = 8
+  memory_dedicated = 4096
+  disks = [
+    { size = 30, interface = "scsi0", path_in_datastore = "vm-103-disk-0" },
+    { size = 50, interface = "scsi2", path_in_datastore = "vm-103-disk-2" }
+  ]
+  network_devices = [
+    { mac_address = "BC:24:11:20:FA:3B" }
+  ]
+  init_ipv4_address = "192.168.10.13/24"
+  init_ipv4_gateway = "192.168.10.1"
+  startup = {
     order      = 3
     up_delay   = -1
     down_delay = -1
   }
+  hostpcis = [
+    {
+      device   = "hostpci0"
+      id       = "0000:06:00"
+      mapping  = null
+      mdev     = null
+      pcie     = false
+      rom_file = null
+      rombar   = true
+      xvga     = false
+    }
+  ]
 }
 
-# ==============================================
-# Docker-1
-# ==============================================
-resource "proxmox_virtual_environment_vm" "Docker-1" {
-  provider = proxmox.pve1
-  name            = "Docker-1"
-  node_name       = "pve-1"
-  scsi_hardware   = "virtio-scsi-single"
-  started         = true
-  tablet_device   = true
-  tags            = []
-  template        = false
-  vm_id           = 105
-  keyboard_layout = "en-us"
-  migrate         = false
-  on_boot         = true
-  reboot          = false
-  reboot_after_update = true
-  stop_on_destroy = false
-  timeout_clone        = 1800
-  timeout_create       = 1800
-  timeout_migrate      = 1800
-  timeout_reboot       = 1800
-  timeout_shutdown_vm  = 1800
-  timeout_start_vm     = 1800
-  timeout_stop_vm      = 300
 
-  agent {
-    enabled = true
-    timeout = "15m"
-    trim    = false
-    type    = "virtio"
-  }
-
-  cpu {
-    cores        = 6
-    sockets      = 1
-    type         = "x86-64-v2-AES"
-    numa         = true
-    limit        = 0
-    hotplugged   = 0
-    units        = 1024
-    flags        = []
-    architecture = null
-    affinity     = null
-  }
-
-  memory {
-    dedicated      = 10240
-    floating       = 0
-    hugepages      = null
-    keep_hugepages = false
-    shared         = 0
-  }
-
-  disk {
-    aio               = "io_uring"
-    backup            = true
-    cache             = "none"
-    datastore_id      = "local-lvm-2"
-    discard           = "ignore"
-    file_format       = "raw"
-    file_id           = null
-    import_from       = null
-    interface         = "scsi0"
-    iothread          = true
-    path_in_datastore = "vm-105-disk-1"
-    replicate         = true
-    serial            = null
-    size              = 40
-    ssd               = false
-  }
-
-  disk {
-    aio               = "io_uring"
-    backup            = true
-    cache             = "none"
-    datastore_id      = "local-lvm-2"
-    discard           = "ignore"
-    file_format       = "raw"
-    file_id           = null
-    import_from       = null
-    interface         = "scsi1"
-    iothread          = true
-    path_in_datastore = "vm-105-disk-0"
-    replicate         = true
-    serial            = null
-    size              = 50
-    ssd               = false
-  }
-
-  network_device {
-    bridge      = "vmbr0"
-    model       = "virtio"
-    mac_address = "BC:24:11:4E:7E:73"
-    firewall    = true
-    enabled     = true
-    disconnected = false
-    mtu         = 0
-    queues      = 0
-    rate_limit  = 0
-    trunks      = null
-    vlan_id     = 0
-  }
-
-  initialization {
-    datastore_id         = "local-lvm"
-    interface            = "ide0"
-    meta_data_file_id    = null
-    network_data_file_id = null
-    type                 = null
-    user_data_file_id    = null
-    vendor_data_file_id  = null
-
-    dns {
-      domain  = "gwebs.ca"
-      servers = ["192.168.10.5"]
-    }
-
-    ip_config {
-      ipv4 {
-        address = "192.168.10.11/24"
-        gateway = "192.168.10.1"
-      }
-      ipv6 {
-        address = "dhcp"
-        gateway = null
-      }
-    }
-
-    user_account {
-      username = "gabriel"
-      keys     = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDpRej6BHMw/6qH5zmyzE4mI6skbjSowAeqUPBpOP8sR gabri@Gwebs-PC-1"
-      ]
-      password = null
-    }
-  }
-
-  operating_system {
-    type = "l26"
-  }
-
-  startup {
+module "docker_1" {
+  source    = "./modules/proxmox_vm"
+  providers = { proxmox = proxmox.pve1 }
+  name      = "Docker-1"
+  node_name = "pve-1"
+  vm_id     = 105
+  cpu_cores = 6
+  memory_dedicated = 10240
+  disks = [
+    { size = 40, interface = "scsi0", path_in_datastore = "vm-105-disk-1", datastore_id = "local-lvm-2" },
+    { size = 50, interface = "scsi1", path_in_datastore = "vm-105-disk-0", datastore_id = "local-lvm-2" }
+  ]
+  network_devices = [
+    { mac_address = "BC:24:11:4E:7E:73" }
+  ]
+  init_ipv4_address = "192.168.10.11/24"
+  init_ipv4_gateway = "192.168.10.1"
+  init_dns_servers = ["192.168.10.5"]
+  startup = {
     order      = 4
     up_delay   = -1
     down_delay = -1
   }
 }
 
-# ==============================================
-# Satisfactory
-# ==============================================
-resource "proxmox_virtual_environment_vm" "Satisfactory" {
-  provider = proxmox.pve1
-  name            = "Satisfactory"
-  node_name       = "pve-1"
-  scsi_hardware   = "virtio-scsi-single"
-  started         = false
-  tablet_device   = true
-  tags            = []
-  template        = false
-  vm_id           = 106
-  keyboard_layout = "en-us"
-  migrate         = false
-  on_boot         = true
-  reboot          = false
-  reboot_after_update = true
-  stop_on_destroy = false
-  timeout_clone        = 1800
-  timeout_create       = 1800
-  timeout_migrate      = 1800
-  timeout_reboot       = 1800
-  timeout_shutdown_vm  = 1800
-  timeout_start_vm     = 1800
-  timeout_stop_vm      = 300
 
-  agent {
-    enabled = true
-    timeout = "15m"
-    trim    = false
-    type    = "virtio"
-  }
-
-  cpu {
-    cores        = 4
-    sockets      = 1
-    type         = "host"
-    numa         = true
-    limit        = 0
-    hotplugged   = 0
-    units        = 1024
-    flags        = []
-    architecture = null
-    affinity     = null
-  }
-
-  memory {
-    dedicated      = 8192
-    floating       = 0
-    hugepages      = null
-    keep_hugepages = false
-    shared         = 0
-  }
-
-  disk {
-    aio               = "io_uring"
-    backup            = true
-    cache             = "none"
-    datastore_id      = "local-lvm"
-    discard           = "ignore"
-    file_format       = "raw"
-    file_id           = null
-    import_from       = null
-    interface         = "scsi0"
-    iothread          = true
-    path_in_datastore = "vm-106-disk-0"
-    replicate         = true
-    serial            = null
-    size              = 40
-    ssd               = false
-  }
-
-  network_device {
-    bridge      = "vmbr0"
-    model       = "virtio"
-    mac_address = "BC:24:11:BF:F5:9C"
-    firewall    = true
-    enabled     = true
-    disconnected = false
-    mtu         = 0
-    queues      = 0
-    rate_limit  = 0
-    trunks      = null
-    vlan_id     = 0
-  }
-
-  initialization {
-    datastore_id         = "local-lvm"
-    interface            = "ide0"
-    meta_data_file_id    = null
-    network_data_file_id = null
-    type                 = null
-    user_data_file_id    = null
-    vendor_data_file_id  = null
-
-    dns {
-      domain  = "gwebs.ca"
-      servers = ["192.168.10.1"]
-    }
-
-    ip_config {
-      ipv4 {
-        address = "192.168.10.14/24"
-        gateway = "192.168.10.1"
-      }
-      ipv6 {
-        address = "dhcp"
-        gateway = null
-      }
-    }
-
-    user_account {
-      username = "gabriel"
-      keys     = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDpRej6BHMw/6qH5zmyzE4mI6skbjSowAeqUPBpOP8sR gabri@Gwebs-PC-1"
-      ]
-      password = null
-    }
-  }
-
-  operating_system {
-    type = "l26"
-  }
-
-  startup {
+module "satisfactory" {
+  source    = "./modules/proxmox_vm"
+  providers = { proxmox = proxmox.pve1 }
+  name      = "Satisfactory"
+  node_name = "pve-1"
+  vm_id     = 106
+  started   = true
+  cpu_cores = 4
+  cpu_type  = "host"
+  memory_dedicated = 8192
+  disks = [
+    { size = 40, interface = "scsi0", path_in_datastore = "vm-106-disk-0" }
+  ]
+  network_devices = [
+    { mac_address = "BC:24:11:BF:F5:9C" }
+  ]
+  init_ipv4_address = "192.168.10.14/24"
+  init_ipv4_gateway = "192.168.10.1"
+  startup = {
     order      = 10
     up_delay   = -1
     down_delay = -1
