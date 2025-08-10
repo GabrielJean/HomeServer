@@ -45,11 +45,11 @@ resource "proxmox_virtual_environment_vm" "this" {
   dynamic "clone" {
     for_each = var.clone_vm_id != null ? [1] : []
     content {
-      vm_id       = var.clone_vm_id
-      node_name   = coalesce(var.clone_node_name, var.node_name)
-      datastore_id= var.clone_datastore_id
-      retries     = var.clone_retries
-      full        = var.clone_full
+      vm_id        = var.clone_vm_id
+      node_name    = coalesce(var.clone_node_name, var.node_name)
+      datastore_id = var.clone_datastore_id
+      retries      = var.clone_retries
+      full         = var.clone_full
     }
   }
 

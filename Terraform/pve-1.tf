@@ -171,8 +171,8 @@ module "k8s_master_1" {
   cpu_cores        = 2
   memory_dedicated = 4096
   # Clone from Ubuntu-Cloud template on pve-1 (vm_id 101)
-  clone_vm_id       = 101
-  clone_node_name   = "pve-1"
+  clone_vm_id     = 101
+  clone_node_name = "pve-1"
   # 30GB boot disk is default via module; leaving disks empty to use defaults
   init_ipv4_address = "192.168.10.20/24"
   init_ipv4_gateway = "192.168.10.1"
@@ -189,8 +189,8 @@ module "k8s_worker_1" {
   cpu_cores        = 2
   memory_dedicated = 4096
   # Clone from Ubuntu-Cloud template on pve-1 (vm_id 101)
-  clone_vm_id       = 101
-  clone_node_name   = "pve-1"
+  clone_vm_id     = 101
+  clone_node_name = "pve-1"
   # 30GB boot disk is default via module; leaving disks empty to use defaults
   init_ipv4_address = "192.168.10.21/24"
   init_ipv4_gateway = "192.168.10.1"
