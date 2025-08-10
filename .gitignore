@@ -1,2 +1,17 @@
+# General env files
 env_file
 .env
+.envrc
+
+# Secrets and vault files
+# Allow committing encrypted Ansible Vault files
+!*.vault
+*.age
+*.key
+*.pem
+
+# macOS
+.DS_Store
+
+# Node/others (just in case)
+node_modules/

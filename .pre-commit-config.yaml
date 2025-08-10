@@ -1,0 +1,17 @@
+repos:
+- repo: https://github.com/zricethezav/gitleaks
+  rev: v8.18.4
+  hooks:
+  - id: gitleaks
+    name: "gitleaks scan (staged)"
+    args: ["protect", "--staged", "--log-level=error", "--redact"]
+    stages: [push]
+
+- repo: local
+  hooks:
+  - id: enforce-tracked-vault-files
+    name: "Ensure tracked encrypted files remain Ansible Vault–encrypted"
+    entry: scripts/prepush-enforce-vault.sh
+    language: script
+    stages: [push]
+

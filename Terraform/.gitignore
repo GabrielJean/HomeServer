@@ -1,5 +1,21 @@
+# Terraform state and cache
 *.tfstate
-*.tfstate.backup
+*.tfstate.*
 .terraform/
 .terraform.lock.hcl
 
+# Plans
+*.plan
+*.tfplan
+
+# Local variables files (do not commit decrypted vars)
+terraform.tfvars
+*.auto.tfvars
+secrets.tfvars
+secrets.auto.tfvars
+
+# Encrypted variables — allow committing encrypted files
+!*.vault
+
+# Local helper
+.tfenv
