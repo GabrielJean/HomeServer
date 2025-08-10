@@ -100,3 +100,11 @@ variable "os_type" { default = "l26" }
 variable "startup" { default = null }
 variable "hostpcis" { default = [] }
 variable "usbs" { default = [] }
+
+# Optional cloning configuration. When clone_vm_id is set, the VM will be cloned from
+# the specified template or source VM.
+variable "clone_vm_id" { default = null }
+variable "clone_node_name" { default = null }
+variable "clone_datastore_id" { default = null }
+variable "clone_retries" { default = null }
+variable "clone_full" { default = true }
