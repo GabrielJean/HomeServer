@@ -10,20 +10,23 @@ terraform {
 
 
 provider "proxmox" {
-  endpoint  = var.pve1_api_url
-  api_token = var.pve1_api_token
+  endpoint = var.pve1_api_url
+  username = var.pve1_username
+  password = var.pve1_password
 }
 
 provider "proxmox" {
-  alias     = "pve1"
-  endpoint  = var.pve1_api_url
-  api_token = var.pve1_api_token
+  alias    = "pve1"
+  endpoint = var.pve1_api_url
+  username = var.pve1_username
+  password = var.pve1_password
 }
 
 
 
 provider "proxmox" {
-  alias     = "pve2"
-  endpoint  = var.pve2_api_url
-  api_token = var.pve2_api_token
+  alias    = "pve2"
+  endpoint = var.pve2_api_url
+  username = var.pve2_username
+  password = var.pve2_password
 }
