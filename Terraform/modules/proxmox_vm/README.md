@@ -32,7 +32,7 @@ module "example_custom" {
   boot_disk_size_gb       = 50
   boot_disk_datastore_id  = "local-lvm-2"
 
-  # Static IP via cloud-init
-  init_ipv4_address = "192.168.10.50/24"
-  init_ipv4_gateway = "192.168.10.1"
+  # Static IP via cloud-init (example address space)
+  init_ipv4_address = "192.0.2.50/24"
+  init_ipv4_gateway = "192.0.2.1"
 }
