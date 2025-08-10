@@ -1,15 +1,15 @@
 
 module "nas_1" {
-  source    = "./modules/proxmox_vm"
-  providers = { proxmox = proxmox.pve1 }
-  name      = "NAS-1"
-  node_name = "pve-1"
-  vm_id     = 104
-  cpu_cores = 4
+  source           = "./modules/proxmox_vm"
+  providers        = { proxmox = proxmox.pve1 }
+  name             = "NAS-1"
+  node_name        = "pve-1"
+  vm_id            = 104
+  cpu_cores        = 4
   memory_dedicated = 10240
   disks = [
     # Boot disk on scsi0
-    { size = 30,   interface = "scsi0", path_in_datastore = "vm-104-disk-0" },
+    { size = 30, interface = "scsi0", path_in_datastore = "vm-104-disk-0" },
     # ZFS-backed raw disks (passthrough) — managed but not backed up
     { size = 3726, interface = "scsi2", path_in_datastore = "/dev/disk/by-id/ata-WDC_WD40EFRX-68N32N0_WD-WCC7K0PFZTDV", backup = false, iothread = false, raw = true },
     { size = 3726, interface = "scsi3", path_in_datastore = "/dev/disk/by-id/ata-WDC_WD40EFRX-68N32N0_WD-WCC7K0ZZLF4D", backup = false, iothread = false, raw = true },
@@ -29,14 +29,14 @@ module "nas_1" {
 }
 
 module "ubuntu_cloud" {
-  source    = "./modules/proxmox_vm"
-  providers = { proxmox = proxmox.pve1 }
-  name      = "Ubuntu-Cloud"
-  node_name = "pve-1"
-  vm_id     = 101
-  template  = true
-  started   = false
-  cpu_cores = 4
+  source           = "./modules/proxmox_vm"
+  providers        = { proxmox = proxmox.pve1 }
+  name             = "Ubuntu-Cloud"
+  node_name        = "pve-1"
+  vm_id            = 101
+  template         = true
+  started          = false
+  cpu_cores        = 4
   memory_dedicated = 4096
   disks = [
     { size = 10, interface = "scsi0", path_in_datastore = "base-101-disk-0" }
@@ -49,12 +49,12 @@ module "ubuntu_cloud" {
 
 
 module "dns_1" {
-  source    = "./modules/proxmox_vm"
-  providers = { proxmox = proxmox.pve1 }
-  name      = "DNS-1"
-  node_name = "pve-1"
-  vm_id     = 102
-  cpu_cores = 2
+  source           = "./modules/proxmox_vm"
+  providers        = { proxmox = proxmox.pve1 }
+  name             = "DNS-1"
+  node_name        = "pve-1"
+  vm_id            = 102
+  cpu_cores        = 2
   memory_dedicated = 2048
   disks = [
     { size = 30, interface = "scsi0", path_in_datastore = "vm-102-disk-0" },
@@ -74,12 +74,12 @@ module "dns_1" {
 
 
 module "plex_1" {
-  source    = "./modules/proxmox_vm"
-  providers = { proxmox = proxmox.pve1 }
-  name      = "Plex-1"
-  node_name = "pve-1"
-  vm_id     = 103
-  cpu_cores = 8
+  source           = "./modules/proxmox_vm"
+  providers        = { proxmox = proxmox.pve1 }
+  name             = "Plex-1"
+  node_name        = "pve-1"
+  vm_id            = 103
+  cpu_cores        = 8
   memory_dedicated = 4096
   disks = [
     { size = 30, interface = "scsi0", path_in_datastore = "vm-103-disk-0" },
@@ -111,12 +111,12 @@ module "plex_1" {
 
 
 module "docker_1" {
-  source    = "./modules/proxmox_vm"
-  providers = { proxmox = proxmox.pve1 }
-  name      = "Docker-1"
-  node_name = "pve-1"
-  vm_id     = 105
-  cpu_cores = 6
+  source           = "./modules/proxmox_vm"
+  providers        = { proxmox = proxmox.pve1 }
+  name             = "Docker-1"
+  node_name        = "pve-1"
+  vm_id            = 105
+  cpu_cores        = 6
   memory_dedicated = 10240
   disks = [
     { size = 40, interface = "scsi0", path_in_datastore = "vm-105-disk-1", datastore_id = "local-lvm-2" },
@@ -127,7 +127,7 @@ module "docker_1" {
   ]
   init_ipv4_address = "192.168.10.11/24"
   init_ipv4_gateway = "192.168.10.1"
-  init_dns_servers = ["192.168.10.5"]
+  init_dns_servers  = ["192.168.10.5"]
   startup = {
     order      = 4
     up_delay   = -1
@@ -137,14 +137,14 @@ module "docker_1" {
 
 
 module "satisfactory" {
-  source    = "./modules/proxmox_vm"
-  providers = { proxmox = proxmox.pve1 }
-  name      = "Satisfactory"
-  node_name = "pve-1"
-  vm_id     = 106
-  started   = true
-  cpu_cores = 4
-  cpu_type  = "host"
+  source           = "./modules/proxmox_vm"
+  providers        = { proxmox = proxmox.pve1 }
+  name             = "Satisfactory"
+  node_name        = "pve-1"
+  vm_id            = 106
+  started          = true
+  cpu_cores        = 4
+  cpu_type         = "host"
   memory_dedicated = 8192
   disks = [
     { size = 40, interface = "scsi0", path_in_datastore = "vm-106-disk-0" }

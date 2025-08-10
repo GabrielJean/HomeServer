@@ -1,12 +1,12 @@
 
 module "docker_2" {
-  source    = "./modules/proxmox_vm"
-  providers = { proxmox = proxmox.pve2 }
-  name      = "Docker-2"
-  node_name = "pve-2"
-  vm_id     = 101
-  cpu_cores = 4
-  cpu_hotplugged = 4
+  source           = "./modules/proxmox_vm"
+  providers        = { proxmox = proxmox.pve2 }
+  name             = "Docker-2"
+  node_name        = "pve-2"
+  vm_id            = 101
+  cpu_cores        = 4
+  cpu_hotplugged   = 4
   memory_dedicated = 5120
   disks = [
     { size = 30, interface = "scsi0", path_in_datastore = "vm-101-disk-0" }
@@ -16,7 +16,7 @@ module "docker_2" {
   ]
   init_ipv4_address = "192.168.15.11/24"
   init_ipv4_gateway = "192.168.15.1"
-  init_dns_servers = ["192.168.15.1"]
+  init_dns_servers  = ["192.168.15.1"]
   startup = {
     order      = 2
     up_delay   = -1
@@ -32,14 +32,14 @@ module "docker_2" {
 }
 
 module "ubuntu_cloud_2" {
-  source    = "./modules/proxmox_vm"
-  providers = { proxmox = proxmox.pve2 }
-  name      = "Ubuntu-Cloud-2"
-  node_name = "pve-2"
-  vm_id     = 100
-  template  = true
-  started   = false
-  cpu_cores = 4
+  source           = "./modules/proxmox_vm"
+  providers        = { proxmox = proxmox.pve2 }
+  name             = "Ubuntu-Cloud-2"
+  node_name        = "pve-2"
+  vm_id            = 100
+  template         = true
+  started          = false
+  cpu_cores        = 4
   memory_dedicated = 3072
   disks = [
     { size = 50, interface = "scsi0", path_in_datastore = "base-100-disk-0" }
@@ -50,12 +50,12 @@ module "ubuntu_cloud_2" {
   init_dns_servers = ["192.168.15.1"]
 }
 module "dns_2" {
-  source    = "./modules/proxmox_vm"
-  providers = { proxmox = proxmox.pve2 }
-  name      = "DNS-2"
-  node_name = "pve-2"
-  vm_id     = 102
-  cpu_cores = 2
+  source           = "./modules/proxmox_vm"
+  providers        = { proxmox = proxmox.pve2 }
+  name             = "DNS-2"
+  node_name        = "pve-2"
+  vm_id            = 102
+  cpu_cores        = 2
   memory_dedicated = 2048
   disks = [
     { size = 30, interface = "scsi0", path_in_datastore = "vm-102-disk-0" },
@@ -66,7 +66,7 @@ module "dns_2" {
   ]
   init_ipv4_address = "192.168.15.5/24"
   init_ipv4_gateway = "192.168.15.1"
-  init_dns_servers = ["192.168.15.1"]
+  init_dns_servers  = ["192.168.15.1"]
   startup = {
     order      = 1
     up_delay   = -1

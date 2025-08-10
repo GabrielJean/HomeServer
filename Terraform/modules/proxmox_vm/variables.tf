@@ -47,8 +47,8 @@ variable "memory_keep_hugepages" { default = false }
 variable "memory_shared" { default = 0 }
 
 variable "disks" {
-	type = list(any)
-	default = []
+  type    = list(any)
+  default = []
 }
 
 # Control whether this module should manage disks at all. If false, no disk blocks are rendered.
@@ -61,8 +61,8 @@ variable "boot_disk_interface" { default = "scsi0" }
 variable "boot_disk_path" { default = null }
 
 variable "network_devices" {
-	type = list(any)
-	default = []
+  type    = list(any)
+  default = []
 }
 
 # If no NICs are provided, one NIC will be created with these defaults
@@ -79,8 +79,8 @@ variable "init_vendor_data_file_id" { default = null }
 
 variable "init_dns_domain" { default = "gwebs.ca" }
 variable "init_dns_servers" {
-	type = list(string)
-	default = ["192.168.10.1"]
+  type    = list(string)
+  default = ["192.168.10.1"]
 }
 
 variable "init_ipv4_address" { default = "dhcp" }
@@ -90,8 +90,8 @@ variable "init_ipv6_gateway" { default = null }
 
 variable "init_user_username" { default = "gabriel" }
 variable "init_user_keys" {
-	type = list(string)
-	default = ["ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDpRej6BHMw/6qH5zmyzE4mI6skbjSowAeqUPBpOP8sR gabri@Gwebs-PC-1"]
+  type    = list(string)
+  default = ["ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDpRej6BHMw/6qH5zmyzE4mI6skbjSowAeqUPBpOP8sR gabri@Gwebs-PC-1"]
 }
 variable "init_user_password" { default = null }
 

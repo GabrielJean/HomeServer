@@ -20,27 +20,27 @@ locals {
 }
 
 resource "proxmox_virtual_environment_vm" "this" {
-  name             = var.name
-  node_name        = var.node_name
-  scsi_hardware    = var.scsi_hardware
-  started          = var.started
-  tablet_device    = var.tablet_device
-  tags             = var.tags
-  template         = var.template
-  vm_id            = var.vm_id
-  keyboard_layout  = var.keyboard_layout
-  migrate          = var.migrate
-  on_boot          = var.on_boot
-  reboot           = var.reboot
+  name                = var.name
+  node_name           = var.node_name
+  scsi_hardware       = var.scsi_hardware
+  started             = var.started
+  tablet_device       = var.tablet_device
+  tags                = var.tags
+  template            = var.template
+  vm_id               = var.vm_id
+  keyboard_layout     = var.keyboard_layout
+  migrate             = var.migrate
+  on_boot             = var.on_boot
+  reboot              = var.reboot
   reboot_after_update = var.reboot_after_update
-  stop_on_destroy  = var.stop_on_destroy
-  timeout_clone        = var.timeout_clone
-  timeout_create       = var.timeout_create
-  timeout_migrate      = var.timeout_migrate
-  timeout_reboot       = var.timeout_reboot
-  timeout_shutdown_vm  = var.timeout_shutdown_vm
-  timeout_start_vm     = var.timeout_start_vm
-  timeout_stop_vm      = var.timeout_stop_vm
+  stop_on_destroy     = var.stop_on_destroy
+  timeout_clone       = var.timeout_clone
+  timeout_create      = var.timeout_create
+  timeout_migrate     = var.timeout_migrate
+  timeout_reboot      = var.timeout_reboot
+  timeout_shutdown_vm = var.timeout_shutdown_vm
+  timeout_start_vm    = var.timeout_start_vm
+  timeout_stop_vm     = var.timeout_stop_vm
 
   lifecycle {
     ignore_changes = [
@@ -106,30 +106,30 @@ resource "proxmox_virtual_environment_vm" "this" {
     shared         = var.memory_shared
   }
 
-    dynamic "disk" {
-      for_each = var.manage_disks ? local.effective_disks_by_interface : {}
-      content {
-        # Merge user disk with defaults
-        # Only size and interface are required from user
-        # All other fields defaulted
-        # For raw passthrough devices, set raw=true in the disk map to avoid datastore_id/file_format
-        aio               = lookup(disk.value, "aio", "io_uring")
-        backup            = lookup(disk.value, "backup", true)
-        cache             = lookup(disk.value, "cache", "none")
-        datastore_id      = try(disk.value.raw, false) ? null : lookup(disk.value, "datastore_id", var.init_datastore_id)
-        discard           = lookup(disk.value, "discard", "ignore")
-        file_format       = try(disk.value.raw, false) ? null : lookup(disk.value, "file_format", "raw")
-        file_id           = lookup(disk.value, "file_id", null)
-        import_from       = lookup(disk.value, "import_from", null)
-        interface         = disk.value["interface"]
-        iothread          = lookup(disk.value, "iothread", true)
-        path_in_datastore = lookup(disk.value, "path_in_datastore", null)
-        replicate         = lookup(disk.value, "replicate", true)
-        serial            = lookup(disk.value, "serial", null)
-        size              = disk.value["size"]
-        ssd               = lookup(disk.value, "ssd", false)
-      }
+  dynamic "disk" {
+    for_each = var.manage_disks ? local.effective_disks_by_interface : {}
+    content {
+      # Merge user disk with defaults
+      # Only size and interface are required from user
+      # All other fields defaulted
+      # For raw passthrough devices, set raw=true in the disk map to avoid datastore_id/file_format
+      aio               = lookup(disk.value, "aio", "io_uring")
+      backup            = lookup(disk.value, "backup", true)
+      cache             = lookup(disk.value, "cache", "none")
+      datastore_id      = try(disk.value.raw, false) ? null : lookup(disk.value, "datastore_id", var.init_datastore_id)
+      discard           = lookup(disk.value, "discard", "ignore")
+      file_format       = try(disk.value.raw, false) ? null : lookup(disk.value, "file_format", "raw")
+      file_id           = lookup(disk.value, "file_id", null)
+      import_from       = lookup(disk.value, "import_from", null)
+      interface         = disk.value["interface"]
+      iothread          = lookup(disk.value, "iothread", true)
+      path_in_datastore = lookup(disk.value, "path_in_datastore", null)
+      replicate         = lookup(disk.value, "replicate", true)
+      serial            = lookup(disk.value, "serial", null)
+      size              = disk.value["size"]
+      ssd               = lookup(disk.value, "ssd", false)
     }
+  }
 
   dynamic "network_device" {
     for_each = local.effective_network_devices

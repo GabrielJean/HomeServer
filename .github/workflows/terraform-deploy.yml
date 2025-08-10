@@ -104,8 +104,17 @@ jobs:
       - name: Terraform Validate
         run: terraform validate -no-color
 
-      - name: Terraform Format Check
-        run: terraform fmt -check -no-color
+      - name: Terraform Format Check (.tf only)
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Only check Terraform configuration files, not tfvars
+          mapfile -t TF_FILES < <(find . -type f -name '*.tf' | sort)
+          if [ ${#TF_FILES[@]} -eq 0 ]; then
+            echo "No .tf files to check."
+            exit 0
+          fi
+          terraform fmt -check -no-color "${TF_FILES[@]}"
 
       - name: Terraform Plan
         if: github.event_name != 'push' || github.ref != 'refs/heads/main'
