@@ -21,6 +21,42 @@ resource "proxmox_virtual_environment_vm" "this" {
   timeout_start_vm     = var.timeout_start_vm
   timeout_stop_vm      = var.timeout_stop_vm
 
+  lifecycle {
+    ignore_changes = [
+      keyboard_layout,
+      migrate,
+      on_boot,
+      reboot,
+      reboot_after_update,
+      started,
+      stop_on_destroy,
+      timeout_clone,
+      timeout_create,
+      timeout_migrate,
+      timeout_reboot,
+      timeout_shutdown_vm,
+      timeout_start_vm,
+      timeout_stop_vm,
+      agent,
+      disk[0].datastore_id,
+      disk[1].datastore_id,
+      disk[2].datastore_id,
+      disk[3].datastore_id,
+      disk[4].datastore_id,
+      disk[5].datastore_id,
+      disk[6].datastore_id,
+      disk[7].datastore_id,
+      disk[0].file_format,
+      disk[1].file_format,
+      disk[2].file_format,
+      disk[3].file_format,
+      disk[4].file_format,
+      disk[5].file_format,
+      disk[6].file_format,
+      disk[7].file_format,
+    ]
+  }
+
   agent {
     enabled = var.agent_enabled
     timeout = var.agent_timeout
@@ -55,13 +91,13 @@ resource "proxmox_virtual_environment_vm" "this" {
         # Merge user disk with defaults
         # Only size and interface are required from user
         # All other fields defaulted
-        # Use null coalescing for optional fields
+        # For raw passthrough devices, set raw=true in the disk map to avoid datastore_id/file_format
         aio               = lookup(disk.value, "aio", "io_uring")
         backup            = lookup(disk.value, "backup", true)
         cache             = lookup(disk.value, "cache", "none")
-        datastore_id      = lookup(disk.value, "datastore_id", var.init_datastore_id)
+        datastore_id      = try(disk.value.raw, false) ? null : lookup(disk.value, "datastore_id", var.init_datastore_id)
         discard           = lookup(disk.value, "discard", "ignore")
-        file_format       = lookup(disk.value, "file_format", "raw")
+        file_format       = try(disk.value.raw, false) ? null : lookup(disk.value, "file_format", "raw")
         file_id           = lookup(disk.value, "file_id", null)
         import_from       = lookup(disk.value, "import_from", null)
         interface         = disk.value["interface"]
@@ -77,37 +113,21 @@ resource "proxmox_virtual_environment_vm" "this" {
   dynamic "network_device" {
     for_each = var.network_devices
     content {
-      bridge      = network_device.value.bridge
-      model       = network_device.value.model
-      mac_address = network_device.value.mac_address
-      firewall    = network_device.value.firewall
-      enabled     = network_device.value.enabled
-      disconnected = network_device.value.disconnected
-      mtu         = network_device.value.mtu
-      queues      = network_device.value.queues
-      rate_limit  = network_device.value.rate_limit
-      trunks      = network_device.value.trunks
-      vlan_id     = network_device.value.vlan_id
+      # Merge user network device with defaults
+      # Only mac_address is required from user
+      bridge      = lookup(network_device.value, "bridge", "vmbr0")
+      model       = lookup(network_device.value, "model", "virtio")
+      mac_address = network_device.value["mac_address"]
+      firewall    = lookup(network_device.value, "firewall", true)
+      enabled     = lookup(network_device.value, "enabled", true)
+      disconnected = lookup(network_device.value, "disconnected", false)
+      mtu         = lookup(network_device.value, "mtu", 0)
+      queues      = lookup(network_device.value, "queues", 0)
+      rate_limit  = lookup(network_device.value, "rate_limit", 0)
+      trunks      = lookup(network_device.value, "trunks", null)
+      vlan_id     = lookup(network_device.value, "vlan_id", 0)
     }
   }
-    dynamic "network_device" {
-      for_each = var.network_devices
-      content {
-        # Merge user network device with defaults
-        # Only mac_address is required from user
-        bridge      = lookup(network_device.value, "bridge", "vmbr0")
-        model       = lookup(network_device.value, "model", "virtio")
-        mac_address = network_device.value["mac_address"]
-        firewall    = lookup(network_device.value, "firewall", true)
-        enabled     = lookup(network_device.value, "enabled", true)
-        disconnected = lookup(network_device.value, "disconnected", false)
-        mtu         = lookup(network_device.value, "mtu", 0)
-        queues      = lookup(network_device.value, "queues", 0)
-        rate_limit  = lookup(network_device.value, "rate_limit", 0)
-        trunks      = lookup(network_device.value, "trunks", null)
-        vlan_id     = lookup(network_device.value, "vlan_id", 0)
-      }
-    }
 
   initialization {
     datastore_id         = var.init_datastore_id

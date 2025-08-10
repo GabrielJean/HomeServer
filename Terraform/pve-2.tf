@@ -1,10 +1,12 @@
 
 module "docker_2" {
   source    = "./modules/proxmox_vm"
+  providers = { proxmox = proxmox.pve2 }
   name      = "Docker-2"
   node_name = "pve-2"
   vm_id     = 101
   cpu_cores = 4
+  cpu_hotplugged = 4
   memory_dedicated = 5120
   disks = [
     { size = 30, interface = "scsi0", path_in_datastore = "vm-101-disk-0" }
@@ -29,9 +31,27 @@ module "docker_2" {
   ]
 }
 
-
+module "ubuntu_cloud_2" {
+  source    = "./modules/proxmox_vm"
+  providers = { proxmox = proxmox.pve2 }
+  name      = "Ubuntu-Cloud-2"
+  node_name = "pve-2"
+  vm_id     = 100
+  template  = true
+  started   = false
+  cpu_cores = 4
+  memory_dedicated = 3072
+  disks = [
+    { size = 50, interface = "scsi0", path_in_datastore = "base-100-disk-0" }
+  ]
+  network_devices = [
+    { mac_address = "BC:24:11:36:FC:31" }
+  ]
+  init_dns_servers = ["192.168.15.1"]
+}
 module "dns_2" {
   source    = "./modules/proxmox_vm"
+  providers = { proxmox = proxmox.pve2 }
   name      = "DNS-2"
   node_name = "pve-2"
   vm_id     = 102
@@ -55,20 +75,3 @@ module "dns_2" {
 }
 
 
-module "ubuntu_cloud_2" {
-  source    = "./modules/proxmox_vm"
-  name      = "Ubuntu-Cloud-2"
-  node_name = "pve-2"
-  vm_id     = 100
-  template  = true
-  started   = false
-  cpu_cores = 4
-  memory_dedicated = 3072
-  disks = [
-    { size = 50, interface = "scsi0", path_in_datastore = "base-100-disk-0" }
-  ]
-  network_devices = [
-    { mac_address = "BC:24:11:36:FC:31" }
-  ]
-  init_dns_servers = ["192.168.15.1"]
-}

@@ -1,7 +1,35 @@
 
+module "nas_1" {
+  source    = "./modules/proxmox_vm"
+  providers = { proxmox = proxmox.pve1 }
+  name      = "NAS-1"
+  node_name = "pve-1"
+  vm_id     = 104
+  cpu_cores = 4
+  memory_dedicated = 10240
+  disks = [
+    { size = 30, interface = "scsi0", path_in_datastore = "vm-104-disk-0", datastore_id = "local-lvm" },
+    { size = 3726, interface = "scsi2", path_in_datastore = "/dev/disk/by-id/ata-WDC_WD40EFRX-68N32N0_WD-WCC7K0PFZTDV", backup = false, iothread = false, raw = true },
+    { size = 3726, interface = "scsi3", path_in_datastore = "/dev/disk/by-id/ata-WDC_WD40EFRX-68N32N0_WD-WCC7K0ZZLF4D", backup = false, iothread = false, raw = true },
+    { size = 3726, interface = "scsi4", path_in_datastore = "/dev/disk/by-id/ata-WDC_WD40EFRX-68N32N0_WD-WCC7K0RKY2R4", backup = false, iothread = false, raw = true },
+    { size = 3726, interface = "scsi5", path_in_datastore = "/dev/disk/by-id/ata-WDC_WD40EFRX-68N32N0_WD-WCC7K3RFKDKV", backup = false, iothread = false, raw = true }
+  ]
+  network_devices = [
+    { mac_address = "BC:24:11:81:72:3A" }
+  ]
+  init_ipv4_address = "192.168.10.12/24"
+  init_ipv4_gateway = "192.168.10.1"
+  init_dns_servers = ["192.168.10.1"]
+  startup = {
+    order      = 2
+    up_delay   = 30
+    down_delay = -1
+  }
+}
 
 module "ubuntu_cloud" {
   source    = "./modules/proxmox_vm"
+  providers = { proxmox = proxmox.pve1 }
   name      = "Ubuntu-Cloud"
   node_name = "pve-1"
   vm_id     = 101
@@ -21,6 +49,7 @@ module "ubuntu_cloud" {
 
 module "dns_1" {
   source    = "./modules/proxmox_vm"
+  providers = { proxmox = proxmox.pve1 }
   name      = "DNS-1"
   node_name = "pve-1"
   vm_id     = 102
@@ -46,6 +75,7 @@ module "dns_1" {
 
 module "plex_1" {
   source    = "./modules/proxmox_vm"
+  providers = { proxmox = proxmox.pve1 }
   name      = "Plex-1"
   node_name = "pve-1"
   vm_id     = 103
@@ -83,6 +113,7 @@ module "plex_1" {
 
 module "docker_1" {
   source    = "./modules/proxmox_vm"
+  providers = { proxmox = proxmox.pve1 }
   name      = "Docker-1"
   node_name = "pve-1"
   vm_id     = 105
@@ -108,10 +139,13 @@ module "docker_1" {
 
 module "satisfactory" {
   source    = "./modules/proxmox_vm"
+  providers = { proxmox = proxmox.pve1 }
   name      = "Satisfactory"
   node_name = "pve-1"
   vm_id     = 106
+  started   = true
   cpu_cores = 4
+  cpu_type  = "host"
   memory_dedicated = 8192
   disks = [
     { size = 40, interface = "scsi0", path_in_datastore = "vm-106-disk-0" }

@@ -10,6 +10,11 @@ terraform {
 
 
 provider "proxmox" {
+  endpoint  = var.pve1_api_url
+  api_token = var.pve1_api_token
+}
+
+provider "proxmox" {
   alias     = "pve1"
   endpoint  = var.pve1_api_url
   api_token = var.pve1_api_token
