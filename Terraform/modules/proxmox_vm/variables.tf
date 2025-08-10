@@ -22,7 +22,7 @@ variable "timeout_start_vm" { default = null }
 variable "timeout_stop_vm" { default = null }
 
 variable "agent_enabled" { default = true }
-variable "agent_timeout" { default = "15m" }
+variable "agent_timeout" { default = "0m" }
 variable "agent_trim" { default = false }
 variable "agent_type" { default = null }
 
@@ -51,15 +51,13 @@ variable "disks" {
   default = []
 }
 
+
 # Optional explicit render order for disks (by interface key, e.g., "scsi0").
 # When null, disks are rendered in sorted(interface) order.
 variable "disk_render_order" {
   type    = list(string)
   default = null
 }
-
-# Control whether this module should manage disks at all. If false, no disk blocks are rendered.
-variable "manage_disks" { default = true }
 
 
 # If no custom disks are provided, a single boot disk will be created with these defaults

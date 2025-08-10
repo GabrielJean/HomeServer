@@ -12,8 +12,8 @@ locals {
   effective_disks_by_interface = { for d in local.effective_disks : d.interface => d }
   # Deterministic render order for disk blocks: sort by interface key (e.g., scsi0, scsi1, ...)
   sorted_disk_keys = sort(keys(local.effective_disks_by_interface))
+  # Build a LIST based on explicit order when provided; otherwise sorted by interface
   effective_disk_order = var.disk_render_order != null ? var.disk_render_order : local.sorted_disk_keys
-  # Build a LIST in the desired order to ensure stable block ordering
   ordered_disks_list = [for k in local.effective_disk_order : local.effective_disks_by_interface[k] if contains(keys(local.effective_disks_by_interface), k)]
 
 
@@ -142,18 +142,19 @@ resource "proxmox_virtual_environment_vm" "this" {
   }
 
   dynamic "disk" {
-    for_each = var.manage_disks ? local.ordered_disks_list : []
+    for_each = local.ordered_disks_list
     content {
       # Merge user disk with defaults
       # Only size and interface are required from user
       # All other fields defaulted
       # For raw passthrough devices, set raw=true in the disk map to avoid datastore_id/file_format
       aio               = lookup(disk.value, "aio", "io_uring")
-      backup            = lookup(disk.value, "backup", true)
+      # Determine passthrough automatically when path points to /dev/* unless raw is explicitly set
+      backup            = lookup(disk.value, "backup", (try(disk.value.raw, startswith(lookup(disk.value, "path_in_datastore", ""), "/dev/")) ? false : true))
       cache             = lookup(disk.value, "cache", "none")
-      datastore_id      = try(disk.value.raw, false) ? null : lookup(disk.value, "datastore_id", var.init_datastore_id)
+      datastore_id      = (try(disk.value.raw, startswith(lookup(disk.value, "path_in_datastore", ""), "/dev/")) ? null : lookup(disk.value, "datastore_id", var.init_datastore_id))
       discard           = lookup(disk.value, "discard", "ignore")
-      file_format       = try(disk.value.raw, false) ? null : lookup(disk.value, "file_format", "raw")
+      file_format       = (try(disk.value.raw, startswith(lookup(disk.value, "path_in_datastore", ""), "/dev/")) ? null : lookup(disk.value, "file_format", "raw"))
       file_id           = lookup(disk.value, "file_id", null)
       interface         = disk.value["interface"]
       iothread          = lookup(disk.value, "iothread", true)
@@ -161,7 +162,7 @@ resource "proxmox_virtual_environment_vm" "this" {
       replicate         = lookup(disk.value, "replicate", true)
       serial            = lookup(disk.value, "serial", null)
       size              = disk.value["size"]
-      ssd               = lookup(disk.value, "ssd", try(disk.value.raw, false) ? false : true)
+      ssd               = lookup(disk.value, "ssd", (try(disk.value.raw, startswith(lookup(disk.value, "path_in_datastore", ""), "/dev/")) ? false : true))
     }
   }
 
