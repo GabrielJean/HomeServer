@@ -51,8 +51,16 @@ variable "disks" {
   default = []
 }
 
+# Optional explicit render order for disks (by interface key, e.g., "scsi0").
+# When null, disks are rendered in sorted(interface) order.
+variable "disk_render_order" {
+  type    = list(string)
+  default = null
+}
+
 # Control whether this module should manage disks at all. If false, no disk blocks are rendered.
 variable "manage_disks" { default = true }
+
 
 # If no custom disks are provided, a single boot disk will be created with these defaults
 variable "boot_disk_size_gb" { default = 30 }

@@ -7,14 +7,17 @@ module "nas_1" {
   vm_id            = 104
   cpu_cores        = 4
   memory_dedicated = 10240
+  manage_disks     = true
+  disk_render_order = ["scsi5", "scsi0", "scsi2", "scsi3", "scsi4"]
+  # Disks documented below and managed; render order matches provider/state
   disks = [
     # Boot disk on scsi0
-    { size = 30, interface = "scsi0", path_in_datastore = "vm-104-disk-0" },
+    { size = 30, interface = "scsi0", path_in_datastore = "vm-104-disk-0", ssd = true },
     # ZFS-backed raw disks (passthrough) — managed but not backed up
-    { size = 3726, interface = "scsi2", path_in_datastore = "/dev/disk/by-id/ata-WDC_WD40EFRX-68N32N0_WD-WCC7K0PFZTDV", backup = false, iothread = false, raw = true },
-    { size = 3726, interface = "scsi3", path_in_datastore = "/dev/disk/by-id/ata-WDC_WD40EFRX-68N32N0_WD-WCC7K0ZZLF4D", backup = false, iothread = false, raw = true },
-    { size = 3726, interface = "scsi4", path_in_datastore = "/dev/disk/by-id/ata-WDC_WD40EFRX-68N32N0_WD-WCC7K0RKY2R4", backup = false, iothread = false, raw = true },
-    { size = 3726, interface = "scsi5", path_in_datastore = "/dev/disk/by-id/ata-WDC_WD40EFRX-68N32N0_WD-WCC7K3RFKDKV", backup = false, iothread = false, raw = true }
+    { size = 3726, interface = "scsi2", path_in_datastore = "/dev/disk/by-id/ata-WDC_WD40EFRX-68N32N0_WD-WCC7K0PFZTDV", backup = false, iothread = false, raw = true, ssd = false },
+    { size = 3726, interface = "scsi3", path_in_datastore = "/dev/disk/by-id/ata-WDC_WD40EFRX-68N32N0_WD-WCC7K0ZZLF4D", backup = false, iothread = false, raw = true, ssd = false },
+    { size = 3726, interface = "scsi4", path_in_datastore = "/dev/disk/by-id/ata-WDC_WD40EFRX-68N32N0_WD-WCC7K0RKY2R4", backup = false, iothread = false, datastore_id = "local-lvm", ssd = false },
+    { size = 3726, interface = "scsi5", path_in_datastore = "/dev/disk/by-id/ata-WDC_WD40EFRX-68N32N0_WD-WCC7K3RFKDKV", backup = false, iothread = false, raw = true, ssd = false }
   ]
   network_devices = [
     { mac_address = "BC:24:11:81:72:3A" }
@@ -161,7 +164,7 @@ module "satisfactory" {
   }
 }
 
-# RKE2 cluster nodes on pve-1
+# # RKE2 cluster nodes on pve-1
 module "k8s_master_1" {
   source           = "./modules/proxmox_vm"
   providers        = { proxmox = proxmox.pve1 }
@@ -180,20 +183,20 @@ module "k8s_master_1" {
   tags              = ["k8s", "rke2", "master"]
 }
 
-module "k8s_worker_1" {
-  source           = "./modules/proxmox_vm"
-  providers        = { proxmox = proxmox.pve1 }
-  name             = "k8s-worker-1"
-  node_name        = "pve-1"
-  vm_id            = 108
-  cpu_cores        = 2
-  memory_dedicated = 4096
-  # Clone from Ubuntu-Cloud template on pve-1 (vm_id 101)
-  clone_vm_id     = 101
-  clone_node_name = "pve-1"
-  # 30GB boot disk is default via module; leaving disks empty to use defaults
-  init_ipv4_address = "192.168.10.21/24"
-  init_ipv4_gateway = "192.168.10.1"
-  init_dns_servers  = ["192.168.10.5"]
-  tags              = ["k8s", "rke2", "worker"]
-}
+# module "k8s_worker_1" {
+#   source           = "./modules/proxmox_vm"
+#   providers        = { proxmox = proxmox.pve1 }
+#   name             = "k8s-worker-1"
+#   node_name        = "pve-1"
+#   vm_id            = 108
+#   cpu_cores        = 2
+#   memory_dedicated = 4096
+#   # Clone from Ubuntu-Cloud template on pve-1 (vm_id 101)
+#   clone_vm_id     = 101
+#   clone_node_name = "pve-1"
+#   # 30GB boot disk is default via module; leaving disks empty to use defaults
+#   init_ipv4_address = "192.168.10.21/24"
+#   init_ipv4_gateway = "192.168.10.1"
+#   init_dns_servers  = ["192.168.10.5"]
+#   tags              = ["k8s", "rke2", "worker"]
+# }

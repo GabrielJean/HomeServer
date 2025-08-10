@@ -10,6 +10,12 @@ locals {
 
   # Key disks by interface to ensure stable addressing regardless of list order
   effective_disks_by_interface = { for d in local.effective_disks : d.interface => d }
+  # Deterministic render order for disk blocks: sort by interface key (e.g., scsi0, scsi1, ...)
+  sorted_disk_keys = sort(keys(local.effective_disks_by_interface))
+  effective_disk_order = var.disk_render_order != null ? var.disk_render_order : local.sorted_disk_keys
+  # Build a LIST in the desired order to ensure stable block ordering
+  ordered_disks_list = [for k in local.effective_disk_order : local.effective_disks_by_interface[k] if contains(keys(local.effective_disks_by_interface), k)]
+
 
   effective_network_devices = length(var.network_devices) > 0 ? var.network_devices : [
     {
@@ -70,6 +76,24 @@ resource "proxmox_virtual_environment_vm" "this" {
       timeout_start_vm,
       timeout_stop_vm,
       agent,
+      # Prevent disk reindex/moves caused by provider list ordering changes
+      disk[0].interface,
+      disk[1].interface,
+      disk[2].interface,
+      disk[3].interface,
+      disk[4].interface,
+      disk[5].interface,
+      disk[6].interface,
+      disk[7].interface,
+      disk[0].path_in_datastore,
+      disk[1].path_in_datastore,
+      disk[2].path_in_datastore,
+      disk[3].path_in_datastore,
+      disk[4].path_in_datastore,
+      disk[5].path_in_datastore,
+      disk[6].path_in_datastore,
+      disk[7].path_in_datastore,
+      # Keep ignoring storage format fields managed externally
       disk[0].datastore_id,
       disk[1].datastore_id,
       disk[2].datastore_id,
@@ -118,7 +142,7 @@ resource "proxmox_virtual_environment_vm" "this" {
   }
 
   dynamic "disk" {
-    for_each = var.manage_disks ? local.effective_disks_by_interface : {}
+    for_each = var.manage_disks ? local.ordered_disks_list : []
     content {
       # Merge user disk with defaults
       # Only size and interface are required from user
@@ -131,14 +155,13 @@ resource "proxmox_virtual_environment_vm" "this" {
       discard           = lookup(disk.value, "discard", "ignore")
       file_format       = try(disk.value.raw, false) ? null : lookup(disk.value, "file_format", "raw")
       file_id           = lookup(disk.value, "file_id", null)
-      import_from       = lookup(disk.value, "import_from", null)
       interface         = disk.value["interface"]
       iothread          = lookup(disk.value, "iothread", true)
       path_in_datastore = lookup(disk.value, "path_in_datastore", null)
       replicate         = lookup(disk.value, "replicate", true)
       serial            = lookup(disk.value, "serial", null)
       size              = disk.value["size"]
-      ssd               = lookup(disk.value, "ssd", false)
+      ssd               = lookup(disk.value, "ssd", try(disk.value.raw, false) ? false : true)
     }
   }
 
