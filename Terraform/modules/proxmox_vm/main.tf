@@ -1,3 +1,24 @@
+locals {
+  effective_disks = length(var.disks) > 0 ? var.disks : [
+    {
+      size              = var.boot_disk_size_gb
+      interface         = var.boot_disk_interface
+      path_in_datastore = coalesce(var.boot_disk_path, "vm-${var.vm_id}-disk-0")
+      datastore_id      = coalesce(var.boot_disk_datastore_id, var.init_datastore_id)
+    }
+  ]
+
+  # Key disks by interface to ensure stable addressing regardless of list order
+  effective_disks_by_interface = { for d in local.effective_disks : d.interface => d }
+
+  effective_network_devices = length(var.network_devices) > 0 ? var.network_devices : [
+    {
+      bridge = var.default_nic_bridge
+      model  = var.default_nic_model
+    }
+  ]
+}
+
 resource "proxmox_virtual_environment_vm" "this" {
   name             = var.name
   node_name        = var.node_name
@@ -70,7 +91,7 @@ resource "proxmox_virtual_environment_vm" "this" {
     type         = var.cpu_type
     numa         = var.cpu_numa
     limit        = var.cpu_limit
-    hotplugged   = var.cpu_hotplugged
+    hotplugged   = coalesce(var.cpu_hotplugged, var.cpu_cores)
     units        = var.cpu_units
     flags        = var.cpu_flags
     architecture = var.cpu_architecture
@@ -79,14 +100,14 @@ resource "proxmox_virtual_environment_vm" "this" {
 
   memory {
     dedicated      = var.memory_dedicated
-    floating       = var.memory_floating
+    floating       = var.memory_enable_hotplug ? coalesce(var.memory_floating, var.memory_dedicated) : var.memory_floating
     hugepages      = var.memory_hugepages
     keep_hugepages = var.memory_keep_hugepages
     shared         = var.memory_shared
   }
 
     dynamic "disk" {
-      for_each = var.disks
+      for_each = var.manage_disks ? local.effective_disks_by_interface : {}
       content {
         # Merge user disk with defaults
         # Only size and interface are required from user
@@ -111,21 +132,21 @@ resource "proxmox_virtual_environment_vm" "this" {
     }
 
   dynamic "network_device" {
-    for_each = var.network_devices
+    for_each = local.effective_network_devices
     content {
       # Merge user network device with defaults
-      # Only mac_address is required from user
-      bridge      = lookup(network_device.value, "bridge", "vmbr0")
-      model       = lookup(network_device.value, "model", "virtio")
-      mac_address = network_device.value["mac_address"]
-      firewall    = lookup(network_device.value, "firewall", true)
-      enabled     = lookup(network_device.value, "enabled", true)
+      # mac_address is optional; Proxmox can auto-generate when null
+      bridge       = lookup(network_device.value, "bridge", "vmbr0")
+      model        = lookup(network_device.value, "model", "virtio")
+      mac_address  = lookup(network_device.value, "mac_address", null)
+      firewall     = lookup(network_device.value, "firewall", true)
+      enabled      = lookup(network_device.value, "enabled", true)
       disconnected = lookup(network_device.value, "disconnected", false)
-      mtu         = lookup(network_device.value, "mtu", 0)
-      queues      = lookup(network_device.value, "queues", 0)
-      rate_limit  = lookup(network_device.value, "rate_limit", 0)
-      trunks      = lookup(network_device.value, "trunks", null)
-      vlan_id     = lookup(network_device.value, "vlan_id", 0)
+      mtu          = lookup(network_device.value, "mtu", 0)
+      queues       = lookup(network_device.value, "queues", 0)
+      rate_limit   = lookup(network_device.value, "rate_limit", 0)
+      trunks       = lookup(network_device.value, "trunks", null)
+      vlan_id      = lookup(network_device.value, "vlan_id", 0)
     }
   }
 

@@ -8,7 +8,9 @@ module "nas_1" {
   cpu_cores = 4
   memory_dedicated = 10240
   disks = [
-    { size = 30, interface = "scsi0", path_in_datastore = "vm-104-disk-0", datastore_id = "local-lvm" },
+    # Boot disk on scsi0
+    { size = 30,   interface = "scsi0", path_in_datastore = "vm-104-disk-0" },
+    # ZFS-backed raw disks (passthrough) — managed but not backed up
     { size = 3726, interface = "scsi2", path_in_datastore = "/dev/disk/by-id/ata-WDC_WD40EFRX-68N32N0_WD-WCC7K0PFZTDV", backup = false, iothread = false, raw = true },
     { size = 3726, interface = "scsi3", path_in_datastore = "/dev/disk/by-id/ata-WDC_WD40EFRX-68N32N0_WD-WCC7K0ZZLF4D", backup = false, iothread = false, raw = true },
     { size = 3726, interface = "scsi4", path_in_datastore = "/dev/disk/by-id/ata-WDC_WD40EFRX-68N32N0_WD-WCC7K0RKY2R4", backup = false, iothread = false, raw = true },
@@ -19,7 +21,6 @@ module "nas_1" {
   ]
   init_ipv4_address = "192.168.10.12/24"
   init_ipv4_gateway = "192.168.10.1"
-  init_dns_servers = ["192.168.10.1"]
   startup = {
     order      = 2
     up_delay   = 30
@@ -64,7 +65,6 @@ module "dns_1" {
   ]
   init_ipv4_address = "192.168.10.5/24"
   init_ipv4_gateway = "192.168.10.1"
-  init_dns_servers = ["192.168.10.1"]
   startup = {
     order      = 1
     up_delay   = 20
@@ -90,7 +90,6 @@ module "plex_1" {
   ]
   init_ipv4_address = "192.168.10.13/24"
   init_ipv4_gateway = "192.168.10.1"
-  init_dns_servers = ["192.168.10.1"]
   startup = {
     order      = 3
     up_delay   = -1
@@ -155,7 +154,6 @@ module "satisfactory" {
   ]
   init_ipv4_address = "192.168.10.14/24"
   init_ipv4_gateway = "192.168.10.1"
-  init_dns_servers = ["192.168.10.1"]
   startup = {
     order      = 10
     up_delay   = -1

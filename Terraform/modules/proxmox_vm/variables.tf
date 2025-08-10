@@ -31,14 +31,17 @@ variable "cpu_sockets" { default = 1 }
 variable "cpu_type" { default = "x86-64-v2-AES" }
 variable "cpu_numa" { default = true }
 variable "cpu_limit" { default = 0 }
-variable "cpu_hotplugged" { default = 0 }
+variable "cpu_hotplugged" { default = null }
 variable "cpu_units" { default = 1024 }
 variable "cpu_flags" { default = [] }
 variable "cpu_architecture" { default = null }
 variable "cpu_affinity" { default = null }
 
 variable "memory_dedicated" { default = 2048 }
-variable "memory_floating" { default = 0 }
+variable "memory_floating" { default = null }
+# When true, configure the ballooning device to allow online RAM changes without enabling dynamic reclaim.
+# By default we set floating to dedicated, which enables hotplug but does not change behavior unless you adjust values.
+variable "memory_enable_hotplug" { default = true }
 variable "memory_hugepages" { default = null }
 variable "memory_keep_hugepages" { default = false }
 variable "memory_shared" { default = 0 }
@@ -47,10 +50,24 @@ variable "disks" {
 	type = list(any)
 	default = []
 }
+
+# Control whether this module should manage disks at all. If false, no disk blocks are rendered.
+variable "manage_disks" { default = true }
+
+# If no custom disks are provided, a single boot disk will be created with these defaults
+variable "boot_disk_size_gb" { default = 30 }
+variable "boot_disk_datastore_id" { default = null }
+variable "boot_disk_interface" { default = "scsi0" }
+variable "boot_disk_path" { default = null }
+
 variable "network_devices" {
 	type = list(any)
 	default = []
 }
+
+# If no NICs are provided, one NIC will be created with these defaults
+variable "default_nic_bridge" { default = "vmbr0" }
+variable "default_nic_model" { default = "virtio" }
 
 variable "init_datastore_id" { default = "local-lvm" }
 variable "init_interface" { default = "ide0" }
