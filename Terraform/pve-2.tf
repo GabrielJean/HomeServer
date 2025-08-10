@@ -42,10 +42,10 @@ module "ubuntu_cloud_2" {
   cpu_cores        = 4
   memory_dedicated = 3072
   disks = [
-    { size = 50, interface = "scsi0", path_in_datastore = "base-100-disk-0" }
+    { size = 10, interface = "scsi0", path_in_datastore = "base-100-disk-0" }
   ]
   network_devices = [
-    { mac_address = "BC:24:11:36:FC:31" }
+    { mac_address = "BC:24:11:D6:96:20" }
   ]
   init_dns_servers = ["192.168.15.1"]
 }
