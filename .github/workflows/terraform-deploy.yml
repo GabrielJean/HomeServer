@@ -131,3 +131,11 @@ jobs:
           ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         run: terraform apply -input=false -no-color -auto-approve tfplan
 
+      - name: Run Ansible playbook (pve-ubuntu-base)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          ansible-playbook \
+            -i ../Ansible/inventory.ini \
+            ../Ansible/pve-ubuntu-base.yml \
+            --vault-password-file .vault_pass.txt
+
