@@ -77,3 +77,13 @@
         application: "{{ item.name }}"
         restart: "{{ item.restart | default(omit) }}"
         pull_latest: "{{ item.pull_latest | default(omit) }}"
+
+    - name: Wait for all docker compose jobs to finish
+      ansible.builtin.async_status:
+        jid: "{{ item }}"
+      register: async_poll_all
+      until: async_poll_all.finished
+      retries: 60
+      delay: 5
+      loop: "{{ compose_job_ids | default([]) }}"
+      when: has_docker_apps | default(false) and (compose_job_ids | default([])) | length > 0

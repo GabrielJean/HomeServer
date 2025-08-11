@@ -25,19 +25,15 @@
   ansible.builtin.debug:
     msg: "{{ docker_compose_command }}"
 
-- name: Run docker-compose up asynchronously for {{ application }}
+- name: Launch docker compose up in background for {{ application }}
   ansible.builtin.command: "{{ docker_compose_command }}"
   args:
     chdir: /home/gabriel/{{ application }}/
-  async: 300
+  async: 1800
   poll: 0
   register: compose_async
 
-- name: Wait for docker-compose up to finish for {{ application }}
-  ansible.builtin.async_status:
-    jid: "{{ compose_async.ansible_job_id }}"
-  register: async_poll
-  until: async_poll.finished
-  retries: 10
-  delay: 5
+- name: Record compose job id for {{ application }}
+  ansible.builtin.set_fact:
+    compose_job_ids: "{{ (compose_job_ids | default([])) + [compose_async.ansible_job_id] }}"
   when: compose_async.ansible_job_id is defined
