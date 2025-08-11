@@ -1,12 +1,12 @@
 services:
   homeassistant:
     container_name: homeassistant
-    image: "ghcr.io/home-assistant/home-assistant:stable"
+    image: ghcr.io/home-assistant/home-assistant:stable
     volumes:
-      - /Apps/HomeAssistant:/config
-      - /etc/localtime:/etc/localtime:ro
+    - /Apps/HomeAssistant:/config
+    - /etc/localtime:/etc/localtime:ro
     restart: unless-stopped
     privileged: true
     network_mode: host
     devices:
-      - /dev/serial/by-id/usb-Itead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_V2_9a520d8a0274ef118d78e71e313510fd-if00-port0:/dev/ttyUSB0
+    - /dev/ttyUSB-zigbee:/dev/ttyUSB0
