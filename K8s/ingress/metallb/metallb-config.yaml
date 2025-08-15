@@ -6,7 +6,7 @@ metadata:
   namespace: metallb-system
 spec:
   addresses:
-  - 192.168.10.200-192.168.10.210  # Adjust this range based on your available IPs
+  - 192.168.10.25-192.168.10.25
   autoAssign: false
 ---
 # IP Address Pool for LAN 2 (192.168.15.0/24)
@@ -17,7 +17,7 @@ metadata:
   namespace: metallb-system
 spec:
   addresses:
-  - 192.168.15.200-192.168.15.210  # Adjust this range based on your available IPs
+  - 192.168.15.25-192.168.15.25
   autoAssign: false
 ---
 # L2 Advertisement for LAN 1
