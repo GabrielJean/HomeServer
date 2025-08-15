@@ -1,0 +1,55 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Upstream base manifest
+resources:
+  - https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.13.1/deploy/static/provider/cloud/deploy.yaml
+
+# Your per-node controllers
+  - deploy-lan1.yaml
+  - deploy-lan2.yaml
+
+# Remove upstream single-controller resources that would conflict with your per-node setup
+patchesStrategicMerge:
+  - |-
+    apiVersion: v1
+    kind: ServiceAccount
+    metadata:
+      name: ingress-nginx
+      namespace: ingress-nginx
+    $patch: delete
+  - |-
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: Role
+    metadata:
+      name: ingress-nginx
+      namespace: ingress-nginx
+    $patch: delete
+  - |-
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: RoleBinding
+    metadata:
+      name: ingress-nginx
+      namespace: ingress-nginx
+    $patch: delete
+  - |-
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: ClusterRoleBinding
+    metadata:
+      name: ingress-nginx
+    $patch: delete
+  - |-
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: ingress-nginx-controller
+      namespace: ingress-nginx
+    $patch: delete
+  - |-
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: ingress-nginx-controller
+      namespace: ingress-nginx
+    $patch: delete
+
