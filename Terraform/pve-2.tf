@@ -81,8 +81,8 @@ module "k8s_worker_2" {
   name             = "k8s-worker-2"
   node_name        = "pve-2"
   vm_id            = 122
-  cpu_cores        = 2
-  memory_dedicated = 4096
+  cpu_cores        = 4
+  memory_dedicated = 5120
   # Clone from Ubuntu-Cloud-2 template on pve-2 (vm_id 100)
   clone_vm_id     = 100
   clone_node_name = "pve-2"

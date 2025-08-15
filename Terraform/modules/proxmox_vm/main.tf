@@ -126,7 +126,8 @@ resource "proxmox_virtual_environment_vm" "this" {
     type         = var.cpu_type
     numa         = var.cpu_numa
     limit        = var.cpu_limit
-    hotplugged   = coalesce(var.cpu_hotplugged, var.cpu_cores)
+    # Only set hotplugged when explicitly provided to avoid exceeding maxcpus during online updates
+    hotplugged   = var.cpu_hotplugged
     units        = var.cpu_units
     flags        = var.cpu_flags
     architecture = var.cpu_architecture
