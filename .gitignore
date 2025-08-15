@@ -15,3 +15,6 @@ env_file
 
 # Node/others (just in case)
 node_modules/
+
+
+rke2-k8s-master-1.yaml
