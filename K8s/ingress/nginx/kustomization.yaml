@@ -9,47 +9,87 @@ resources:
   - deploy-lan1.yaml
   - deploy-lan2.yaml
 
+# Centralize controller image version here for both per-node Deployments
+images:
+  - name: registry.k8s.io/ingress-nginx/controller
+    newTag: v1.13.1
+
 # Remove upstream single-controller resources that would conflict with your per-node setup
-patchesStrategicMerge:
-  - |-
-    apiVersion: v1
-    kind: ServiceAccount
-    metadata:
+patches:
+  - target:
+      group: ""
+      version: v1
+      kind: ServiceAccount
       name: ingress-nginx
       namespace: ingress-nginx
-    $patch: delete
-  - |-
-    apiVersion: rbac.authorization.k8s.io/v1
-    kind: Role
-    metadata:
+    patch: |-
+      apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: ingress-nginx
+        namespace: ingress-nginx
+      $patch: delete
+  - target:
+      group: rbac.authorization.k8s.io
+      version: v1
+      kind: Role
       name: ingress-nginx
       namespace: ingress-nginx
-    $patch: delete
-  - |-
-    apiVersion: rbac.authorization.k8s.io/v1
-    kind: RoleBinding
-    metadata:
+    patch: |-
+      apiVersion: rbac.authorization.k8s.io/v1
+      kind: Role
+      metadata:
+        name: ingress-nginx
+        namespace: ingress-nginx
+      $patch: delete
+  - target:
+      group: rbac.authorization.k8s.io
+      version: v1
+      kind: RoleBinding
       name: ingress-nginx
       namespace: ingress-nginx
-    $patch: delete
-  - |-
-    apiVersion: rbac.authorization.k8s.io/v1
-    kind: ClusterRoleBinding
-    metadata:
+    patch: |-
+      apiVersion: rbac.authorization.k8s.io/v1
+      kind: RoleBinding
+      metadata:
+        name: ingress-nginx
+        namespace: ingress-nginx
+      $patch: delete
+  - target:
+      group: rbac.authorization.k8s.io
+      version: v1
+      kind: ClusterRoleBinding
       name: ingress-nginx
-    $patch: delete
-  - |-
-    apiVersion: v1
-    kind: Service
-    metadata:
+    patch: |-
+      apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      metadata:
+        name: ingress-nginx
+      $patch: delete
+  - target:
+      group: ""
+      version: v1
+      kind: Service
       name: ingress-nginx-controller
       namespace: ingress-nginx
-    $patch: delete
-  - |-
-    apiVersion: apps/v1
-    kind: Deployment
-    metadata:
+    patch: |-
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: ingress-nginx-controller
+        namespace: ingress-nginx
+      $patch: delete
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
       name: ingress-nginx-controller
       namespace: ingress-nginx
-    $patch: delete
+    patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: ingress-nginx-controller
+        namespace: ingress-nginx
+      $patch: delete
 
